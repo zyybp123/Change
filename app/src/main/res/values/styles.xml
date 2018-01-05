@@ -11,6 +11,8 @@
         <item name="toolbarStyle">@style/ClubToolbar</item>
         <!--右上角的菜单圆点的颜色-->
         <item name="android:textColorSecondary">@color/colorWhite</item>
+        <!--默认所有背景为白色-->
+        <item name="android:windowBackground">@color/colorWhite</item>
     </style>
     <!--全屏主题-->
     <style name="AppTheme.FullScreen">
@@ -23,9 +25,5 @@
     <!--ToolBar左侧留白问题解决-->
     <style name="ClubToolbar" parent="Widget.AppCompat.Toolbar">
         <item name="contentInsetStart">0dp</item><!-- 设置该属性解决空白部分-->
-    </style>
-    <!--白色背景的activity-->
-    <style name="AppTheme.WhiteBack">
-        <item name="android:windowBackground">@color/colorWhite</item>
     </style>
 </resources>

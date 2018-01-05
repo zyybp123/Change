@@ -19,7 +19,7 @@ import cn.bpzzr.change.util.StatusBarCompat;
 
 public class Change extends Application {
 
-    private Context mContext;
+    public static Context mContext;
 
     public Context getContext() {
         return mContext;
@@ -30,8 +30,6 @@ public class Change extends Application {
         super.onCreate();
         mContext = this;
         activityLifeManage();
-
-
     }
 
     private void activityLifeManage() {

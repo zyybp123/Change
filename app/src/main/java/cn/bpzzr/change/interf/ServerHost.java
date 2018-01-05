@@ -6,4 +6,11 @@ package cn.bpzzr.change.interf;
  */
 
 public interface ServerHost {
+    String BASE_URL ="https://api.douban.com/";
+    String BASE_URL_2 ="http://gank.io/";
+    String BASE_URL_VIDEO ="http://gank.io/";
+    String BASE_URL_BOOK ="http://gank.io/";
+    String BASE_URL_ONLINE ="http://gank.io/";
+    String TEST_PRE ="v2/book/1220562";
+    String TEST_PRE_2 ="api/data/Android/10/1";
 }
