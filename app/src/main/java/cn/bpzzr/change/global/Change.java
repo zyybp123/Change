@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.multidex.MultiDex;
 
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.manager.AppManager;
@@ -24,7 +25,11 @@ public class Change extends Application {
     public Context getContext() {
         return mContext;
     }
-
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
     @Override
     public void onCreate() {
         super.onCreate();

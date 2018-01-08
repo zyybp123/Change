@@ -1,4 +1,4 @@
-package cn.bpzzr.change.Bean;
+package cn.bpzzr.change.bean;
 
 import java.util.List;
 

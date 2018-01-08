@@ -5,10 +5,10 @@ import android.database.Observable;
 import java.util.List;
 import java.util.Map;
 
-import cn.bpzzr.change.Bean.BaseBean;
-import cn.bpzzr.change.Bean.DoubanTest;
-import cn.bpzzr.change.Bean.GankTest;
-import cn.bpzzr.change.Bean.ResultBaseBean;
+import cn.bpzzr.change.bean.BaseBean;
+import cn.bpzzr.change.bean.DoubanTest;
+import cn.bpzzr.change.bean.GankTest;
+import cn.bpzzr.change.bean.ResultBaseBean;
 import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.interf.SomeKeys;
 import okhttp3.RequestBody;
@@ -41,6 +41,10 @@ public interface RetrofitClient {
     @Headers({HEADER_BOOK})
     @GET(ServerHost.TEST_PRE_2)
     Call<ResultBaseBean<GankTest>> getTest2();
+
+    @Headers({HEADER_BOOK})
+    @GET(ServerHost.TEST_PRE_2)
+    Call<ResultBaseBean<GankTest>> getTest3();
 
     /**
      * 批量上传类型不同的文档

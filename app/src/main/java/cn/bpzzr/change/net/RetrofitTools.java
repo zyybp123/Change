@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import cn.bpzzr.change.Bean.BaseBean;
-import cn.bpzzr.change.Bean.DoubanTest;
-import cn.bpzzr.change.Bean.GankTest;
-import cn.bpzzr.change.Bean.ResultBaseBean;
+import cn.bpzzr.change.bean.BaseBean;
+import cn.bpzzr.change.bean.DoubanTest;
+import cn.bpzzr.change.bean.GankTest;
+import cn.bpzzr.change.bean.ResultBaseBean;
 import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.mvp.MVP;
@@ -24,6 +24,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -104,6 +105,7 @@ public class RetrofitTools {
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)// Baseurl 必须以/结尾
                 .addConverterFactory(GsonConverterFactory.create())// 添加json转换器
+                //.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okClient)
                 .build();
         client = retrofit.create(RetrofitClient.class);
@@ -159,6 +161,12 @@ public class RetrofitTools {
         return call;
     }
 
+    public void getTest3(MVP.View view) {
+        //Observable<ResultBaseBean<GankTest>> call = client.getTest2();
+        //call.enqueue(new MyCallback<>(new MyDataParse<GankTest>(view, "")));
+        //return call;
+    }
+
     //批量上传文件的方法
     public Call uploadFiles(MVP.View mView, String projectId, String accountId,
                             String projectResourceClassId, String xyToken, Map<String, RequestBody> map) {
@@ -188,7 +196,7 @@ public class RetrofitTools {
         }
 
         @Override
-        public void onError(Call<ResultBaseBean<T>> call, String message) {
+        public void onError(Call<ResultBaseBean<T>> call, String code, String message) {
             LogUtil.e("RequestFiled........" + message);
             mView.onError(TAG, message);
             if (!TextUtils.isEmpty(message)) {
