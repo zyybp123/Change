@@ -1,16 +1,13 @@
 package cn.bpzzr.change.ui.activity.guide;
 
 import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
 import cn.bpzzr.change.R;
-import cn.bpzzr.change.global.Change;
 import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.manager.MyActivityManager;
 import cn.bpzzr.change.mvp.MVP;
@@ -57,6 +54,7 @@ public class HomeActivity extends AppCompatActivity implements MVP.View, MVP.Pre
         instance = RetrofitTools.getInstance(ServerHost.BASE_URL);
         instance.getTest(this);
         instance.getTest2(this);
+        instance.getTest3(this);
     }
 
     @Override

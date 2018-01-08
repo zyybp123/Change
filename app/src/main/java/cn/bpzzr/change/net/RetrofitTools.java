@@ -2,7 +2,6 @@ package cn.bpzzr.change.net;
 
 import android.text.TextUtils;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,12 +15,11 @@ import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.util.LogUtil;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -56,59 +54,26 @@ public class RetrofitTools {
                 .writeTimeout(60, TimeUnit.MINUTES)       //写超时   60min
                 .retryOnConnectionFailure(true)                   //是否自动重连
                 //.sslSocketFactory(sslContext.getSocketFactory())//证书配置
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-                        Request newRequest = chain.request();
-                        Request.Builder builder = chain.request().newBuilder();
-                        //builder.addHeader("","");为所有请求配上统一的请求头,在此设置
-                        //从request中获取headers，通过给定的键
-                        List<String> headerValues = newRequest.headers(SomeKeys.URL_FLAG);
-                        if (headerValues != null && headerValues.size() > 0) {
-                            //如果有这个header，先将配置的header删除，因此header仅用作app和okhttp之间使用
-                            builder.removeHeader(SomeKeys.URL_FLAG);
-                            //匹配获得新的BaseUrl
-                            String headerValue = headerValues.get(0);
-                            LogUtil.e("headerValue..................." + headerValue);
-                            HttpUrl newBaseUrl = null;
-                            if (TextUtils.isEmpty(headerValue)) {
-                                //为空值，取默认URL
-                                newBaseUrl = HttpUrl.parse(baseUrl);
-                            } else {
-                                //不为空值，从map里取值
-                                String url = baseUrlMap.get(headerValue);
-                                if (TextUtils.isEmpty(url)) {
-                                    //取出来空值，取默认URL
-                                    newBaseUrl = HttpUrl.parse(baseUrl);
-                                } else {
-                                    newBaseUrl = HttpUrl.parse(url);
-                                }
-                            }
-                            //从request中获取原有的HttpUrl实例oldHttpUrl
-                            HttpUrl oldHttpUrl = newRequest.url();
-                            //重建新的HttpUrl，修改需要修改的url部分
-                            HttpUrl newFullUrl = oldHttpUrl
-                                    .newBuilder()
-                                    .scheme(newBaseUrl.scheme())
-                                    .host(newBaseUrl.host())
-                                    .port(newBaseUrl.port())
-                                    .build();
-                            //重建request，返回一个response至此结束修改
-                            return chain.proceed(builder.url(newFullUrl).build());
-                        } else {
-                            return chain.proceed(newRequest);
-                        }
-                    }
-                })
+                .addInterceptor(Interceptors.getHeaderInterceptor(baseUrlMap, baseUrl))
+                .addNetworkInterceptor(Interceptors.getLogInterceptor())
                 .build();
         // 初始化Retrofit
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)// Baseurl 必须以/结尾
                 .addConverterFactory(GsonConverterFactory.create())// 添加json转换器
-                //.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okClient)
                 .build();
         client = retrofit.create(RetrofitClient.class);
+    }
+
+    /**
+     * 获取client
+     *
+     * @return 返回RetrofitClient
+     */
+    public RetrofitClient getClient() {
+        return client;
     }
 
     public RetrofitTools setBaseUrl(String baseUrl) {
@@ -162,9 +127,31 @@ public class RetrofitTools {
     }
 
     public void getTest3(MVP.View view) {
-        //Observable<ResultBaseBean<GankTest>> call = client.getTest2();
-        //call.enqueue(new MyCallback<>(new MyDataParse<GankTest>(view, "")));
-        //return call;
+        client.getTest3()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new MyObserver<GankTest>() {
+                    @Override
+                    public void onSuccees(ResultBaseBean<GankTest> resultBaseBean) {
+                        LogUtil.e("请求结果"+resultBaseBean);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable e, boolean isNetWorkError) {
+                        LogUtil.e("请求错误");
+                    }
+
+                    @Override
+                    public void onRequestStart() {
+                        LogUtil.e("开始请求");
+                    }
+
+                   /* @Override
+                    public void onRequestEnd() {
+                        LogUtil.e("请求完成");
+                    }*/
+                });
+        ;
     }
 
     //批量上传文件的方法

@@ -1,7 +1,5 @@
 package cn.bpzzr.change.net;
 
-import android.database.Observable;
-
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +9,7 @@ import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.bean.ResultBaseBean;
 import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.interf.SomeKeys;
+import io.reactivex.Observable;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -44,7 +43,7 @@ public interface RetrofitClient {
 
     @Headers({HEADER_BOOK})
     @GET(ServerHost.TEST_PRE_2)
-    Call<ResultBaseBean<GankTest>> getTest3();
+    Observable<ResultBaseBean<GankTest>> getTest3();
 
     /**
      * 批量上传类型不同的文档
