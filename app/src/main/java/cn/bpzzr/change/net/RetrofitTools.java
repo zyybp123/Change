@@ -147,7 +147,9 @@ public class RetrofitTools {
 
     public Call getTest(MVP.View view) {
         Call<ResultBaseBean<DoubanTest>> call = client.getTest();
-        call.enqueue(new MyCallback<>(new MyDataParse<DoubanTest>(view, "")));
+        HttpUrl url = call.request().url();
+        LogUtil.e("http url......." + url.toString());
+        call.enqueue(new MyCallback<>(new MyDataParse<DoubanTest>(view, url.toString())));
         return call;
     }
 

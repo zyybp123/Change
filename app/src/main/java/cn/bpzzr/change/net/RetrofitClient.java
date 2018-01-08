@@ -30,15 +30,15 @@ import retrofit2.http.Url;
  */
 
 public interface RetrofitClient {
-    String HEADER_VIDEO = "{\"" + SomeKeys.URL_FLAG + ":" + SomeKeys.VIDEO_DATA + "\"}";
-    String HEADER_BOOK = "{\"" + SomeKeys.URL_FLAG + ":" + SomeKeys.BOOK_DATA + "\"}";
-    String HEADER_ONLINE = "{\"" + SomeKeys.URL_FLAG + ":" + SomeKeys.ONLINE_DATA + "\"}";
+    String HEADER_VIDEO = SomeKeys.URL_FLAG + ":" + SomeKeys.VIDEO_DATA;
+    String HEADER_BOOK = SomeKeys.URL_FLAG + ":" + SomeKeys.BOOK_DATA;
+    String HEADER_ONLINE = SomeKeys.URL_FLAG + ":" + SomeKeys.ONLINE_DATA;
 
-    @Headers(HEADER_VIDEO)
+    @Headers({HEADER_VIDEO})
     @GET(ServerHost.TEST_PRE)
     Call<ResultBaseBean<DoubanTest>> getTest();
 
-    @Headers(HEADER_BOOK)
+    @Headers({HEADER_BOOK})
     @GET(ServerHost.TEST_PRE_2)
     Call<ResultBaseBean<GankTest>> getTest2();
 
