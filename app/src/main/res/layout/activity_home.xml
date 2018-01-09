@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tl="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tl="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_next_step"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/next_step"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorPrimary"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        />
 
     <com.flyco.tablayout.CommonTabLayout
         android:id="@+id/tl_2"
@@ -19,6 +30,6 @@
         tl:tl_textUnselectColor="#66000000"
         tl:tl_textsize="12sp"
         tl:tl_underline_color="#DDDDDD"
-        tl:tl_underline_height="1dp"/>
+        tl:tl_underline_height="1dp" />
 
 </LinearLayout>

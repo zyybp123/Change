@@ -15,6 +15,9 @@ import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.util.LogUtil;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.HttpUrl;
@@ -113,45 +116,25 @@ public class RetrofitTools {
     }
 
     public Call getTest(MVP.View view) {
-        Call<ResultBaseBean<DoubanTest>> call = client.getTest();
+        Call<DoubanTest> call = client.getTest();
         HttpUrl url = call.request().url();
         LogUtil.e("http url......." + url.toString());
-        call.enqueue(new MyCallback<>(new MyDataParse<DoubanTest>(view, url.toString())));
+        call.enqueue(new MyCallback<>(new MyDataParseSimple<DoubanTest>(view, url.toString())));
         return call;
     }
 
     public Call getTest2(MVP.View view) {
-        Call<ResultBaseBean<GankTest>> call = client.getTest2();
-        call.enqueue(new MyCallback<>(new MyDataParse<GankTest>(view, "")));
+        Call<GankTest> call = client.getTest2();
+        call.enqueue(new MyCallback<>(new MyDataParseSimple<GankTest>(view, "getTest2")));
         return call;
     }
 
-    public void getTest3(MVP.View view) {
+    public void getTest3(MVP.View mView) {
         client.getTest3()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new MyObserver<GankTest>() {
-                    @Override
-                    public void onSuccees(ResultBaseBean<GankTest> resultBaseBean) {
-                        LogUtil.e("请求结果"+resultBaseBean);
-                    }
-
-                    @Override
-                    public void onFailure(Throwable e, boolean isNetWorkError) {
-                        LogUtil.e("请求错误");
-                    }
-
-                    @Override
-                    public void onRequestStart() {
-                        LogUtil.e("开始请求");
-                    }
-
-                   /* @Override
-                    public void onRequestEnd() {
-                        LogUtil.e("请求完成");
-                    }*/
-                });
-        ;
+                //.subscribeOn(Schedulers.io())
+                //.observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<GankTest>setThread())
+                .subscribe(new MyObserverSimple<GankTest>(mView, "getTest3"));
     }
 
     //批量上传文件的方法
@@ -164,76 +147,13 @@ public class RetrofitTools {
         call.enqueue(new MyCallback<>(new MyDataParse<List<BaseBean>>(mView, "")));
         return call;
     }
-
-
-    /**
-     * 通用处理方法
-     *
-     * @param <T>
-     */
-    class MyDataParse<T> implements DataParse<ResultBaseBean<T>> {
-
-
-        private MVP.View mView; //实现View接口的界面
-        private String TAG;     //具体方法的标识
-
-        public MyDataParse(MVP.View mView, String TAG) {
-            this.mView = mView;
-            this.TAG = TAG;
-        }
-
-        @Override
-        public void onError(Call<ResultBaseBean<T>> call, String code, String message) {
-            LogUtil.e("RequestFiled........" + message);
-            mView.onError(TAG, message);
-            if (!TextUtils.isEmpty(message)) {
-                if (message.contains("Failed to connect to") || message.contains("Connection Failed")) {
-                    //UiUtils.showMyToast("网络不可用!");
-                }
-                if (message.contains("after 60000ms")) {
-                    //UiUtils.showMyToast("当前网络状态不佳,请稍后重试!");
-                }
+    public <T> ObservableTransformer<T,T> setThread(){
+        return new ObservableTransformer<T,T>() {
+            @Override
+            public ObservableSource<T> apply(Observable<T> upstream) {
+                return upstream.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
             }
-        }
-
-        @Override
-        public void getBody(ResultBaseBean<T> body) {
-            if (body != null) {
-                LogUtil.e("......response body......" + body);
-                String version = body.getVersion();
-                String result = body.getResult();
-                String describe = TextUtils.isEmpty(body.getDescribe()) ? "" : body.getDescribe();
-                int code = body.getCode();
-                switch (code) {
-                    case -1:
-                        //失败,未知原因
-                        mView.onError(TAG, describe);
-                        break;
-                    case 0:
-                        //不成功
-                        mView.onError(TAG, describe);
-                        break;
-                    case 1:
-                        if (body.getData() != null) {
-                            //成功,回调数据
-                            mView.onSuccess(TAG, result, body.getData());
-                        } else {
-                            //成功但是为空数据
-                            mView.onEmpty(TAG);
-                        }
-                        break;
-                    case 1000:
-                        //
-                        break;
-                    default:
-                        mView.onError(TAG, describe);
-                        //其他情况,直接弹出提示
-                        //UiUtils.showMyToast(describe);
-                        break;
-                }
-            } else {
-                mView.onError(TAG, "......response body is null......");
-            }
-        }
+        };
     }
+
 }

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Change</string>
     <string name="splash_word">You can change the world!</string>
+    <string name="next_step">下一步</string>
 </resources>

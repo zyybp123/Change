@@ -2,7 +2,6 @@ package cn.bpzzr.change.net;
 
 
 import android.accounts.NetworkErrorException;
-import android.content.Context;
 import android.text.TextUtils;
 
 import java.net.ConnectException;
@@ -21,18 +20,18 @@ import io.reactivex.disposables.Disposable;
  * 实现一个统一处理的观察者
  */
 
-public  class MyObserver<T> implements Observer<ResultBaseBean<T>> {
+public class MyObserverSimple<T> implements Observer<T> {
     public static final String mTag = "MyObserver";
 
     private MVP.View<T> mView;       //实现View接口的界面
     private String methodTag;     //具体方法的标识
 
-    public MyObserver(MVP.View<T> mView, String methodTag) {
+    public MyObserverSimple(MVP.View<T> mView, String methodTag) {
         this.mView = mView;
         this.methodTag = methodTag;
     }
 
-    public MyObserver() {
+    public MyObserverSimple() {
 
     }
 
@@ -42,28 +41,11 @@ public  class MyObserver<T> implements Observer<ResultBaseBean<T>> {
     }
 
     @Override
-    public void onNext(ResultBaseBean<T> resultBaseBean) {
-        if (resultBaseBean != null) {
-            LogUtil.e("......response body......" + resultBaseBean);
-            //数据预处理
-            String version = resultBaseBean.getVersion();
-            String result = resultBaseBean.getResult();
-            String describe = TextUtils.isEmpty(resultBaseBean.getDescribe()) ? "" : resultBaseBean.getDescribe();
-            int code = resultBaseBean.getCode();
-            switch (code) {
-                case 1:
-                    //定义返回码
-                    T data = resultBaseBean.getData();
-                    if (data != null) {
-                        mView.onSuccess(methodTag, result, data);
-                    } else {
-                        mView.onEmpty(methodTag);
-                    }
-                    break;
-            }
-
+    public void onNext(T resultBody) {
+        if (resultBody != null) {
+            mView.onSuccess(methodTag, "success", resultBody);
         } else {
-            mView.onError(methodTag, "......response body is null......");
+            mView.onEmpty(methodTag);
         }
     }
 

@@ -11,7 +11,7 @@ public interface MVP {
      */
     interface Presenter {
         /**
-         * 发起请求
+         * 发起网络请求
          */
         void initialRequest();
     }
@@ -20,6 +20,11 @@ public interface MVP {
      * vew 层接口，用于更新界面的回调
      */
     interface View<T> {
+        /**
+         * 开始网络请求
+         */
+        void onRequestStart();
+
         /**
          * 请求失败的回调接口
          *

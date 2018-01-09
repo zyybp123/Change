@@ -35,15 +35,15 @@ public interface RetrofitClient {
 
     @Headers({HEADER_VIDEO})
     @GET(ServerHost.TEST_PRE)
-    Call<ResultBaseBean<DoubanTest>> getTest();
+    Call<DoubanTest> getTest();
 
     @Headers({HEADER_BOOK})
     @GET(ServerHost.TEST_PRE_2)
-    Call<ResultBaseBean<GankTest>> getTest2();
+    Call<GankTest> getTest2();
 
     @Headers({HEADER_BOOK})
     @GET(ServerHost.TEST_PRE_2)
-    Observable<ResultBaseBean<GankTest>> getTest3();
+    Observable<GankTest> getTest3();
 
     /**
      * 批量上传类型不同的文档
