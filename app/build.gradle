@@ -110,7 +110,8 @@ dependencies {
     // If you want to use Android Lifecycle for providers
     //compile 'com.trello.rxlifecycle2:rxlifecycle-android-lifecycle:2.2.1'
     //compile 'com.jakewharton:butterknife:8.8.1'
-    //annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    api 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile 'com.google.dagger:dagger-android:2.14.1'
     compile 'com.google.dagger:dagger-android-support:2.14.1'
     // if you use the support libraries
