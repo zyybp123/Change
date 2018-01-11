@@ -15,13 +15,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
         android:orientation="vertical">
+        <include layout="@layout/custom_edit_text"/>
 
-        <EditText
+        <!--<android.support.v7.widget.AppCompatEditText
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="100dp"
-            />
+            />-->
 
         <View
             android:layout_width="match_parent"
@@ -32,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:text="@{user.firstName}"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorWhite"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             />
@@ -40,7 +42,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:background="@color/colorPrimary"
+            android:background="@null"
             android:onClick="@{clickListener.onClick}"
             android:text="@{user.lastName}"
             android:layout_marginStart="30dp"

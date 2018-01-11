@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/custom_et_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/custom_et_iv_left"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/phone" />
+
+        <EditText
+            android:id="@+id/custom_et"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="@string/app_name"
+            android:singleLine="true"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/white_a60"
+            android:textCursorDrawable="@drawable/cursor_white"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/custom_et_iv_right_f"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_gravity="end"
+            android:src="@drawable/close"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:id="@+id/custom_et_iv_right_s"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_gravity="end"
+            android:src="@drawable/close"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/custom_et_v_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_gravity="bottom"
+        android:background="@color/white_a60" />
+</LinearLayout>
