@@ -23,7 +23,7 @@ public interface MVP {
         /**
          * 开始网络请求
          */
-        void onRequestStart();
+        void onRequestStart(String tag);
 
         /**
          * 请求失败的回调接口

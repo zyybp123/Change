@@ -137,7 +137,7 @@ public class GankTest {
             this.images = images;
         }
 
-        @Override
+        /*@Override
         public String toString() {
             return "ResultsBean{" +
                     "_id='" + _id + '\'' +
@@ -151,6 +151,6 @@ public class GankTest {
                     ", who='" + who + '\'' +
                     ", images=" + images +
                     '}';
-        }
+        }*/
     }
 }

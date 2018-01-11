@@ -38,7 +38,7 @@ public  class MyObserver<T> implements Observer<ResultBaseBean<T>> {
 
     @Override
     public void onSubscribe(Disposable d) {
-        mView.onRequestStart();
+        mView.onRequestStart(mTag);
     }
 
     @Override

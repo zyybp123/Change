@@ -61,17 +61,18 @@ public class HomeActivity extends AppCompatActivity implements MVP.View, MVP.Pre
     }
 
     RetrofitTools instance;
+    String test = "";
 
     @Override
     public void initialRequest() {
         instance = RetrofitTools.getInstance(ServerHost.BASE_URL);
-        //instance.getTest(this);
-        //instance.getTest2(this);
+        test = instance.getTest(this);
+        instance.getTest2(this);
         instance.getTest3(this);
     }
 
     @Override
-    public void onRequestStart() {
+    public void onRequestStart(String tag) {
 
     }
 
@@ -83,6 +84,9 @@ public class HomeActivity extends AppCompatActivity implements MVP.View, MVP.Pre
     @Override
     public void onSuccess(String tag, String result, Object data) {
         LogUtil.e("...result..." + data);
+        if (tag.equals(test)) {
+            LogUtil.e("test........." + test);
+        }
         if ("getTest3".equals(tag)) {
             GankTest gankTest = (GankTest) data;
             if (gankTest != null) {
@@ -90,7 +94,7 @@ public class HomeActivity extends AppCompatActivity implements MVP.View, MVP.Pre
                 if (results != null) {
                     for (int i = 0; i < results.size(); i++) {
                         GankTest.ResultsBean resultsBean = results.get(i);
-                        LogUtil.e("resultsBean......" + resultsBean);
+                        LogUtil.e("resultsBean......" + resultsBean.getDesc());
                     }
                 }
             }

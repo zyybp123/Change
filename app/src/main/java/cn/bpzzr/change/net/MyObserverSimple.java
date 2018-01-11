@@ -37,7 +37,7 @@ public class MyObserverSimple<T> implements Observer<T> {
 
     @Override
     public void onSubscribe(Disposable d) {
-        mView.onRequestStart();
+        mView.onRequestStart(methodTag);
     }
 
     @Override

@@ -42,7 +42,7 @@ public class DemonstrationActivity extends AppCompatActivity implements MVP.Pres
     }
 
     @Override
-    public void onRequestStart() {
+    public void onRequestStart(String tag) {
         firstSet();
 
     }

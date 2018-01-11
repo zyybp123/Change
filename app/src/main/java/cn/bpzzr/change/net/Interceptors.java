@@ -32,7 +32,7 @@ public class Interceptors {
         return new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
             @Override
             public void log(@NonNull String message) {
-                Log.w(TAG, "log: " + message);
+                //LogUtil.e(TAG, "log: " + message);
             }
         }).setLevel(HttpLoggingInterceptor.Level.BODY);//设置打印数据的级别
     }
@@ -81,7 +81,7 @@ public class Interceptors {
                                 .build();
                         //重建request，返回一个response至此结束修改
                         return chain.proceed(builder.url(newFullUrl).build());
-                    }else{
+                    } else {
                         return chain.proceed(newRequest);
                     }
                 } else {

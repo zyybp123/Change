@@ -38,7 +38,7 @@ public class RetrofitTools {
     private RetrofitClient client;
     private OkHttpClient okClient;
     private Retrofit retrofit;
-    private Map<String, String> baseUrlMap;
+    //http://blog.csdn.net/gld824125233/article/details/52588275 抓包
 
     /**
      * 构造 初始化相应参数
@@ -46,7 +46,7 @@ public class RetrofitTools {
      * @param baseUrl 基础URL
      */
     private RetrofitTools(final String baseUrl) {
-        baseUrlMap = new HashMap<>();
+        Map<String, String> baseUrlMap = new HashMap<>();
         baseUrlMap.put(SomeKeys.VIDEO_DATA, ServerHost.BASE_URL_VIDEO);
         baseUrlMap.put(SomeKeys.BOOK_DATA, ServerHost.BASE_URL_BOOK);
         baseUrlMap.put(SomeKeys.ONLINE_DATA, ServerHost.BASE_URL_ONLINE);
@@ -115,12 +115,12 @@ public class RetrofitTools {
         return mInstance;
     }
 
-    public Call getTest(MVP.View view) {
+    public String getTest(MVP.View view) {
         Call<DoubanTest> call = client.getTest();
         HttpUrl url = call.request().url();
         LogUtil.e("http url......." + url.toString());
         call.enqueue(new MyCallback<>(new MyDataParseSimple<DoubanTest>(view, url.toString())));
-        return call;
+        return url.toString();
     }
 
     public Call getTest2(MVP.View view) {
@@ -135,6 +135,7 @@ public class RetrofitTools {
                 //.observeOn(AndroidSchedulers.mainThread())
                 .compose(this.<GankTest>setThread())
                 .subscribe(new MyObserverSimple<GankTest>(mView, "getTest3"));
+
     }
 
     //批量上传文件的方法
