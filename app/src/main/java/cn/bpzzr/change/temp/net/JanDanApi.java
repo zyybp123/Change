@@ -2,13 +2,14 @@ package cn.bpzzr.change.temp.net;
 
 import android.support.annotation.StringDef;
 
-import com.will.weiyue.bean.FreshNewsArticleBean;
+/*import com.will.weiyue.bean.FreshNewsArticleBean;
 import com.will.weiyue.bean.FreshNewsBean;
-import com.will.weiyue.bean.JdDetailBean;
+import com.will.weiyue.bean.JdDetailBean;*/
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import cn.bpzzr.change.bean.GankTest;
 import io.reactivex.Observable;
 
 /**
@@ -50,7 +51,7 @@ public class JanDanApi {
      * @param page 页码
      * @return
      */
-    public Observable<FreshNewsBean> getFreshNews(int page) {
+    public Observable<GankTest> getFreshNews(int page) {
         return mService.getFreshNews(ApiConstants.sJanDanApi, TYPE_FRESH,
                 "url,date,tags,author,title,excerpt,comment_count,comment_status,custom_fields",
                 page, "thumb_c,views", "1");
@@ -63,17 +64,17 @@ public class JanDanApi {
      * @param page 页码
      * @return
      */
-    public Observable<JdDetailBean> getJdDetails(@Type String type, int page) {
+    public Observable<GankTest> getJdDetails(@Type String type, int page) {
         return mService.getDetailData(ApiConstants.sJanDanApi, type, page);
     }
 
     /**
      * 获取新鲜事文章详情
      *
-     * @param id PostsBean id {@link FreshNewsBean.PostsBean}
+     * @param id PostsBean id //{@link //FreshNewsBean.PostsBean}
      * @return
      */
-    public Observable<FreshNewsArticleBean> getFreshNewsArticle(int id) {
+    public Observable<GankTest> getFreshNewsArticle(int id) {
         return mService.getFreshNewsArticle(ApiConstants.sJanDanApi, TYPE_FRESHARTICLE, "content,date,modified", id);
     }
 

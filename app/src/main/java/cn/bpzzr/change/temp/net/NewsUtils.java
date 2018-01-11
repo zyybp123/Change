@@ -1,6 +1,6 @@
 package cn.bpzzr.change.temp.net;
 
-import com.will.weiyue.bean.NewsDetail;
+/*import com.will.weiyue.bean.NewsDetail;*/
 
 /**
  * desc:
@@ -34,7 +34,7 @@ public class NewsUtils {
 
 
 
-    public static boolean isBannerNews(NewsDetail detail) {
+    /*public static boolean isBannerNews(NewsDetail detail) {
         return detail.getType().equals(TYPE_BANNER);
     }
 
@@ -48,6 +48,6 @@ public class NewsUtils {
 
     public boolean isAvertNews(NewsDetail.ItemBean bean) {
         return bean.getType().equals(TYPE_ADVERT);
-    }
+    }*/
 
 }

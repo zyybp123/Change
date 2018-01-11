@@ -3,9 +3,9 @@ package cn.bpzzr.change.temp.net;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.will.weiyue.MyApp;
+/*import com.will.weiyue.MyApp;
 import com.will.weiyue.bean.Constants;
-import com.will.weiyue.utils.NetUtil;
+import com.will.weiyue.utils.NetUtil;*/
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -45,7 +45,7 @@ public class RetrofitConfig {
 
         @Override
         public Response intercept(Chain chain) throws IOException {
-            Request request = chain.request();
+            /*Request request = chain.request();
             if (!NetUtil.isNetworkAvailable(MyApp.getContext())) {
                 request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
                 Log.e(TAG, "no network");
@@ -64,7 +64,8 @@ public class RetrofitConfig {
                         .header("Cache-Control", "public, " + CACHE_CONTROL_CACHE)
                         .removeHeader("Pragma")
                         .build();
-            }
+            }*/
+            return chain.proceed(chain.request());
         }
     };
 
@@ -77,8 +78,8 @@ public class RetrofitConfig {
             Request originalRequest = chain.request();
             Request request;
             HttpUrl modifiedUrl = originalRequest.url().newBuilder()
-                    .addQueryParameter("uid", Constants.uid)
-                    .addQueryParameter("devid", Constants.uid)
+                    // .addQueryParameter("uid", Constants.uid)
+                    //.addQueryParameter("devid", Constants.uid)
                     .addQueryParameter("proid", "ifengnews")
                     .addQueryParameter("vt", "5")
                     .addQueryParameter("publishid", "6103")
