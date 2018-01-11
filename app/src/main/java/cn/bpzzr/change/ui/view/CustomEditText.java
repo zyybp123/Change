@@ -15,23 +15,37 @@ import cn.bpzzr.change.R;
  */
 
 public class CustomEditText extends LinearLayout {
+    //左边的图标
     @DrawableRes
-    private int mLeftImgRes;       //左边的图标
+    private int mLeftImgRes;
+    //右边第一个图标
     @DrawableRes
-    private int mRightImgResFirst; //右边第一个图标
+    private int mRightImgResFirst;
+    //右边第二个图标
     @DrawableRes
-    private int mRightImgResSecond;//右边第二个图标
-    private int mTextColor; //文字颜色
-    private int mHintColor; //提示文字颜色
-    private int mTextSize;  //文字大小
-    private int mBackgroundColor; //背景颜色
-    private int mPaddingStart; //输入框距左图的边距
-    private int mPaddingEnd;   //输入框距右图的边距
-    private int mPaddingBottom;//输入框距底部分割线的边距
-    private boolean mShowDivideLine; //是否显示分割线，true 显示
-    private boolean mShowImgLeft;   //是否显示左边的图标
-    private boolean mShowImgRightF; //是否显示右边的第一个图标
-    private boolean mShowImgRightS; //是否显示右边的第二个图标
+    private int mRightImgResSecond;
+    //文字颜色
+    private int mTextColor;
+    //提示文字颜色
+    private int mHintColor;
+    //文字大小
+    private int mTextSize;
+    //背景颜色
+    private int mBackgroundColor;
+    //输入框距左图的边距
+    private int mPaddingStart;
+    //输入框距右图的边距
+    private int mPaddingEnd;
+    //输入框距底部分割线的边距
+    private int mPaddingBottom;
+    //是否显示分割线，true 显示
+    private boolean mShowDivideLine;
+    //是否显示左边的图标
+    private boolean mShowImgLeft;
+    //是否显示右边的第一个图标
+    private boolean mShowImgRightF;
+    //是否显示右边的第二个图标
+    private boolean mShowImgRightS;
 
     public CustomEditText(Context context) {
         this(context, null);
