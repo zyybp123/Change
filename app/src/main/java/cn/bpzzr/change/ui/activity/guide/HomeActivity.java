@@ -9,31 +9,68 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.flyco.tablayout.listener.CustomTabEntity;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.bean.GankTest;
+import cn.bpzzr.change.bean.HomeTabEntity;
 import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.manager.MyActivityManager;
 import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.net.RetrofitTools;
 import cn.bpzzr.change.ui.activity.DemonstrationActivity;
+import cn.bpzzr.change.ui.activity.base.BaseActivity;
 import cn.bpzzr.change.util.LogUtil;
 
-public class HomeActivity extends AppCompatActivity implements MVP.View, MVP.Presenter {
-
+public class HomeActivity extends BaseActivity implements MVP.View, MVP.Presenter {
+    public static final int [] bgsSelected = new int[]{
+            R.drawable.conversation,
+            R.drawable.conversation,
+            R.drawable.conversation,
+            R.drawable.conversation
+    };
+    public static final int [] bgsUnSelected = new int[]{
+            R.drawable.conversation,
+            R.drawable.conversation,
+            R.drawable.conversation,
+            R.drawable.conversation
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        Button nextStep = findViewById(R.id.btn_next_step);
+        //setContentView(R.layout.activity_home);
+
+    }
+
+    @Override
+    public void initView() {
+        /*Button nextStep = findViewById(R.id.btn_next_step);
         nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(HomeActivity.this, DemonstrationActivity.class));
             }
         });
-        initialRequest();
+        initialRequest();*/
+        customTbLl.setVisibility(View.GONE);
+        String[] titles = getResources().getStringArray(R.array.home_tab_title);
+        ArrayList<CustomTabEntity> titleList = new ArrayList<>();
+        for (int i = 0; i < titles.length; i++) {
+            titleList.add(new HomeTabEntity(titles[i],bgsSelected[i],bgsUnSelected[i]));
+        }
+        baseCtlBottom.setTabData(titleList);
+        //两位数
+        baseCtlBottom.showMsg(0, 55);
+        baseCtlBottom.setMsgMargin(0, -5, 5);
+
+        //三位数
+        baseCtlBottom.showMsg(1, 100);
+        baseCtlBottom.setMsgMargin(1, -5, 5);
+
     }
 
     public static void startSelf(Activity activity) {
@@ -106,4 +143,8 @@ public class HomeActivity extends AppCompatActivity implements MVP.View, MVP.Pre
 
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
 }

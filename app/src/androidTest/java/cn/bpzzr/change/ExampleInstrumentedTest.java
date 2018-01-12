@@ -7,6 +7,8 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import cn.bpzzr.change.util.StringUtil;
+
 import static org.junit.Assert.*;
 
 /**
@@ -22,5 +24,14 @@ public class ExampleInstrumentedTest {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         assertEquals("cn.bpzzr.change", appContext.getPackageName());
+        boolean spaceStr = StringUtil.isSpaceStr("     \n" +
+                "\n" +
+                "\n" +
+                "\t\t\n" +
+                "\t\n" +
+                "\t\n" +
+                "     \n" +
+                "          ");
+        assert spaceStr;
     }
 }

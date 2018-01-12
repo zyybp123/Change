@@ -2,4 +2,8 @@
     <string name="app_name">Change</string>
     <string name="splash_word">You can change the world!</string>
     <string name="next_step">下一步</string>
+
+    <string name="ctb_model_title">modelTitle</string>
+    <string name="ctb_model_tab">modelTab</string>
+    <string name="ctb_model_search">modelSearch</string>
 </resources>

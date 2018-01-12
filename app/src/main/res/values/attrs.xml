@@ -6,6 +6,7 @@
         <attr name="mRightImgResFirst" format="reference" />
         <attr name="mRightImgResSecond" format="reference" />
         <attr name="mTextColor" format="color" />
+        <attr name="mDivideLineColor" format="color" />
         <attr name="mHintColor" format="color" />
         <attr name="mTextSize" format="dimension" />
         <attr name="mBackgroundColor" format="color" />
@@ -16,5 +17,9 @@
         <attr name="mShowImgLeft" format="boolean" />
         <attr name="mShowImgRightF" format="boolean" />
         <attr name="mShowImgRightS" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomToolBar">
+        <attr name="ctbModel" format="string"/>
     </declare-styleable>
 </resources>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -17,39 +18,49 @@
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
         android:orientation="vertical">
-        <include layout="@layout/custom_edit_text"/>
+        <!--<include layout="@layout/custom_tool_bar"/>
 
-        <!--<android.support.v7.widget.AppCompatEditText
+        <android.support.v7.widget.AppCompatEditText
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="100dp"
-            />-->
+            />
+        <cn.bpzzr.change.ui.view.CustomEditText
+            android:id="@+id/ce_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mDivideLineColor="@color/white_a60"
+            app:mHintColor="@color/white_a60"
+            app:mLeftImgRes="@drawable/phone"
+            app:mShowImgLeft="true"
+            app:mShowImgRightF="true"
+            app:mShowImgRightS="true"
+            app:mTextColor="@color/colorWhite" />-->
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:text="@{user.firstName}"
-            android:textColor="@color/colorWhite"
-            android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
-            />
+            android:layout_marginStart="30dp"
+            android:text="@{user.firstName}"
+            android:textColor="@color/colorWhite" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="30dp"
+            android:layout_marginBottom="200dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
             android:background="@null"
             android:onClick="@{clickListener.onClick}"
             android:text="@{user.lastName}"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/colorWhite"
-            android:layout_marginBottom="200dp"/>
+            android:textColor="@color/colorWhite" />
     </LinearLayout>
 </layout>
 

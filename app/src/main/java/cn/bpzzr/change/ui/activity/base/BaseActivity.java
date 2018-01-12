@@ -1,24 +1,85 @@
 package cn.bpzzr.change.ui.activity.base;
 
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.flyco.tablayout.CommonTabLayout;
+import com.flyco.tablayout.SegmentTabLayout;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import cn.bpzzr.change.R;
 import cn.bpzzr.change.util.KeyBoardUtils;
+import cn.bpzzr.change.util.LogUtil;
+import cn.bpzzr.change.util.UiUtil;
 
 /**
  * Created by Administrator on 2018/1/4.
  * activity 基础类
  */
 
-public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener{
+public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
+    //屏幕的宽高
+    public int screenWidth;
+    public int screenHeight;
+    public String mLogTag;
+    @BindView(R.id.ctb_iv_left)
+    public ImageView ctbIvLeft;
+    @BindView(R.id.custom_tb_left_container)
+    public FrameLayout customTbLeftContainer;
+    @BindView(R.id.ctb_tv_title)
+    public TextView ctbTvTitle;
+    @BindView(R.id.ctb_st_tab)
+    public SegmentTabLayout ctbStTab;
+    @BindView(R.id.custom_tb_center_container)
+    public FrameLayout customTbCenterContainer;
+    @BindView(R.id.ctb_iv_right_f)
+    public ImageView ctbIvRightF;
+    @BindView(R.id.ctb_iv_right_s)
+    public ImageView ctbIvRightS;
+    @BindView(R.id.ctb_ll_right)
+    public LinearLayout ctbLlRight;
+    @BindView(R.id.ctb_pb_loading)
+    public ProgressBar ctbPbLoading;
+    @BindView(R.id.custom_tb_right_container)
+    public FrameLayout customTbRightContainer;
+    @BindView(R.id.base_ctl_bottom)
+    public CommonTabLayout baseCtlBottom;
+    @BindView(R.id.custom_tb_ll)
+    public LinearLayout customTbLl;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_base);
+        ButterKnife.bind(this);
+        init();
     }
+
+    private void init() {
+        Point totalSize = UiUtil.totalSize(this);
+        screenWidth = totalSize.x;
+        screenHeight = totalSize.y;
+        mLogTag = this.getClass().getSimpleName();
+        LogUtil.e(mLogTag, "screenWidth..." + screenWidth + "...screenHeight..." + screenHeight);
+        initView();
+    }
+
+    /**
+     * 由子类实现的初始化方法
+     */
+    public abstract void initView();
+
 
     /**
      * 清除editText的焦点

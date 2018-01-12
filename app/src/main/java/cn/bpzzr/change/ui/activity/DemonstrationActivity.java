@@ -1,12 +1,17 @@
 package cn.bpzzr.change.ui.activity;
 
 import android.databinding.DataBindingUtil;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.bean.UserBean;
@@ -14,21 +19,33 @@ import cn.bpzzr.change.databinding.ActivityDemonstrationBinding;
 import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.net.RetrofitTools;
+import cn.bpzzr.change.ui.view.CustomEditText;
 import cn.bpzzr.change.util.KeyBoardAdaptUtil;
 import cn.bpzzr.change.util.LogUtil;
 
 public class DemonstrationActivity extends AppCompatActivity implements MVP.Presenter,
         MVP.View, View.OnClickListener {
     ActivityDemonstrationBinding binding;
+    //@BindView(R.id.ce_test)
+    CustomEditText customEt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setContentView(R.layout.activity_demonstration);
+        //setContentView(R.layout.activity_demonstration);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_demonstration);
         binding.setClickListener(this);
         KeyBoardAdaptUtil.assistActivity(this);
         initialRequest();
+        //initView();
+    }
+
+    private void initView() {
+        //customEt = findViewById(R.id.ce_test);
+        customEt.getCustomEt().setInputType(InputType.TYPE_CLASS_PHONE);
+        customEt.getCustomEt().setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
+        customEt.clearContent(customEt.getCustomEtIvRightF());
+        customEt.visualTransform(customEt.getCustomEtIvRightS());
     }
 
     RetrofitTools instance;

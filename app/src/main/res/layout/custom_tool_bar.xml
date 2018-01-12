@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/custom_tb_ll"
+    android:layout_width="match_parent"
+    android:layout_height="44dp"
+    android:background="@color/colorPrimary"
+    android:baselineAligned="false"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:id="@+id/custom_tb_left_container"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ctb_iv_left"
+            android:layout_width="44dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/back" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/custom_tb_center_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/ctb_tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp" />
+
+        <com.flyco.tablayout.SegmentTabLayout
+            android:id="@+id/ctb_st_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginEnd="0.5dp"
+            app:tl_bar_color="@color/colorPrimary"
+            app:tl_indicator_color="@color/colorWhite"
+            app:tl_indicator_margin_bottom="0.5dp"
+            app:tl_indicator_margin_left="0.5dp"
+            app:tl_indicator_margin_top="0.5dp"
+            app:tl_tab_width="70dp"
+            app:tl_textSelectColor="@color/colorPrimary"
+            app:tl_textUnselectColor="@color/colorWhite"
+            app:tl_textsize="16sp" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/custom_tb_right_container"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/ctb_ll_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ctb_iv_right_f"
+                android:layout_width="44dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/share" />
+
+            <ImageView
+                android:id="@+id/ctb_iv_right_s"
+                android:layout_width="44dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:src="@drawable/follow" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/ctb_pb_loading"
+            android:layout_width="44dp"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+</LinearLayout>

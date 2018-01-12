@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
     android:orientation="vertical">
 
     <LinearLayout
@@ -13,14 +12,14 @@
 
         <ImageView
             android:id="@+id/custom_et_iv_left"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="@dimen/c_edit_height"
+            android:layout_height="@dimen/c_edit_height"
             android:src="@drawable/phone" />
 
         <EditText
             android:id="@+id/custom_et"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/c_edit_height"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:background="@null"
@@ -33,17 +32,16 @@
 
         <ImageView
             android:id="@+id/custom_et_iv_right_f"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="@dimen/c_edit_height"
+            android:layout_height="@dimen/c_edit_height"
             android:layout_gravity="end"
             android:src="@drawable/close"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/custom_et_iv_right_s"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="@dimen/c_edit_height"
+            android:layout_height="@dimen/c_edit_height"
             android:layout_gravity="end"
             android:src="@drawable/close"
             android:visibility="gone" />
@@ -52,7 +50,6 @@
     <View
         android:id="@+id/custom_et_v_bottom"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_gravity="bottom"
-        android:background="@color/white_a60" />
+        android:layout_height="@dimen/c_edit_divide_height"
+        android:layout_gravity="bottom" />
 </LinearLayout>
