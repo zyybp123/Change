@@ -2,23 +2,18 @@ package cn.bpzzr.change.ui.activity.guide;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.module.AppGlideModule;
 import com.flyco.tablayout.listener.CustomTabEntity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import cn.bpzzr.change.R;
@@ -69,9 +64,9 @@ public class HomeActivity extends BaseActivity implements MVP.View, MVP.Presente
 
         final List<BottomBarBean> bottomBarBeen = new ArrayList<>();
         for (int i = 0; i < titles.length; i++) {
-            bottomBarBeen.add(new BottomBarBean(bgsSelected[i], titles[i], i == 0));
+            bottomBarBeen.add(new BottomBarBean(bgsUnSelected[i],bgsSelected[i],titles[i],i == 0));
         }
-        BottomBar bottomBar = new BottomBar(this);
+        final BottomBar bottomBar = new BottomBar(this);
         bottomBar.setAdapter(new BottomBar.BottomBarAdapter() {
             @Override
             public int getTabCount() {
@@ -79,18 +74,20 @@ public class HomeActivity extends BaseActivity implements MVP.View, MVP.Presente
             }
 
             @Override
-            public View getTabView(BottomBar parent, int position) {
+            public View getTabView(BottomBar parent, final int position) {
                 final BottomBarTab barTab = new BottomBarTab(parent.getContext());
                 barTab.setBadgeHide();
                 barTab.setDotHide();
-                BottomBarBean bottomBarBean = bottomBarBeen.get(position);
-                barTab.setIconAndTitle(bottomBarBean.getIconRes(), bottomBarBean.getTitle(),
-                        R.color.color_999, R.color.colorPrimary);
-                barTab.setSelect(bottomBarBean.isSelected());
+                final BottomBarBean bottomBarBean = bottomBarBeen.get(position);
+                barTab.setStyle(bottomBarBean);
                 barTab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        for (int i = 0; i < bottomBarBeen.size(); i++) {
+                            BottomBarBean barBean = bottomBarBeen.get(i);
+                            barBean.setSelected(i == position);
+                            barTab.setStyle(barBean);
+                        }
                     }
                 });
                 return barTab;

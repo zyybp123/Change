@@ -3,6 +3,8 @@ package cn.bpzzr.change.bean;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 
+import cn.bpzzr.change.ui.view.BottomBarTab;
+
 /**
  * Created by Administrator on 2017/10/23.
  * 底部导航栏数据
@@ -17,10 +19,10 @@ public class BottomBarBean {
     private int iconResSelect;
     //文字未选中的颜色
     @ColorRes
-    private int textColorNormal;
+    private int textColorNormal = 0x999999;
     //文字选中的颜色
     @ColorRes
-    private int textColorSelect;
+    private int textColorSelect = 0x0078cc;
     //网络资源，未选中
     private String iconUrlNormal;
     //网络资源，选中
@@ -45,6 +47,15 @@ public class BottomBarBean {
     public BottomBarBean(int iconRes, String title, boolean isSelected) {
         this(iconRes, title);
         this.isSelected = isSelected;
+    }
+
+    public BottomBarBean(int iconResNormal, int iconResSelect, String title, boolean isSelected) {
+        this.iconResNormal = iconResNormal;
+        this.iconResSelect = iconResSelect;
+        this.title = title;
+        this.isSelected = isSelected;
+        this.loadTagImg = BottomBarTab.IMG_LOAD_LOCAL;
+        this.loadTagText = BottomBarTab.TEXT_LOAD_LOCAL;
     }
 
     public int getIconResNormal() {

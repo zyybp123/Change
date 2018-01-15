@@ -2,8 +2,6 @@ package cn.bpzzr.change.ui.view;
 
 import android.content.Context;
 import android.support.annotation.AttrRes;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -15,7 +13,6 @@ import android.widget.TextView;
 
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.bean.BottomBarBean;
-import cn.bpzzr.change.interf.LogTag;
 import cn.bpzzr.change.util.LogUtil;
 
 /**
@@ -23,7 +20,7 @@ import cn.bpzzr.change.util.LogUtil;
  * 底部导航栏标签
  */
 
-public class BottomBarTab extends FrameLayout {
+public class BottomBarTab extends FrameLayout implements View.OnClickListener{
     /**
      * 图片从网络加载
      */
@@ -61,19 +58,8 @@ public class BottomBarTab extends FrameLayout {
      */
     private TextView mBottomBadge;
     private FrameLayout mBottomIconFr;
-    /**
-     * 默认的文字选中的颜色
-     */
-    @ColorRes
-    private int mTitleColorSelected = R.color.colorPrimary;
-    /**
-     * 默认的文字未选中的颜色
-     */
-    @ColorRes
-    private int mTitleColorNormal = R.color.color_999;
-
-    @DrawableRes
-    int mBottomImage;      //图片资源,用状态选择器
+    boolean mIsSelected;
+    BottomBarBean mBottomBarBean;
 
     String logTag;
 
@@ -104,66 +90,55 @@ public class BottomBarTab extends FrameLayout {
         addView(mRootView);
     }
 
-    //设置图标,标题,标题颜色(静态资源)
-    public BottomBarTab setIconAndTitle(@DrawableRes int drawableRes, String title,
-                                        @ColorRes int colorNormal, @ColorRes int colorSelected) {
-        this.mBottomImage = drawableRes;
-        mBottomIcon.setImageResource(drawableRes);
-        mBottomTitle.setText(title);
-        this.mTitleColorNormal = colorNormal;
-        this.mTitleColorSelected = colorSelected;
-        return this;
-    }
 
     public BottomBarTab setStyle(BottomBarBean barBean) {
         if (barBean != null) {
+            mBottomBarBean = barBean;
             String loadTagImg = barBean.getLoadTagImg();
-            boolean selected = barBean.isSelected();
+            mIsSelected = barBean.isSelected();
             if (IMG_LOAD_FROM_NET.equals(loadTagImg)) {
                 //加载网络图片
                 String iconUrlNormal = barBean.getIconUrlNormal();
                 String iconUrlSelect = barBean.getIconUrlSelect();
-                setSelect(selected, iconUrlSelect, iconUrlNormal);
+                setSelect(mIsSelected, iconUrlSelect, iconUrlNormal);
             } else if (IMG_LOAD_LOCAL.equals(loadTagImg)) {
                 //加载本地图片
                 int iconResNormal = barBean.getIconResNormal();
                 int iconResSelect = barBean.getIconResSelect();
-                setSelect(selected, iconResSelect, iconResNormal);
+                setSelect(mIsSelected, iconResSelect, iconResNormal);
             } else {
                 //默认加载本地图片
                 int iconResNormal = barBean.getIconResNormal();
                 int iconResSelect = barBean.getIconResSelect();
-                setSelect(selected, iconResSelect, iconResNormal);
+                setSelect(mIsSelected, iconResSelect, iconResNormal);
             }
 
             String loadTagText = barBean.getLoadTagText();
+            String title = barBean.getTitle();
+            //默认的文字选中的颜色
+            int textColorNormal;
+            //默认的文字未选中的颜色
+            int textColorSelect;
             if (TEXT_LOAD_FROM_NET.equals(loadTagImg)) {
                 //加载网络文字
-
+                textColorNormal = barBean.getTextColorNormalNet();
+                textColorSelect = barBean.getTextColorSelectNet();
             } else if (TEXT_LOAD_LOCAL.equals(loadTagImg)) {
                 //加载本地文字
+                textColorNormal = barBean.getTextColorNormal();
+                textColorSelect = barBean.getTextColorSelect();
+
             } else {
                 //默认加载本地文字
+                textColorNormal = barBean.getTextColorNormal();
+                textColorSelect = barBean.getTextColorSelect();
             }
+            setSelect(mIsSelected, title, textColorSelect, textColorNormal);
 
         } else {
             LogUtil.e(logTag, "BottomBarBean is null");
         }
         return this;
-    }
-
-
-    //设置选中状态
-    public void setSelect(boolean isSelected) {
-        if (isSelected) {
-            //选中状态
-            mBottomIcon.setSelected(true);
-            mBottomTitle.setTextColor(getResources().getColor(mTitleColorSelected));
-        } else {
-            //未选中状态
-            mBottomIcon.setSelected(false);
-            mBottomTitle.setTextColor(getResources().getColor(mTitleColorNormal));
-        }
     }
 
     /**
@@ -204,21 +179,20 @@ public class BottomBarTab extends FrameLayout {
     /**
      * 设置文字选中状态
      *
-     * @param isSelected  选中状态
+     * @param isSelected    选中状态
      * @param selectedColor 选中的图片
      * @param normalColor   未选中的图片
      */
-    public void setSelect(boolean isSelected, String title, int selectedColor, String normalColor) {
+    public void setSelect(boolean isSelected, String title, int selectedColor, int normalColor) {
         mBottomTitle.setText(title);
         if (isSelected) {
             //选中状态
-            //mBottomTitle.setTextColor();
+            mBottomTitle.setTextColor(selectedColor);
         } else {
             //未选中状态
-            //ImageLoad.getInstance().glideSimple(mContext, mBottomIcon, normalUrl);
+            mBottomTitle.setTextColor(normalColor);
         }
     }
-
 
     //隐藏文字
     public void setTitleHide() {
@@ -238,11 +212,6 @@ public class BottomBarTab extends FrameLayout {
     //隐藏小图标
     public void setBadgeHide() {
         mBottomBadge.setVisibility(GONE);
-    }
-
-    //显示小图标
-    public void setBadgeShow() {
-        mBottomBadge.setVisibility(VISIBLE);
     }
 
     //设置小图标显示的数,小于等于零不显示,大于99显示···
@@ -281,4 +250,9 @@ public class BottomBarTab extends FrameLayout {
         return mBottomIconFr;
     }
 
+    @Override
+    public void onClick(View v) {
+        //点击事件的监听
+
+    }
 }
