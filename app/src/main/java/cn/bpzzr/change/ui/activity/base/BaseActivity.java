@@ -57,6 +57,10 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     public CommonTabLayout baseCtlBottom;
     @BindView(R.id.custom_tb_ll)
     public LinearLayout customTbLl;
+    @BindView(R.id.base_root_view)
+    public LinearLayout baseRootView;
+    @BindView(R.id.frame_layout_container)
+    public FrameLayout frameLayoutContainer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

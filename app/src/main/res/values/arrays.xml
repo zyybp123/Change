@@ -4,6 +4,16 @@
         <item>首页</item>
         <item>分类</item>
         <item>发现</item>
-        <item>我的</item>
+        <!--<item>我的</item>-->
+    </string-array>
+    <string-array name="home_tab_icon_press">
+        <item>R.drawable.maintab_stack_icon_press</item>
+        <item>R.drawable.maintab_category_icon_hover</item>
+        <item>R.drawable.maintab_city_icon_hover</item>
+    </string-array>
+    <string-array name="home_tab_icon_default">
+        <item>R.drawable.maintab_stack_icon</item>
+        <item>R.drawable.maintab_category_icon</item>
+        <item>R.drawable.maintab_city_icon</item>
     </string-array>
 </resources>

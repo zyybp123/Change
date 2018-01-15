@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/base_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <include layout="@layout/custom_tool_bar" />
 
     <FrameLayout
+        android:id="@+id/frame_layout_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        >
+        android:layout_weight="1">
 
     </FrameLayout>
 
@@ -21,13 +22,14 @@
         android:layout_height="54dp"
         android:background="#ffffff"
         app:tl_iconHeight="23dp"
-        app:tl_iconWidth="23dp"
-        app:tl_indicator_color="#2C97DE"
+        app:tl_iconMargin="0dp"
+        app:tl_iconWidth="16dp"
+        app:tl_indicator_color="@color/colorPrimary"
         app:tl_indicator_height="0dp"
-        app:tl_textSelectColor="#2C97DE"
-        app:tl_textUnselectColor="#66000000"
+        app:tl_textSelectColor="@color/colorPrimary"
+        app:tl_textUnselectColor="@color/black_a50"
         app:tl_textsize="12sp"
         app:tl_underline_color="#DDDDDD"
-        app:tl_underline_height="1dp"/>
+        app:tl_underline_height="0dp" />
 
 </LinearLayout>

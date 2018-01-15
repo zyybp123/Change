@@ -52,6 +52,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="cn.bpzzr.change.manager.GlideManager"
+            android:value="AppGlideModule" />
         <activity
             android:name=".ui.activity.guide.SplashActivity"
             android:theme="@style/AppTheme.FullScreen.Splash">

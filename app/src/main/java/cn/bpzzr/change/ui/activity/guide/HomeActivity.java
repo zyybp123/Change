@@ -2,13 +2,19 @@ package cn.bpzzr.change.ui.activity.guide;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.module.AppGlideModule;
 import com.flyco.tablayout.listener.CustomTabEntity;
 
 import java.util.ArrayList;
@@ -16,32 +22,35 @@ import java.util.Collections;
 import java.util.List;
 
 import cn.bpzzr.change.R;
+import cn.bpzzr.change.bean.BottomBarBean;
 import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.bean.HomeTabEntity;
 import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.manager.MyActivityManager;
 import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.net.RetrofitTools;
-import cn.bpzzr.change.ui.activity.DemonstrationActivity;
 import cn.bpzzr.change.ui.activity.base.BaseActivity;
+import cn.bpzzr.change.ui.view.BottomBar;
+import cn.bpzzr.change.ui.view.BottomBarTab;
 import cn.bpzzr.change.util.LogUtil;
 
 public class HomeActivity extends BaseActivity implements MVP.View, MVP.Presenter {
     public static final int [] bgsSelected = new int[]{
-            R.drawable.conversation,
-            R.drawable.conversation,
-            R.drawable.conversation,
+            R.drawable.maintab_stack_icon_press,
+            R.drawable.maintab_category_icon_hover,
+            R.drawable.maintab_city_icon_hover,
             R.drawable.conversation
     };
     public static final int [] bgsUnSelected = new int[]{
-            R.drawable.conversation,
-            R.drawable.conversation,
-            R.drawable.conversation,
+            R.drawable.maintab_stack_icon,
+            R.drawable.maintab_category_icon,
+            R.drawable.maintab_city_icon,
             R.drawable.conversation
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         //setContentView(R.layout.activity_home);
 
     }
@@ -56,20 +65,68 @@ public class HomeActivity extends BaseActivity implements MVP.View, MVP.Presente
             }
         });
         initialRequest();*/
+        final String[] titles = getResources().getStringArray(R.array.home_tab_title);
+
+        final List<BottomBarBean> bottomBarBeen = new ArrayList<>();
+        for (int i = 0; i < titles.length; i++) {
+            bottomBarBeen.add(new BottomBarBean(bgsSelected[i], titles[i], i == 0));
+        }
+        BottomBar bottomBar = new BottomBar(this);
+        bottomBar.setAdapter(new BottomBar.BottomBarAdapter() {
+            @Override
+            public int getTabCount() {
+                return bottomBarBeen.size();
+            }
+
+            @Override
+            public View getTabView(BottomBar parent, int position) {
+                final BottomBarTab barTab = new BottomBarTab(parent.getContext());
+                barTab.setBadgeHide();
+                barTab.setDotHide();
+                BottomBarBean bottomBarBean = bottomBarBeen.get(position);
+                barTab.setIconAndTitle(bottomBarBean.getIconRes(), bottomBarBean.getTitle(),
+                        R.color.color_999, R.color.colorPrimary);
+                barTab.setSelect(bottomBarBean.isSelected());
+                barTab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                return barTab;
+            }
+        });
+
+        frameLayoutContainer.addView(bottomBar,new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
+        ImageView imageView = new ImageView(this);
+        Glide.with(this)
+                .load("https://timgsa.baidu.com/timg" +
+                        "?image&quality=80&size=b9999_10000&sec=1516008734613&" +
+                        "di=977c205c3028c99615cff479eec5ca24&imgtype=0&src=http%3A%2F%2" +
+                        "Fuploads.xuexila.com%2Fallimg%2F1706%2F28-1F62G42237.jpg")
+                .into(imageView);
+        /*frameLayoutContainer.addView(imageView,new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));*/
+
         customTbLl.setVisibility(View.GONE);
-        String[] titles = getResources().getStringArray(R.array.home_tab_title);
+
         ArrayList<CustomTabEntity> titleList = new ArrayList<>();
         for (int i = 0; i < titles.length; i++) {
             titleList.add(new HomeTabEntity(titles[i],bgsSelected[i],bgsUnSelected[i]));
         }
+        //baseCtlBottom.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         baseCtlBottom.setTabData(titleList);
-        //两位数
+
+
+        /*//两位数
         baseCtlBottom.showMsg(0, 55);
         baseCtlBottom.setMsgMargin(0, -5, 5);
 
         //三位数
         baseCtlBottom.showMsg(1, 100);
-        baseCtlBottom.setMsgMargin(1, -5, 5);
+        baseCtlBottom.setMsgMargin(1, -5, 5);*/
 
     }
 
