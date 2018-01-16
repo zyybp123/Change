@@ -20,7 +20,7 @@ import cn.bpzzr.change.util.LogUtil;
  * 底部导航栏标签
  */
 
-public class BottomBarTab extends FrameLayout implements View.OnClickListener{
+public class BottomBarTab extends FrameLayout{
     /**
      * 图片从网络加载
      */
@@ -87,13 +87,26 @@ public class BottomBarTab extends FrameLayout implements View.OnClickListener{
         mBottomDot = mRootView.findViewById(R.id.bottom_tab_dot);
         mBottomBadge = mRootView.findViewById(R.id.bottom_tab_badge);
         mBottomIconFr = mRootView.findViewById(R.id.bottom_tab_icon_fr);
+        mIsSelected = isSelected();
         addView(mRootView);
     }
 
+    public void setMBottomBarBean(BottomBarBean mBottomBarBean) {
+        this.mBottomBarBean = mBottomBarBean;
+        //初始化
+        setStyle(mBottomBarBean);
+    }
 
-    public BottomBarTab setStyle(BottomBarBean barBean) {
+    @Override
+    public void setSelected(boolean selected) {
+        super.setSelected(selected);
+        //选中状态变更
+        mBottomBarBean.setSelected(selected);
+        setStyle(mBottomBarBean);
+    }
+
+    public void setStyle(BottomBarBean barBean) {
         if (barBean != null) {
-            mBottomBarBean = barBean;
             String loadTagImg = barBean.getLoadTagImg();
             mIsSelected = barBean.isSelected();
             if (IMG_LOAD_FROM_NET.equals(loadTagImg)) {
@@ -119,15 +132,14 @@ public class BottomBarTab extends FrameLayout implements View.OnClickListener{
             int textColorNormal;
             //默认的文字未选中的颜色
             int textColorSelect;
-            if (TEXT_LOAD_FROM_NET.equals(loadTagImg)) {
+            if (TEXT_LOAD_FROM_NET.equals(loadTagText)) {
                 //加载网络文字
                 textColorNormal = barBean.getTextColorNormalNet();
                 textColorSelect = barBean.getTextColorSelectNet();
-            } else if (TEXT_LOAD_LOCAL.equals(loadTagImg)) {
+            } else if (TEXT_LOAD_LOCAL.equals(loadTagText)) {
                 //加载本地文字
                 textColorNormal = barBean.getTextColorNormal();
                 textColorSelect = barBean.getTextColorSelect();
-
             } else {
                 //默认加载本地文字
                 textColorNormal = barBean.getTextColorNormal();
@@ -138,7 +150,6 @@ public class BottomBarTab extends FrameLayout implements View.OnClickListener{
         } else {
             LogUtil.e(logTag, "BottomBarBean is null");
         }
-        return this;
     }
 
     /**
@@ -250,9 +261,4 @@ public class BottomBarTab extends FrameLayout implements View.OnClickListener{
         return mBottomIconFr;
     }
 
-    @Override
-    public void onClick(View v) {
-        //点击事件的监听
-
-    }
 }

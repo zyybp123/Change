@@ -19,6 +19,8 @@ import com.flyco.tablayout.SegmentTabLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.bpzzr.change.R;
+import cn.bpzzr.change.mvp.MVP;
+import cn.bpzzr.change.ui.view.BottomBar;
 import cn.bpzzr.change.util.KeyBoardUtils;
 import cn.bpzzr.change.util.LogUtil;
 import cn.bpzzr.change.util.UiUtil;
@@ -28,7 +30,7 @@ import cn.bpzzr.change.util.UiUtil;
  * activity 基础类
  */
 
-public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
+public abstract class BaseActivity extends AppCompatActivity implements MVP.View, MVP.Presenter, View.OnClickListener {
     //屏幕的宽高
     public int screenWidth;
     public int screenHeight;
@@ -53,14 +55,14 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     public ProgressBar ctbPbLoading;
     @BindView(R.id.custom_tb_right_container)
     public FrameLayout customTbRightContainer;
-    @BindView(R.id.base_ctl_bottom)
-    public CommonTabLayout baseCtlBottom;
     @BindView(R.id.custom_tb_ll)
     public LinearLayout customTbLl;
     @BindView(R.id.base_root_view)
     public LinearLayout baseRootView;
     @BindView(R.id.frame_layout_container)
     public FrameLayout frameLayoutContainer;
+    @BindView(R.id.base_bottom_bar)
+    public BottomBar baseBottomBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,8 +78,11 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         screenHeight = totalSize.y;
         mLogTag = this.getClass().getSimpleName();
         LogUtil.e(mLogTag, "screenWidth..." + screenWidth + "...screenHeight..." + screenHeight);
+        //初始化请求
+        initialRequest();
         initView();
     }
+
 
     /**
      * 由子类实现的初始化方法

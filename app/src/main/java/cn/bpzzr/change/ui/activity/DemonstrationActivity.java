@@ -52,7 +52,7 @@ public class DemonstrationActivity extends AppCompatActivity implements MVP.Pres
 
     @Override
     public void initialRequest() {
-        instance = RetrofitTools.getInstance(ServerHost.BASE_URL);
+        instance = RetrofitTools.getInstance(ServerHost.BASE_URL_BOOK);
         //instance.getTest(this);
         //instance.getTest2(this);
         instance.getTest3(this);

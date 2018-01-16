@@ -18,11 +18,9 @@ public class BottomBarBean {
     @DrawableRes
     private int iconResSelect;
     //文字未选中的颜色
-    @ColorRes
-    private int textColorNormal = 0x999999;
+    private int textColorNormal = 0xff999999;
     //文字选中的颜色
-    @ColorRes
-    private int textColorSelect = 0x0078cc;
+    private int textColorSelect = 0xff0078cc;
     //网络资源，未选中
     private String iconUrlNormal;
     //网络资源，选中
@@ -152,5 +150,12 @@ public class BottomBarBean {
 
     public void setTextColorSelectNet(int textColorSelectNet) {
         this.textColorSelectNet = textColorSelectNet;
+    }
+
+    @Override
+    public String toString() {
+        return "BottomBarBean{" +
+                "title='" + title + '\'' +
+                '}';
     }
 }

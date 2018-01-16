@@ -115,18 +115,14 @@ public class RetrofitTools {
         return mInstance;
     }
 
-    public String getTest(MVP.View view) {
+    public void getTest(MVP.View view) {
         Call<DoubanTest> call = client.getTest();
-        HttpUrl url = call.request().url();
-        LogUtil.e("http url......." + url.toString());
-        call.enqueue(new MyCallback<>(new MyDataParseSimple<DoubanTest>(view, url.toString())));
-        return url.toString();
+        call.enqueue(new MyCallback<>(new MyDataParseSimple<DoubanTest>(view, ServerPath.DOU_BAN_BOOK)));
     }
 
-    public Call getTest2(MVP.View view) {
+    public void getTest2(MVP.View view) {
         Call<GankTest> call = client.getTest2();
-        call.enqueue(new MyCallback<>(new MyDataParseSimple<GankTest>(view, "getTest2")));
-        return call;
+        call.enqueue(new MyCallback<>(new MyDataParseSimple<GankTest>(view, ServerPath.GANK_ANDROID)));
     }
 
     public void getTest3(MVP.View mView) {
@@ -134,7 +130,7 @@ public class RetrofitTools {
                 //.subscribeOn(Schedulers.io())
                 //.observeOn(AndroidSchedulers.mainThread())
                 .compose(this.<GankTest>setThread())
-                .subscribe(new MyObserverSimple<GankTest>(mView, "getTest3"));
+                .subscribe(new MyObserverSimple<GankTest>(mView, ServerPath.GANK_ANDROID));
 
     }
 
@@ -148,8 +144,9 @@ public class RetrofitTools {
         call.enqueue(new MyCallback<>(new MyDataParse<List<BaseBean>>(mView, "")));
         return call;
     }
-    public <T> ObservableTransformer<T,T> setThread(){
-        return new ObservableTransformer<T,T>() {
+
+    public <T> ObservableTransformer<T, T> setThread() {
+        return new ObservableTransformer<T, T>() {
             @Override
             public ObservableSource<T> apply(Observable<T> upstream) {
                 return upstream.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());

@@ -34,15 +34,15 @@ public interface RetrofitClient {
     String HEADER_ONLINE = SomeKeys.URL_FLAG + ":" + SomeKeys.ONLINE_DATA;
 
     @Headers({HEADER_VIDEO})
-    @GET(ServerHost.TEST_PRE)
+    @GET(ServerPath.DOU_BAN_BOOK)
     Call<DoubanTest> getTest();
 
     @Headers({HEADER_BOOK})
-    @GET(ServerHost.TEST_PRE_2)
+    @GET(ServerPath.GANK_ANDROID)
     Call<GankTest> getTest2();
 
     @Headers({HEADER_BOOK})
-    @GET(ServerHost.TEST_PRE_2)
+    @GET(ServerPath.GANK_ANDROID)
     Observable<GankTest> getTest3();
 
     /**
