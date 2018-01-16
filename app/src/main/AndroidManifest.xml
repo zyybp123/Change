@@ -55,6 +55,7 @@
         <meta-data
             android:name="cn.bpzzr.change.manager.GlideManager"
             android:value="AppGlideModule" />
+
         <activity
             android:name=".ui.activity.guide.SplashActivity"
             android:theme="@style/AppTheme.FullScreen.Splash">
@@ -72,7 +73,8 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.DemonstrationActivity"></activity>
+        <activity android:name=".ui.activity.DemonstrationActivity" />
+        <activity android:name=".ui.activity.DemoActivity"></activity>
     </application>
 
 </manifest>

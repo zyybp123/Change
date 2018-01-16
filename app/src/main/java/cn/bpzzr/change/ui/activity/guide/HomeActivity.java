@@ -5,13 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.flyco.tablayout.listener.CustomTabEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +13,8 @@ import java.util.List;
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.bean.BottomBarBean;
 import cn.bpzzr.change.bean.GankTest;
-import cn.bpzzr.change.bean.HomeTabEntity;
 import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.manager.MyActivityManager;
-import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.net.RetrofitTools;
 import cn.bpzzr.change.net.ServerPath;
 import cn.bpzzr.change.ui.activity.base.BaseActivity;
@@ -31,12 +23,12 @@ import cn.bpzzr.change.ui.view.BottomBarTab;
 import cn.bpzzr.change.util.LogUtil;
 
 public class HomeActivity extends BaseActivity {
-    public static final int[] bgsSelected = new int[]{
+    public static final int[] BGS_SELECTED = new int[]{
             R.drawable.maintab_stack_icon_press,
             R.drawable.maintab_category_icon_hover,
             R.drawable.maintab_city_icon_hover
     };
-    public static final int[] bgsUnSelected = new int[]{
+    public static final int[] BGS_UN_SELECTED = new int[]{
             R.drawable.maintab_stack_icon,
             R.drawable.maintab_category_icon,
             R.drawable.maintab_city_icon
@@ -52,7 +44,7 @@ public class HomeActivity extends BaseActivity {
         String[] titles = getResources().getStringArray(R.array.home_tab_title);
         final List<BottomBarBean> bottomBarBeen = new ArrayList<>();
         for (int i = 0; i < titles.length; i++) {
-            bottomBarBeen.add(new BottomBarBean(bgsUnSelected[i], bgsSelected[i], titles[i], i == 0));
+            bottomBarBeen.add(new BottomBarBean(BGS_UN_SELECTED[i], BGS_SELECTED[i], titles[i], i == 0));
         }
 
         baseBottomBar.setAdapter(new BottomBar.BottomBarAdapter() {

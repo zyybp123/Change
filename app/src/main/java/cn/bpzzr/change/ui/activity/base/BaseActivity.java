@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.SegmentTabLayout;
 
 import butterknife.BindView;
@@ -128,7 +127,9 @@ public abstract class BaseActivity extends AppCompatActivity implements MVP.View
 
     //是否触摸在指定view上面,对某个控件过滤
     public boolean isTouchView(View[] views, MotionEvent ev) {
-        if (views == null || views.length == 0) return false;
+        if (views == null || views.length == 0) {
+            return false;
+        }
         int[] location = new int[2];
         for (View view : views) {
             view.getLocationOnScreen(location);
@@ -146,9 +147,12 @@ public abstract class BaseActivity extends AppCompatActivity implements MVP.View
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            if (isTouchView(filterViewByIds(), ev)) return super.dispatchTouchEvent(ev);
-            if (hideSoftByEditViewIds() == null || hideSoftByEditViewIds().length == 0)
+            if (isTouchView(filterViewByIds(), ev)) {
                 return super.dispatchTouchEvent(ev);
+            }
+            if (hideSoftByEditViewIds() == null || hideSoftByEditViewIds().length == 0) {
+                return super.dispatchTouchEvent(ev);
+            }
             View v = getCurrentFocus();
             if (isFocusEditText(v, hideSoftByEditViewIds())) {
                 //隐藏键盘
