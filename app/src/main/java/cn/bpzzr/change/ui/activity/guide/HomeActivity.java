@@ -20,6 +20,7 @@ import cn.bpzzr.change.net.ServerPath;
 import cn.bpzzr.change.ui.activity.base.BaseActivity;
 import cn.bpzzr.change.ui.view.BottomBar;
 import cn.bpzzr.change.ui.view.BottomBarTab;
+import cn.bpzzr.change.ui.view.StateLayout;
 import cn.bpzzr.change.util.LogUtil;
 
 public class HomeActivity extends BaseActivity {
@@ -72,6 +73,12 @@ public class HomeActivity extends BaseActivity {
 
         });
         customTbLl.setVisibility(View.GONE);
+
+        StateLayout stateLayout = new StateLayout(this);
+        frameLayoutContainer.addView(stateLayout);
+        //stateLayout.showLoading();
+        //stateLayout.showEmpty(R.drawable.jc_error_normal,"暂无相关数据！");
+        stateLayout.showSuccessView(R.layout.base_fragment_refresh);
     }
 
     public class MyBottomBarAdapter extends BottomBar.BottomBarAdapter {

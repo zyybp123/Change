@@ -6,4 +6,7 @@
     <string name="ctb_model_title">modelTitle</string>
     <string name="ctb_model_tab">modelTab</string>
     <string name="ctb_model_search">modelSearch</string>
+    <string name="state_on_loading">加载中…</string>
+    <string name="state_on_failure">加载失败…</string>
+    <string name="state_on_empty">数据为空…</string>
 </resources>

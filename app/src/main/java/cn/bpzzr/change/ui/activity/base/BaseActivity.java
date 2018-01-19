@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.flyco.tablayout.SegmentTabLayout;
+import com.trello.rxlifecycle2.components.RxActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +30,7 @@ import cn.bpzzr.change.util.UiUtil;
  * activity 基础类
  */
 
-public abstract class BaseActivity extends AppCompatActivity implements MVP.View, MVP.Presenter, View.OnClickListener {
+public abstract class BaseActivity extends RxActivity implements MVP.View, MVP.Presenter, View.OnClickListener {
     //屏幕的宽高
     public int screenWidth;
     public int screenHeight;
