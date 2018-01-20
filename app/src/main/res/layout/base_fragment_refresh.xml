@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include layout="@layout/custom_tool_bar" />
 
-    <in.srain.cube.views.ptr.PtrClassicFrameLayout xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/rotate_header_list_view_frame"
+    <in.srain.cube.views.ptr.PtrClassicFrameLayout
+        android:id="@+id/m_ptr_classic_frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_a30"
@@ -18,10 +20,9 @@
         cube_ptr:ptr_resistance="1.7">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/my_rv"
+            android:id="@+id/m_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
 
         </android.support.v7.widget.RecyclerView>
     </in.srain.cube.views.ptr.PtrClassicFrameLayout>

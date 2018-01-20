@@ -3,6 +3,7 @@ package cn.bpzzr.change.ui.activity.guide;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -11,13 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.bpzzr.change.R;
+import cn.bpzzr.change.adapter.MyFragmentPagerAdapter;
+import cn.bpzzr.change.bean.BaseFragmentPagerBean;
 import cn.bpzzr.change.bean.BottomBarBean;
 import cn.bpzzr.change.bean.GankTest;
-import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.manager.MyActivityManager;
 import cn.bpzzr.change.net.RetrofitTools;
 import cn.bpzzr.change.net.ServerPath;
 import cn.bpzzr.change.ui.activity.base.BaseActivity;
+import cn.bpzzr.change.ui.fragment.Temp;
 import cn.bpzzr.change.ui.view.BottomBar;
 import cn.bpzzr.change.ui.view.BottomBarTab;
 import cn.bpzzr.change.ui.view.StateLayout;
@@ -76,9 +79,15 @@ public class HomeActivity extends BaseActivity {
 
         StateLayout stateLayout = new StateLayout(this);
         frameLayoutContainer.addView(stateLayout);
-        //stateLayout.showLoading();
-        //stateLayout.showEmpty(R.drawable.jc_error_normal,"暂无相关数据！");
-        stateLayout.showSuccessView(R.layout.base_fragment_refresh);
+
+        List<BaseFragmentPagerBean<String>> fragmentList = new ArrayList<>();
+        fragmentList.add(new BaseFragmentPagerBean<>(new Temp(),"1"));
+        fragmentList.add(new BaseFragmentPagerBean<>(new Temp(),"2"));
+        fragmentList.add(new BaseFragmentPagerBean<>(new Temp(),"3"));
+        stateLayout.setSuccessView(R.layout.base_view_pager);
+        ViewPager baseViewPAger = stateLayout.mSuccessView.findViewById(R.id.base_view_pager);
+        baseViewPAger.setAdapter(
+                new MyFragmentPagerAdapter<>(getFragmentManager(),fragmentList));
     }
 
     public class MyBottomBarAdapter extends BottomBar.BottomBarAdapter {
@@ -104,6 +113,8 @@ public class HomeActivity extends BaseActivity {
             //getSupportFragmentManager();
         }
     }
+
+
 
     public static void startSelf(Activity activity) {
         Intent intent = new Intent(activity, HomeActivity.class);
@@ -134,10 +145,10 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void initialRequest() {
-        instance = RetrofitTools.getInstance(ServerHost.BASE_URL_BOOK);
+        /*instance = RetrofitTools.getInstance(ServerHost.BASE_URL_BOOK);
         instance.getTest(this);
         instance.getTest2(this);
-        instance.getTest3(this);
+        instance.getTest3(this);*/
     }
 
     @Override

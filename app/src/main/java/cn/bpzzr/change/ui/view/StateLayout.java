@@ -71,6 +71,7 @@ public class StateLayout extends FrameLayout {
         mStatePbLoading.setVisibility(VISIBLE);
         mStateIv.setVisibility(GONE);
         mStateTv.setText(mDefaultTipsLoading);
+        hideSuccessView();
     }
 
     /**
@@ -97,6 +98,7 @@ public class StateLayout extends FrameLayout {
     public void showFailure() {
         //隐藏进度条，显示图片
         showUnSuccess(false);
+        hideSuccessView();
     }
 
     /**
@@ -117,6 +119,7 @@ public class StateLayout extends FrameLayout {
     public void showEmpty() {
         //隐藏进度条，显示图片
         showUnSuccess(true);
+        hideSuccessView();
     }
 
     /**
@@ -136,11 +139,30 @@ public class StateLayout extends FrameLayout {
      *
      * @param successLayoutId 数据界面的布局id
      */
-    public void showSuccessView(@LayoutRes int successLayoutId) {
+    public void setSuccessView(@LayoutRes int successLayoutId) {
         mStateLlUnSuccess.setVisibility(GONE);
         if (mSuccessView == null) {
             mSuccessView = View.inflate(getContext(), successLayoutId, null);
         }
         addView(mSuccessView);
+    }
+
+    /**
+     * 展示加载成功的布局
+     */
+    public void showSuccessView() {
+        mStateLlUnSuccess.setVisibility(GONE);
+        if (mSuccessView != null) {
+            mSuccessView.setVisibility(VISIBLE);
+        }
+    }
+
+    /**
+     * 隐藏成功层
+     */
+    public void hideSuccessView() {
+        if (mSuccessView != null) {
+            mSuccessView.setVisibility(GONE);
+        }
     }
 }

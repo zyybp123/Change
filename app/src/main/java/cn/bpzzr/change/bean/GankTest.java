@@ -3,7 +3,9 @@ package cn.bpzzr.change.bean;
 import java.util.List;
 
 /**
- * Created by Administrator on 2018/1/5.
+ * Created by Administrator
+ *  on 2018/1/5 11:18.
+ *
  */
 
 public class GankTest {
