@@ -1,25 +1,16 @@
 package cn.bpzzr.change.ui.fragment;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import com.trello.rxlifecycle2.components.RxFragment;
+import com.flyco.tablayout.SegmentTabLayout;
 
-import java.util.List;
-
+import butterknife.BindView;
 import cn.bpzzr.change.R;
-import cn.bpzzr.change.ui.view.StateLayout;
-import cn.bpzzr.change.util.LogUtil;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 
 /**
@@ -30,96 +21,42 @@ import in.srain.cube.views.ptr.PtrClassicFrameLayout;
  * @author ZYY
  */
 
-public class BaseFragmentRefreshPage extends RxFragment {
-    public String mFragmentTag = this.getClass().getSimpleName();
-    //屏幕的宽高
-    public int screenWidth;
-    public int screenHeight;
-    //recycler view
-    public RecyclerView mRecyclerView;
-    //下拉刷新的
-    public PtrClassicFrameLayout mPtrClassicFrameLayout;
+public abstract class BaseFragmentRefreshPage extends BaseFragment {
+    @BindView(R.id.ctb_iv_left)
+    ImageView ctbIvLeft;
+    @BindView(R.id.custom_tb_left_container)
+    FrameLayout customTbLeftContainer;
+    @BindView(R.id.ctb_tv_title)
+    TextView ctbTvTitle;
+    @BindView(R.id.ctb_st_tab)
+    SegmentTabLayout ctbStTab;
+    @BindView(R.id.custom_tb_center_container)
+    FrameLayout customTbCenterContainer;
+    @BindView(R.id.ctb_iv_right_f)
+    ImageView ctbIvRightF;
+    @BindView(R.id.ctb_iv_right_s)
+    ImageView ctbIvRightS;
+    @BindView(R.id.ctb_ll_right)
+    LinearLayout ctbLlRight;
+    @BindView(R.id.ctb_pb_loading)
+    ProgressBar ctbPbLoading;
+    @BindView(R.id.custom_tb_right_container)
+    FrameLayout customTbRightContainer;
+    @BindView(R.id.custom_tb_ll)
+    LinearLayout customTbLl;
+    @BindView(R.id.m_recycler_view)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.m_ptr_classic_frame_layout)
+    PtrClassicFrameLayout mPtrClassicFrameLayout;
 
-    private Handler mUIHandler = new Handler(Looper.getMainLooper());
-    private List<String> mPhotos;
-    private RecyclerView.Adapter adapter = null;
-    private StateLayout mStateLayout;
-
-    /**
-     * 最早调用
-     *
-     * @param isVisibleToUser 对用户是否可见
-     */
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        LogUtil.e(mFragmentTag, " setUserVisibleHint() --> isVisibleToUser = " + isVisibleToUser);
-        //对用户可见时，又不需要更新ui时的操作可在此处进行
-        super.setUserVisibleHint(isVisibleToUser);
+    public int getRootViewLayoutId() {
+        return R.layout.base_fragment_refresh;
     }
-
+    public abstract boolean isNeedHeader();
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        Log.d(mFragmentTag, " onCreate() --> isVisibleToUser = " + getUserVisibleHint());
-        DisplayMetrics dm = getActivity().getResources().getDisplayMetrics();
-        screenWidth = dm.widthPixels;
-        screenHeight = dm.heightPixels;
-        super.onCreate(savedInstanceState);
-    }
+    public void initView() {
+        //
 
-    /**
-     * 创建view，加载布局
-     *
-     * @param inflater           布局加载器
-     * @param container          容器
-     * @param savedInstanceState 保存fragment的状态
-     */
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        LogUtil.e(mFragmentTag, " onCreateView()");
-        if (mStateLayout == null) {
-            //创建状态层并添加基础布局
-            mStateLayout = new StateLayout(container.getContext());
-            mStateLayout.setSuccessView(R.layout.base_fragment_refresh);
-        }
-        return mStateLayout;
-    }
-
-    /**
-     * 界面布局成功加载后
-     *
-     * @param view               根布局
-     * @param savedInstanceState 保存fragment的状态
-     */
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        LogUtil.e(mFragmentTag, " onViewCreated()");
-        mRecyclerView = view.findViewById(R.id.m_recycler_view);
-        mPtrClassicFrameLayout = view.findViewById(R.id.m_ptr_classic_frame_layout);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        LogUtil.e(mFragmentTag, " onActivityCreated()");
-
-        //adapter = new MyAdapter(null, getActivity());
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
-        mRecyclerView.setAdapter(adapter);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        LogUtil.e(mFragmentTag, " onStart()");
-
-    }
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        //unbinder.unbind();
     }
 }

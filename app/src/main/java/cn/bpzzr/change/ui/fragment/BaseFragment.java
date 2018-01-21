@@ -16,32 +16,40 @@ import butterknife.Unbinder;
 import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.net.RetrofitTools;
+import cn.bpzzr.change.ui.view.StateLayout;
 import cn.bpzzr.change.util.LogUtil;
 
 /**
  * Created by ZYY
  * on 2018/1/16 21:36.
+ * Fragment的基类，可以控制是否进行懒加载
  *
  * @author ZYY
  */
 
-public abstract class BaseFragment extends RxFragment implements MVP.Presenter, MVP.View {
+public abstract class BaseFragment extends RxFragment implements MVP.Presenter, MVP.View, StateLayout.RetryListener {
     public String mFragmentTag = this.getClass().getSimpleName();
     //屏幕的宽高
     public int screenWidth;
     public int screenHeight;
-    //根布局
-    public View mRootView;
+    /**
+     * 以状态层布局作为根布局
+     */
+    public StateLayout mStateLayout;
     public Unbinder unbinder;
     /**
      * 是否需要懒加载,默认不需要，false，不需要
      */
     public boolean isNeedLazy;
     /**
+     * 视图是否已经初初始化
+     */
+    protected boolean isInit = false;
+    protected boolean isLoad = false;
+    /**
      * 网络请求器
      */
     public RetrofitTools retrofitTools = RetrofitTools.getInstance(ServerHost.BASE_URL_BOOK);
-    private VisibleChangeListener visibleChangeListener;
 
     /**
      * 最早调用
@@ -53,8 +61,8 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
         super.setUserVisibleHint(isVisibleToUser);
         LogUtil.e(mFragmentTag + getTag(), " setUserVisibleHint() --> isVisibleToUser = " + isVisibleToUser);
         //对用户可见时，又不需要更新ui时的操作可在此处进行
-        if (visibleChangeListener != null){
-            visibleChangeListener.onVisibleChange(isVisibleToUser);
+        if (isNeedLazy) {
+            isCanLoadData();
         }
     }
 
@@ -85,12 +93,22 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LogUtil.e(mFragmentTag + getTag(), " onCreateView()");
-        if (mRootView == null) {
-            //创建状态层并添加基础布局,butterKnife绑定控件
-            mRootView = inflater.inflate(getRootViewLayoutId(), container, false);
+        //创建状态层并添加基础布局,butterKnife绑定控件
+        if (mStateLayout == null) {
+            //创建状态层并添加基础布局
+            mStateLayout = new StateLayout(container.getContext());
+            mStateLayout.setSuccessView(getRootViewLayoutId());
         }
-        unbinder = ButterKnife.bind(this, mRootView);
-        return mRootView;
+        mStateLayout.showLoading();
+        mStateLayout.setRetryListener(this);
+        return mStateLayout;
+    }
+
+    /**
+     * 如果需要停止请求，子类可以覆盖此方法处理
+     */
+    public void stopRequest() {
+
     }
 
     /**
@@ -111,7 +129,33 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         LogUtil.e(mFragmentTag + getTag(), " onViewCreated()");
+        LogUtil.e(mFragmentTag + getTag(), "" + mStateLayout.mSuccessView);
+        unbinder = ButterKnife.bind(this, view);
+        isInit = true;
+        //初始化完成的时候去加载数据
+        isCanLoadData();
         initView();
+    }
+
+    /**
+     * 能否加载数据
+     */
+    private void isCanLoadData() {
+        if (!isInit) {
+            return;
+        }
+        if (isNeedLazy) {
+            if (getUserVisibleHint() && !isLoad) {
+                initialRequest();
+                isLoad = true;
+            } else {
+                if (isLoad) {
+                    stopRequest();
+                }
+            }
+        } else {
+            initialRequest();
+        }
     }
 
     /**
@@ -129,27 +173,21 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
     public void onStart() {
         super.onStart();
         LogUtil.e(mFragmentTag + getTag(), " onStart()");
-        LogUtil.e(mFragmentTag + getTag(),"getUserVisibleHint..." + getUserVisibleHint());
-        visibleChangeListener = new VisibleChangeListener() {
-            @Override
-            public void onVisibleChange(boolean isVisibleToUser) {
-                if (isNeedLazy) {
-                    if (isVisibleToUser) {
-                        //视图可见时再请求数据
-                        initialRequest();
-                    }
-                } else {
-                    initialRequest();
-                }
-            }
-        };
+        LogUtil.e(mFragmentTag + getTag(), "getUserVisibleHint..." + getUserVisibleHint());
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        LogUtil.e(mFragmentTag + getTag(), " onResume()");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        isInit = false;
+        isLoad = false;
         LogUtil.e(mFragmentTag + getTag(), "onDestroyView()");
     }
 
@@ -159,7 +197,12 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
         LogUtil.e(mFragmentTag + getTag(), "onDestroy()");
     }
 
-    public interface VisibleChangeListener{
-        void onVisibleChange(boolean isVisibleToUser);
+    /**
+     * 点击重新加载的点击事件在此处理，由子类选择实现
+     * 默认点击重新加载
+     */
+    @Override
+    public void onRetry() {
+        initialRequest();
     }
 }

@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import cn.bpzzr.change.R;
+import cn.bpzzr.change.util.LogUtil;
 
 /**
  * Created by Administrator on 2018/1/19.
@@ -20,7 +21,7 @@ import cn.bpzzr.change.R;
  */
 
 public class StateLayout extends FrameLayout {
-
+    public String stateTag = getClass().getSimpleName();
     //根布局
     public View mRootView;
     //进度条
@@ -36,6 +37,11 @@ public class StateLayout extends FrameLayout {
     private String mDefaultTipsEmpty;
     //成功的布局
     public View mSuccessView;
+    /**
+     * 当前是否显示的是成功的布局
+     */
+    private boolean isSuccessShow;
+    private RetryListener retryListener;
 
     public StateLayout(Context context) {
         this(context, null);
@@ -61,12 +67,34 @@ public class StateLayout extends FrameLayout {
         mDefaultTipsLoading = getResources().getString(R.string.state_on_loading);
         mDefaultTipsFailure = getResources().getString(R.string.state_on_failure);
         mDefaultTipsEmpty = getResources().getString(R.string.state_on_empty);
+        //设置点击事件
+        mStateLlUnSuccess.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isSuccessShow) {
+                    //为非成功布局则设置点击事件的回调
+                    if (retryListener != null) {
+                        retryListener.onRetry();
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 设置点击重新加载或别的操作的监听器
+     *
+     * @param retryListener 监听器
+     */
+    public void setRetryListener(RetryListener retryListener) {
+        this.retryListener = retryListener;
     }
 
     /**
      * 展示加载中状态
      */
     public void showLoading() {
+        LogUtil.e(stateTag, "on loading......");
         //隐藏图片，显示进度条
         mStatePbLoading.setVisibility(VISIBLE);
         mStateIv.setVisibility(GONE);
@@ -86,6 +114,7 @@ public class StateLayout extends FrameLayout {
     }
 
     private void showUnSuccess(boolean isEmpty) {
+        LogUtil.e(stateTag, "on unSuccess......isEmpty..." + isEmpty);
         //隐藏进度条，显示图片
         mStatePbLoading.setVisibility(GONE);
         mStateIv.setVisibility(VISIBLE);
@@ -135,12 +164,11 @@ public class StateLayout extends FrameLayout {
     }
 
     /**
-     * 展示加载成功的布局
+     * 添加加载成功的布局
      *
      * @param successLayoutId 数据界面的布局id
      */
     public void setSuccessView(@LayoutRes int successLayoutId) {
-        mStateLlUnSuccess.setVisibility(GONE);
         if (mSuccessView == null) {
             mSuccessView = View.inflate(getContext(), successLayoutId, null);
         }
@@ -151,8 +179,10 @@ public class StateLayout extends FrameLayout {
      * 展示加载成功的布局
      */
     public void showSuccessView() {
+        LogUtil.e(stateTag, "on success......");
         mStateLlUnSuccess.setVisibility(GONE);
         if (mSuccessView != null) {
+            isSuccessShow = true;
             mSuccessView.setVisibility(VISIBLE);
         }
     }
@@ -161,8 +191,13 @@ public class StateLayout extends FrameLayout {
      * 隐藏成功层
      */
     public void hideSuccessView() {
+        isSuccessShow = false;
         if (mSuccessView != null) {
             mSuccessView.setVisibility(GONE);
         }
+    }
+
+    public interface RetryListener {
+        void onRetry();
     }
 }
