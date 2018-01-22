@@ -3,17 +3,13 @@ package cn.bpzzr.change.ui.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.TextView;
 
 import java.util.List;
 
-import butterknife.BindView;
-import cn.bpzzr.change.R;
 import cn.bpzzr.change.adapter.Adapter2Test;
 import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.net.ServerPath;
 import cn.bpzzr.change.util.LogUtil;
-import cn.bpzzr.change.util.StringUtil;
 
 /**
  * Created by ZYY
@@ -48,6 +44,10 @@ public class Temp extends BaseFragmentRefreshPage {
 
     @Override
     public void initialRequest() {
+        getRequest();
+    }
+
+    private void getRequest() {
         retrofitTools.getTest3(this);
     }
 
@@ -58,7 +58,8 @@ public class Temp extends BaseFragmentRefreshPage {
 
     @Override
     public void onRequestStart(String tag) {
-        showLoading();
+        //showLoading();
+        autoRefresh();
     }
 
     @Override
@@ -90,6 +91,7 @@ public class Temp extends BaseFragmentRefreshPage {
             }
         }
     }
+
 
     @Override
     public void onEmpty(String tag) {

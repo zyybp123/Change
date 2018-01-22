@@ -1,7 +1,6 @@
 package cn.bpzzr.change.ui.fragment;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -9,9 +8,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,20 +17,14 @@ import android.widget.TextView;
 
 import com.flyco.tablayout.SegmentTabLayout;
 
-import org.jetbrains.annotations.Contract;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.ui.view.StateLayout;
 import cn.bpzzr.change.util.LogUtil;
-import cn.bpzzr.change.util.UiUtil;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
-import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
 
@@ -167,8 +158,12 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment {
      * 做下拉刷新的操作
      */
     public void doRefresh() {
-        initialRequest();
+        getRequest();
         onRefreshing();
+    }
+
+    private void getRequest() {
+
     }
 
     /**
@@ -267,6 +262,7 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment {
      * 自动刷新
      */
     public void autoRefresh() {
+        onRefreshing();
         mPtrClassicFrameLayout.autoRefresh();
     }
 
