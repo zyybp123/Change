@@ -81,17 +81,18 @@ public class HomeActivity extends BaseActivity {
         frameLayoutContainer.addView(stateLayout);
 
         List<BaseFragmentPagerBean<String>> fragmentList = new ArrayList<>();
-        fragmentList.add(new BaseFragmentPagerBean<>(new Temp(),"1"));
-        fragmentList.add(new BaseFragmentPagerBean<>(new Temp(),"2"));
+        fragmentList.add(new BaseFragmentPagerBean<>(Temp.newInstance("1"),"1"));
+        fragmentList.add(new BaseFragmentPagerBean<>(Temp.newInstance("2"),"2"));
         fragmentList.add(new BaseFragmentPagerBean<>(new Temp(),"3"));
         fragmentList.add(new BaseFragmentPagerBean<>(new Temp(),"4"));
-        fragmentList.add(new BaseFragmentPagerBean<>(new Temp(),"5"));
+        fragmentList.add(new BaseFragmentPagerBean<>(Temp.newInstance("5"),"5"));
         fragmentList.add(new BaseFragmentPagerBean<>(new Temp(),"6"));
         fragmentList.add(new BaseFragmentPagerBean<>(new Temp(),"7"));
         stateLayout.setSuccessView(R.layout.base_view_pager);
         ViewPager baseViewPAger = stateLayout.mSuccessView.findViewById(R.id.base_view_pager);
         baseViewPAger.setAdapter(
                 new MyFragmentPagerAdapter<>(getFragmentManager(),fragmentList));
+        //baseViewPAger.setOffscreenPageLimit(7);
     }
 
     public class MyBottomBarAdapter extends BottomBar.BottomBarAdapter {

@@ -2,6 +2,8 @@ package cn.bpzzr.change.util;
 
 import android.util.Log;
 
+import in.srain.cube.views.ptr.PtrFrameLayout;
+
 /**
  * Created by ZYY
  * on 2016/11/14 20:58.
@@ -15,6 +17,10 @@ public class LogUtil {
         if (isShowLog) {
             Log.d(tag, msg);
         }
+    }
+
+    public static void setPtrLog() {
+        PtrFrameLayout.DEBUG = isShowLog;
     }
 
     /**

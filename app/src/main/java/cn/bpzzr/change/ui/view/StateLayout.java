@@ -172,7 +172,11 @@ public class StateLayout extends FrameLayout {
         if (mSuccessView == null) {
             mSuccessView = View.inflate(getContext(), successLayoutId, null);
         }
-        addView(mSuccessView);
+        if (getChildCount() == 1) {
+            addView(mSuccessView);
+        } else {
+            LogUtil.e(stateTag, "child count more than 1");
+        }
     }
 
     /**

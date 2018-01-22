@@ -1,10 +1,10 @@
 package cn.bpzzr.change.ui.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +14,7 @@ import com.trello.rxlifecycle2.components.RxFragment;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.bpzzr.change.interf.ServerHost;
+import cn.bpzzr.change.manager.BroadcastManager;
 import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.net.RetrofitTools;
 import cn.bpzzr.change.ui.view.StateLayout;
@@ -29,13 +30,15 @@ import cn.bpzzr.change.util.LogUtil;
 
 public abstract class BaseFragment extends RxFragment implements MVP.Presenter, MVP.View, StateLayout.RetryListener {
     public String mFragmentTag = this.getClass().getSimpleName();
-    //屏幕的宽高
+    /**
+     * 屏幕的宽高
+     */
     public int screenWidth;
     public int screenHeight;
     /**
      * 以状态层布局作为根布局
      */
-    public StateLayout mStateLayout;
+    public View mRootView;
     public Unbinder unbinder;
     /**
      * 是否需要懒加载,默认不需要，false，不需要
@@ -45,16 +48,35 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
      * 视图是否已经初初始化
      */
     protected boolean isInit = false;
-    protected boolean isLoad = false;
+    /**
+     * 是否是第一次加载
+     */
+    protected boolean isFirstLoad = false;
     /**
      * 网络请求器
      */
-    public RetrofitTools retrofitTools = RetrofitTools.getInstance(ServerHost.BASE_URL_BOOK);
+    public RetrofitTools retrofitTools;
 
     /**
-     * 最早调用
-     *
-     * @param isVisibleToUser 对用户是否可见
+     * 广播管理器
+     */
+    public BroadcastManager broadcastManager;
+    /**
+     * 宿主Activity
+     */
+    public Activity mActivity;
+
+    /**
+     * 空参构造，初始化一些值
+     */
+    public BaseFragment() {
+        isNeedLazy = isNeedLazy();
+        retrofitTools = RetrofitTools.getInstance(ServerHost.BASE_URL_BOOK);
+
+    }
+
+    /**
+     * @param isVisibleToUser 对用户是否可见,一旦可见就会被回调
      */
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -67,13 +89,26 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(mFragmentTag + getTag(), " onCreate() --> isVisibleToUser = " + getUserVisibleHint());
-        DisplayMetrics dm = getActivity().getResources().getDisplayMetrics();
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        LogUtil.e(mFragmentTag + getTag(), " onAttach()");
+        //attach方法在viewpager里只会执行一次，用它来判断是否是该页第一次加载
+        isFirstLoad = true;
+        //获取屏幕宽高
+        DisplayMetrics dm = activity.getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels;
-        isNeedLazy = isNeedLazy();
+        //获取广播管理器实例
+        broadcastManager = BroadcastManager.getInstance(activity);
+        //获取宿主activity实例
+        mActivity = activity;
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LogUtil.e(mFragmentTag + getTag(), " onCreate()......" + getUserVisibleHint());
     }
 
     /**
@@ -92,23 +127,14 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //在view pager里会多次被调用
         LogUtil.e(mFragmentTag + getTag(), " onCreateView()");
-        //创建状态层并添加基础布局,butterKnife绑定控件
-        if (mStateLayout == null) {
-            //创建状态层并添加基础布局
-            mStateLayout = new StateLayout(container.getContext());
-            mStateLayout.setSuccessView(getRootViewLayoutId());
+        //创根布局,butterKnife绑定控件
+        if (mRootView == null) {
+            //只有根布局为空的时候才创建新的布局
+            mRootView = inflater.inflate(getRootViewLayoutId(), container, false);
         }
-        mStateLayout.showLoading();
-        mStateLayout.setRetryListener(this);
-        return mStateLayout;
-    }
-
-    /**
-     * 如果需要停止请求，子类可以覆盖此方法处理
-     */
-    public void stopRequest() {
-
+        return mRootView;
     }
 
     /**
@@ -129,12 +155,27 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         LogUtil.e(mFragmentTag + getTag(), " onViewCreated()");
-        LogUtil.e(mFragmentTag + getTag(), "" + mStateLayout.mSuccessView);
+        LogUtil.e(mFragmentTag + getTag(), "" + mRootView);
+        //留给子类初始化控件用
+        initView();
+        //此时的View一定存在，在此完成绑定等相关操作
         unbinder = ButterKnife.bind(this, view);
+        viewHasBind();
         isInit = true;
         //初始化完成的时候去加载数据
         isCanLoadData();
-        initView();
+    }
+
+    /**
+     * 初始化界面，比如找到控件
+     */
+    public abstract void initView();
+
+    /**
+     * 控件已经绑定成功
+     */
+    public void viewHasBind() {
+
     }
 
     /**
@@ -145,23 +186,15 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
             return;
         }
         if (isNeedLazy) {
-            if (getUserVisibleHint() && !isLoad) {
+            if (getUserVisibleHint() && isFirstLoad) {
+                //可见，且第一次可见才发起数据请求
                 initialRequest();
-                isLoad = true;
-            } else {
-                if (isLoad) {
-                    stopRequest();
-                }
+                isFirstLoad = false;
             }
         } else {
             initialRequest();
         }
     }
-
-    /**
-     * 初始化界面，比如找到控件
-     */
-    public abstract void initView();
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -183,11 +216,22 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        LogUtil.e(mFragmentTag + getTag(), " onPause()");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        LogUtil.e(mFragmentTag + getTag(), " onStop()");
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
         isInit = false;
-        isLoad = false;
         LogUtil.e(mFragmentTag + getTag(), "onDestroyView()");
     }
 

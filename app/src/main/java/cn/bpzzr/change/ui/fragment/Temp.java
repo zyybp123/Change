@@ -1,11 +1,15 @@
 package cn.bpzzr.change.ui.fragment;
 
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
 import java.util.List;
 
 import butterknife.BindView;
 import cn.bpzzr.change.R;
+import cn.bpzzr.change.adapter.Adapter2Test;
 import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.net.ServerPath;
 import cn.bpzzr.change.util.LogUtil;
@@ -16,14 +20,29 @@ import cn.bpzzr.change.util.StringUtil;
  * on 2018/1/19 23:07.
  */
 
-public class Temp extends BaseFragment {
+public class Temp extends BaseFragmentRefreshPage {
 
-
-    @BindView(R.id.test_tv)
-    TextView testTv;
+    public static Temp newInstance(String text) {
+        Temp fragmentOne = new Temp();
+        Bundle bundle = new Bundle();
+        bundle.putString("name", text);
+        //fragment保存参数，传入一个Bundle对象
+        fragmentOne.setArguments(bundle);
+        return fragmentOne;
+    }
 
     @Override
     public boolean isNeedLazy() {
+        return true;
+    }
+
+    @Override
+    public boolean isNeedHeader() {
+        return false;
+    }
+
+    @Override
+    public boolean isCanRefresh() {
         return true;
     }
 
@@ -33,54 +52,63 @@ public class Temp extends BaseFragment {
     }
 
     @Override
+    public void viewHasBind() {
+        super.viewHasBind();
+    }
+
+    @Override
     public void onRequestStart(String tag) {
-        //mStateLayout.showLoading();
+        showLoading();
     }
 
-    @Override
-    public void onEmpty(String tag) {
-        mStateLayout.showEmpty();
-    }
-
-
-    @Override
-    public int getRootViewLayoutId() {
-        return R.layout.test_layout;
-    }
-
-    @Override
-    public void initView() {
-        //
-        //testTv = mStateLayout.findViewById(R.id.test_tv);
-
-    }
     @Override
     public void onError(String tag, String msg) {
-        mStateLayout.showFailure();
+        showFailure();
     }
 
     @Override
     public void onSuccess(String tag, String result, Object data) {
-        LogUtil.e(mFragmentTag, "...result..." + data);
-        mStateLayout.showSuccessView();
+        LogUtil.e(mFragmentTag, "...result..." +
+                data);
+        showSuccess();
         if (ServerPath.GANK_ANDROID.equals(tag)) {
             GankTest gankTest = (GankTest) data;
             if (gankTest != null) {
                 List<GankTest.ResultsBean> results = gankTest.getResults();
-                if (results != null) {
-                    for (int i = 0; i < results.size(); i++) {
-                        //LogUtil.e("resultsBean......" + resultsBean.getDesc());
-                        if (i == 0){
-                            GankTest.ResultsBean resultsBean = results.get(i);
-                            if (resultsBean != null) {
-                                testTv.setText(StringUtil.getNotNullStr(resultsBean.getDesc()));
-                            }
-                        }
-
-                    }
+                if (results != null && results.size() > 0) {
+                    mDataList.addAll(results);
+                    mAdapter.notifyDataSetChanged();
+                    hasMore = true;
+                } else {
+                    hasMore = false;
                 }
+                if (mDataList.size() == 0) {
+                    mStateLayout.showEmpty();
+                }
+            } else {
+                mStateLayout.showEmpty();
             }
         }
     }
 
+    @Override
+    public void onEmpty(String tag) {
+
+    }
+
+    @Override
+    public RecyclerView.LayoutManager getLayoutManager() {
+        return BaseFragmentRefreshPage.getLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL);
+    }
+
+    @Override
+    public RecyclerView.Adapter getAdapter() {
+        return new Adapter2Test(mDataList);
+    }
+
+
+    @Override
+    protected void loadMore() {
+        LogUtil.e("加载更多数据。。。。。");
+    }
 }
