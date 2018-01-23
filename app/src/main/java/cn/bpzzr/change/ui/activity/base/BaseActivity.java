@@ -19,6 +19,7 @@ import com.trello.rxlifecycle2.components.RxActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.bpzzr.change.R;
+import cn.bpzzr.change.manager.ACache;
 import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.ui.view.BottomBar;
 import cn.bpzzr.change.util.KeyBoardUtils;
@@ -63,6 +64,7 @@ public abstract class BaseActivity extends RxActivity implements MVP.View, MVP.P
     public FrameLayout frameLayoutContainer;
     @BindView(R.id.base_bottom_bar)
     public BottomBar baseBottomBar;
+    public ACache aCache;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,6 +79,7 @@ public abstract class BaseActivity extends RxActivity implements MVP.View, MVP.P
         screenWidth = totalSize.x;
         screenHeight = totalSize.y;
         mLogTag = this.getClass().getSimpleName();
+        aCache = ACache.get(this);
         LogUtil.e(mLogTag, "screenWidth..." + screenWidth + "...screenHeight..." + screenHeight);
         //初始化请求
         initialRequest();

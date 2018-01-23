@@ -18,7 +18,7 @@ import cn.bpzzr.change.bean.BottomBarBean;
 import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.manager.MyActivityManager;
 import cn.bpzzr.change.net.RetrofitTools;
-import cn.bpzzr.change.net.ServerPath;
+import cn.bpzzr.change.interf.ServerPath;
 import cn.bpzzr.change.ui.activity.base.BaseActivity;
 import cn.bpzzr.change.ui.fragment.Temp;
 import cn.bpzzr.change.ui.view.BottomBar;

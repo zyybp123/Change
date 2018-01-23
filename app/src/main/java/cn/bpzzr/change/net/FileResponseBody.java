@@ -15,7 +15,7 @@ import okio.Source;
  * 文件下载响应体
  */
 
-public class FileResponseBody<T> extends ResponseBody {
+public class FileResponseBody extends ResponseBody {
     /**
      * 实际请求体
      */

@@ -20,7 +20,7 @@
     </style>
     <!--快速展示splash界面-->
     <style name="AppTheme.FullScreen.Splash">
-        <item name="android:windowBackground">@color/colorWhite</item>
+        <item name="android:windowBackground">@drawable/splash_bg</item>
     </style>
     <!--ToolBar左侧留白问题解决-->
     <style name="ClubToolbar" parent="Widget.AppCompat.Toolbar">

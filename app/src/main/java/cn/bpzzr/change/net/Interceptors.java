@@ -90,4 +90,18 @@ public class Interceptors {
             }
         };
     }
+
+    @NonNull
+    @Contract(pure = true)
+    public static Interceptor getResponseInterceptor(final ProgressCallback progressCallback) {
+        return new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Response originalResponse = chain.proceed(chain.request());
+                return originalResponse.newBuilder()
+                        .body(new FileResponseBody(originalResponse.body(), progressCallback))
+                        .build();
+            }
+        };
+    }
 }

@@ -1,17 +1,20 @@
 package cn.bpzzr.change.net;
 
-import android.text.TextUtils;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import cn.bpzzr.change.bean.AdBean;
+import cn.bpzzr.change.bean.AdParam;
 import cn.bpzzr.change.bean.BaseBean;
 import cn.bpzzr.change.bean.DoubanTest;
 import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.bean.ResultBaseBean;
 import cn.bpzzr.change.interf.ServerHost;
+import cn.bpzzr.change.interf.ServerPath;
 import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.util.LogUtil;
@@ -19,10 +22,13 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -38,7 +44,8 @@ public class RetrofitTools {
     private RetrofitClient client;
     private OkHttpClient okClient;
     private Retrofit retrofit;
-    //http://blog.csdn.net/gld824125233/article/details/52588275 抓包
+    private Gson gson;
+    private ProgressCallback progressCallback;
 
     /**
      * 构造 初始化相应参数
@@ -50,6 +57,8 @@ public class RetrofitTools {
         baseUrlMap.put(SomeKeys.VIDEO_DATA, ServerHost.BASE_URL_VIDEO);
         baseUrlMap.put(SomeKeys.BOOK_DATA, ServerHost.BASE_URL_BOOK);
         baseUrlMap.put(SomeKeys.ONLINE_DATA, ServerHost.BASE_URL_ONLINE);
+        baseUrlMap.put(SomeKeys.AD_DATA, ServerHost.BASE_URL_AD);
+        gson = new Gson();
         //设置OkHttpClitent;
         okClient = new OkHttpClient.Builder()
                 .readTimeout(60, TimeUnit.MINUTES)        //读取超时 60min
@@ -58,6 +67,14 @@ public class RetrofitTools {
                 .retryOnConnectionFailure(true)                   //是否自动重连
                 //.sslSocketFactory(sslContext.getSocketFactory())//证书配置
                 .addInterceptor(Interceptors.getHeaderInterceptor(baseUrlMap, baseUrl))
+                .addInterceptor(Interceptors.getResponseInterceptor(new ProgressCallback() {
+                    @Override
+                    public void onLoading(long contentLength, long bytesWritten, boolean done) {
+                        if (progressCallback != null){
+                            progressCallback.onLoading(contentLength,bytesWritten,done);
+                        }
+                    }
+                }))
                 .addNetworkInterceptor(Interceptors.getLogInterceptor())
                 .build();
         // 初始化Retrofit
@@ -79,6 +96,12 @@ public class RetrofitTools {
         return client;
     }
 
+    /**
+     * 并不建议使用此方法来设置不同的baseUrl
+     *
+     * @param baseUrl 基础url
+     */
+    @Deprecated
     public RetrofitTools setBaseUrl(String baseUrl) {
         LogUtil.e("Retrofit tools base url set.........." + baseUrl);
         if (okClient != null) {
@@ -127,11 +150,28 @@ public class RetrofitTools {
 
     public void getTest3(MVP.View mView) {
         client.getTest3()
-                //.subscribeOn(Schedulers.io())
-                //.observeOn(AndroidSchedulers.mainThread())
                 .compose(this.<GankTest>setThread())
                 .subscribe(new MyObserverSimple<GankTest>(mView, ServerPath.GANK_ANDROID));
 
+    }
+
+    public void downloadFile(MVP.View mView, String url,ProgressCallback progressCallback) {
+        this.progressCallback = progressCallback;
+        client.download(url)
+                .compose(this.<ResponseBody>setThread())
+                .subscribe(new MyObserverSimple<ResponseBody>(mView, "download"));
+    }
+
+    /**
+     * 获取广告
+     */
+    public void getAds(MVP.View mView) {
+        RequestBody requestBody = RequestBody.create(
+                MediaType.parse("application/json;charset=UTF-8"),
+                gson.toJson(new AdParam()));
+        client.getAds(requestBody)
+                .compose(this.<AdBean>setThread())
+                .subscribe(new MyObserverSimple<AdBean>(mView, ServerPath.WANG_YI_AD));
     }
 
     //批量上传文件的方法
