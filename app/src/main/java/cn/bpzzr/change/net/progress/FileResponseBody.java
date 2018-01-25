@@ -1,4 +1,8 @@
-package cn.bpzzr.change.net;
+package cn.bpzzr.change.net.progress;
+
+import android.support.annotation.NonNull;
+
+import org.jetbrains.annotations.Contract;
 
 import java.io.IOException;
 
@@ -29,10 +33,10 @@ public class FileResponseBody extends ResponseBody {
      */
     private BufferedSource mBufferedSource;
 
-    public FileResponseBody(ResponseBody responseBody, ProgressCallback callback) {
+    public FileResponseBody(String url, ResponseBody responseBody) {
         super();
         this.mResponseBody = responseBody;
-        this.mCallback = callback;
+        this.mCallback = ProgressInterceptor.LISTENER_MAP.get(url);
     }
 
     @Override
@@ -59,15 +63,19 @@ public class FileResponseBody extends ResponseBody {
      * @param source
      * @return Source
      */
+    @NonNull
+    @Contract(pure = true)
     private Source source(Source source) {
         return new ForwardingSource(source) {
             long totalBytesRead = 0L;
 
             @Override
-            public long read(Buffer sink, long byteCount) throws IOException {
+            public long read(@NonNull Buffer sink, long byteCount) throws IOException {
                 long bytesRead = super.read(sink, byteCount);
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;
-                mCallback.onLoading(mResponseBody.contentLength(), totalBytesRead, bytesRead == -1);
+                if (mCallback != null) {
+                    mCallback.onLoading(mResponseBody.contentLength(), totalBytesRead, bytesRead == -1);
+                }
                 return bytesRead;
             }
         };

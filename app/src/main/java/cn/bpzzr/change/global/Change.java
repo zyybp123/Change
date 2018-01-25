@@ -1,5 +1,6 @@
 package cn.bpzzr.change.global;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
@@ -19,21 +20,28 @@ import cn.bpzzr.change.util.StatusBarCompat;
  */
 
 public class Change extends Application {
-
+    /**
+     * 静态的上下文，全局可用
+     */
+    @SuppressLint("StaticFieldLeak")
     public static Context mContext;
+    /**
+     * Activity管理器
+     */
+    private MyActivityManager mActivityManager;
 
-    public Context getContext() {
-        return mContext;
-    }
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
+        //初始化
         mContext = this;
+        mActivityManager = MyActivityManager.getInstance();
         activityLifeManage();
     }
 
@@ -43,9 +51,9 @@ public class Change extends Application {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
                 LogUtil.e(activity, "onActivityCreated");
-                // 添加Activity到堆栈
-                //AppManager.getAppManager().addActivity(activity);
-                MyActivityManager.getInstance().addActivity(activity);
+                // 添加Activity到集合
+                mActivityManager.addActivity(activity);
+                mActivityManager.setTopActivityWeakRef(activity);
                 //通知栏的全局设置
                 StatusBarCompat.compat(activity, getResources().getColor(R.color.colorPrimary));
             }
@@ -54,6 +62,7 @@ public class Change extends Application {
             @Override
             public void onActivityStarted(Activity activity) {
                 LogUtil.e(activity, "onActivityStarted");
+                mActivityManager.setTopActivityWeakRef(activity);
             }
 
             @Override
@@ -64,6 +73,7 @@ public class Change extends Application {
             @Override
             public void onActivityResumed(Activity activity) {
                 LogUtil.e(activity, "onActivityResumed");
+                mActivityManager.setTopActivityWeakRef(activity);
             }
 
             @Override
@@ -79,9 +89,8 @@ public class Change extends Application {
             @Override
             public void onActivityDestroyed(Activity activity) {
                 LogUtil.e(activity, "onActivityDestroyed");
-                // 结束Activity&从堆栈中移除
-                //AppManager.getAppManager().finishActivity(activity);
-                MyActivityManager.getInstance().removeActivity(activity);
+                // 结束Activity&从集合中移除
+                mActivityManager.removeActivity(activity);
             }
         });
     }

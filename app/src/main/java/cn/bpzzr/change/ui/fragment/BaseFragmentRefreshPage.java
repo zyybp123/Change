@@ -158,9 +158,14 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment {
      * 做下拉刷新的操作
      */
     public void doRefresh() {
-        initialRequest();
+        refreshRequest();
         onRefreshing();
     }
+
+    /**
+     * 需要下拉刷新的请求
+     */
+    protected abstract void refreshRequest();
 
     /**
      * 在刷新

@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 
 /**
  * Created by Administrator on 2018/1/9.
+ * 键盘处理的类
  */
 public class KeyBoardAdaptUtil {
     public static void assistActivity(Activity activity) {

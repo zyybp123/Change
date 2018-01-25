@@ -2,7 +2,7 @@ package cn.bpzzr.change.util;
 
 /**
  * Created by zyy
- *
+ * 打开或关闭软键盘
  */
 
 import android.app.Activity;
@@ -13,7 +13,6 @@ import android.widget.EditText;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
-//打开或关闭软键盘
 public class KeyBoardUtils {
     /**
      * 打开软键盘
@@ -61,7 +60,7 @@ public class KeyBoardUtils {
      * 打开键盘
      **/
     public static void showInput(Context context, View view) {
-        InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             view.requestFocus();
             imm.showSoftInput(view, 0);

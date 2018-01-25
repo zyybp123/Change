@@ -1,12 +1,15 @@
 package cn.bpzzr.change.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
 
+import cn.bpzzr.change.R;
+import cn.bpzzr.change.bean.BaseItemBean;
 import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.util.StringUtil;
 
@@ -15,12 +18,12 @@ import cn.bpzzr.change.util.StringUtil;
  * 测试用Adapter
  */
 
-public class BaseAdapterHasMore extends RecyclerView.Adapter<BaseAdapterHasMore.MyViewHolder> {
+public class BaseAdapterHasMore<T> extends RecyclerView.Adapter<BaseAdapterHasMore.MyViewHolder> {
     public static final int ITEM_FOOTER = 0;
-    private List mDataList;
+    private List<BaseItemBean<T>> mDataList;
 
 
-    public BaseAdapterHasMore(List mDataList) {
+    public BaseAdapterHasMore(List<BaseItemBean<T>> mDataList) {
         this.mDataList = mDataList;
     }
 
@@ -30,20 +33,41 @@ public class BaseAdapterHasMore extends RecyclerView.Adapter<BaseAdapterHasMore.
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        TextView textView = new TextView(parent.getContext());
-        return new MyViewHolder(textView);
+    public int getItemViewType(int position) {
+        BaseItemBean<T> tBaseItemBean = mDataList.get(position);
+        return tBaseItemBean == null ? super.getItemViewType(position) : tBaseItemBean.getViewType();
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.initData(position);
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view;
+        if (viewType == ITEM_FOOTER){
+           view = LayoutInflater
+                   .from(parent.getContext())
+                   .inflate(R.layout.item_base_footer,parent,false);
+        }else{
+            view = getOtherView(parent, viewType);
+        }
+        return new MyViewHolder(view);
     }
+
+    @Override
+    public void onBindViewHolder(BaseAdapterHasMore.MyViewHolder holder, int position) {
+
+    }
+
+    private View getOtherView(ViewGroup parent, int viewType) {
+        return null;
+    }
+
+
+
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public MyViewHolder(View itemView) {
             super(itemView);
+
         }
 
         public void initData(int position) {

@@ -6,26 +6,25 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.List;
 
-import cn.bpzzr.change.adapter.Adapter2Test;
+import cn.bpzzr.change.R;
+import cn.bpzzr.change.adapter.base.Adapter2Test2;
 import cn.bpzzr.change.bean.AdBean;
 import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.interf.ServerPath;
 import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.manager.ACache;
-import cn.bpzzr.change.net.ImageLoad;
-import cn.bpzzr.change.net.ProgressCallback;
+import cn.bpzzr.change.util.image.ImageLoad;
+import cn.bpzzr.change.net.progress.ProgressCallback;
 import cn.bpzzr.change.util.LogUtil;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 
 import static cn.bpzzr.change.global.Change.mContext;
@@ -63,13 +62,15 @@ public class Temp extends BaseFragmentRefreshPage {
 
     @Override
     public void initialRequest() {
+        //界面初始化完成就会回调
+        autoRefresh();
         Bundle arguments = getArguments();
         if (arguments != null) {
             String name = arguments.getString("name");
-            if ("5".equals(name)) {
+            if ("1".equals(name)) {
                 retrofitTools.getAds(this);
             }
-            if ("2".equals(name)){
+            if ("2".equals(name)) {
                 retrofitTools
                         .downloadFile(this,
                                 "http://yt-adv.nosdn.127.net/channel6/aaej_20180122.mp4",
@@ -82,7 +83,7 @@ public class Temp extends BaseFragmentRefreshPage {
                                 });
             }
         }
-        retrofitTools.getTest3(this);
+
     }
 
     @Override
@@ -99,15 +100,18 @@ public class Temp extends BaseFragmentRefreshPage {
     @Override
     public void onError(String tag, String msg) {
         showFailure();
+        if (hasMore){
+            ((BaseQuickAdapter) mAdapter).loadMoreFail();
+        }
     }
 
     @Override
     public void onSuccess(String tag, String result, Object data) {
         LogUtil.e(mFragmentTag, "...result..." + data);
         showSuccess();
-        listData(tag,  data);
-        adData(tag,  data);
-        if ("download".equals(tag)){
+        listData(tag, data);
+        adData(tag, data);
+        if ("download".equals(tag)) {
             ResponseBody body = (ResponseBody) data;
             InputStream is = null;
             byte[] buf = new byte[2048];
@@ -115,7 +119,7 @@ public class Temp extends BaseFragmentRefreshPage {
             FileOutputStream fos = null;
             try {
                 is = body.byteStream();
-                File dir = new File(mActivity.getCacheDir(),"splash/mp4");
+                File dir = new File(mActivity.getCacheDir(), "splash/mp4");
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
@@ -146,14 +150,16 @@ public class Temp extends BaseFragmentRefreshPage {
                 List<GankTest.ResultsBean> results = gankTest.getResults();
                 if (results != null && results.size() > 0) {
                     mDataList.addAll(results);
+                    //((BaseQuickAdapter) mAdapter).addData(results);
                     mAdapter.notifyDataSetChanged();
+                    //((BaseQuickAdapter) mAdapter).loadMoreComplete();
                     hasMore = true;
                 } else {
                     hasMore = false;
                 }
-                if (mDataList.size() == 0) {
+               /* if (mDataList.size() == 0) {
                     mStateLayout.showEmpty();
-                }
+                }*/
             } else {
                 mStateLayout.showEmpty();
             }
@@ -226,7 +232,35 @@ public class Temp extends BaseFragmentRefreshPage {
 
     @Override
     public RecyclerView.Adapter getAdapter() {
-        return new Adapter2Test(mDataList);
+        final Adapter2Test2 test2 = new Adapter2Test2(R.layout.item_temp, mDataList);
+        //test2.setEnableLoadMore(false);
+
+        //test2.openLoadAnimation();
+        test2.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                mRecyclerView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (hasMore) {
+                            //还有更多数据
+                            refreshRequest();
+                        } else {
+                            //没有更多的数据
+                            test2.loadMoreEnd();
+                        }
+                    }
+                },2000);
+
+            }
+        }, mRecyclerView);
+        //test2.disableLoadMoreIfNotFullPage();
+        return test2;
+    }
+
+    @Override
+    protected void refreshRequest() {
+        retrofitTools.getTest3(this);
     }
 
 

@@ -17,13 +17,13 @@ import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.interf.ServerPath;
 import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.mvp.MVP;
+import cn.bpzzr.change.net.progress.ProgressCallback;
+import cn.bpzzr.change.net.progress.ProgressInterceptor;
 import cn.bpzzr.change.util.LogUtil;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -67,14 +67,7 @@ public class RetrofitTools {
                 .retryOnConnectionFailure(true)                   //是否自动重连
                 //.sslSocketFactory(sslContext.getSocketFactory())//证书配置
                 .addInterceptor(Interceptors.getHeaderInterceptor(baseUrlMap, baseUrl))
-                .addInterceptor(Interceptors.getResponseInterceptor(new ProgressCallback() {
-                    @Override
-                    public void onLoading(long contentLength, long bytesWritten, boolean done) {
-                        if (progressCallback != null){
-                            progressCallback.onLoading(contentLength,bytesWritten,done);
-                        }
-                    }
-                }))
+                .addInterceptor(new ProgressInterceptor())
                 .addNetworkInterceptor(Interceptors.getLogInterceptor())
                 .build();
         // 初始化Retrofit

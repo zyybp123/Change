@@ -2,7 +2,9 @@ package cn.bpzzr.change.manager;
 
 import android.app.Activity;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -13,7 +15,7 @@ import java.util.List;
 public class MyActivityManager {
     private static volatile MyActivityManager mInstance;
     private List<Activity> activityList;
-
+    WeakReference<Activity> sTopActivityWeakRef;
     private MyActivityManager() {
         //构造内部可以初始化相应参数
         activityList = new ArrayList<>();
@@ -72,6 +74,12 @@ public class MyActivityManager {
         //通过循环，把集合中的所有Activity销毁
         for (Activity activity : activityList) {
             activity.finish();
+        }
+    }
+
+    public void setTopActivityWeakRef(Activity activity) {
+        if (sTopActivityWeakRef == null || !activity.equals(sTopActivityWeakRef.get())) {
+            sTopActivityWeakRef = new WeakReference<>(activity);
         }
     }
 }

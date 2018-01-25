@@ -1,4 +1,4 @@
-package cn.bpzzr.change.net;
+package cn.bpzzr.change.net.progress;
 
 /**
  * Created by Administrator on 2017/12/22.

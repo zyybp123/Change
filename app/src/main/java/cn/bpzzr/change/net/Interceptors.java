@@ -2,7 +2,6 @@ package cn.bpzzr.change.net;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 import org.jetbrains.annotations.Contract;
 
@@ -11,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import cn.bpzzr.change.interf.SomeKeys;
+import cn.bpzzr.change.net.progress.FileResponseBody;
+import cn.bpzzr.change.net.progress.ProgressCallback;
 import cn.bpzzr.change.util.LogUtil;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -91,7 +92,7 @@ public class Interceptors {
         };
     }
 
-    @NonNull
+    /*@NonNull
     @Contract(pure = true)
     public static Interceptor getResponseInterceptor(final ProgressCallback progressCallback) {
         return new Interceptor() {
@@ -103,5 +104,5 @@ public class Interceptors {
                         .build();
             }
         };
-    }
+    }*/
 }
