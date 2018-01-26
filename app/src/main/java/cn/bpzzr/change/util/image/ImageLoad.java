@@ -3,6 +3,7 @@ package cn.bpzzr.change.util.image;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
@@ -36,12 +37,31 @@ public class ImageLoad {
         requestOptions = new RequestOptions();
     }
 
+    /**
+     * 从网络加载图片
+     *
+     * @param url 链接
+     */
     public static GlideRequest<Drawable> load(Context context, String url) {
         return GlideApp.with(context).load(url);
     }
 
+    /**
+     * 从文件加载图片
+     *
+     * @param file 图片文件
+     */
     public static GlideRequest<Drawable> load(Context context, File file) {
         return GlideApp.with(context).load(file);
+    }
+
+    /**
+     * 从资源目录里加载
+     *
+     * @param resId 资源id
+     */
+    public static GlideRequest<Drawable> load(Context context, @DrawableRes int resId) {
+        return GlideApp.with(context).load(resId);
     }
 
     /**
@@ -53,6 +73,17 @@ public class ImageLoad {
      */
     public static void glideLoad(Context context, String url, @NonNull ImageView imageView) {
         load(context, url).into(imageView);
+    }
+
+    /**
+     * 图片的简单加载
+     *
+     * @param context   上下文
+     * @param resId     资源id
+     * @param imageView 目标控件
+     */
+    public static void glideLoad(Context context, @DrawableRes int resId, @NonNull ImageView imageView) {
+        load(context, resId).into(imageView);
     }
 
     /**
@@ -81,6 +112,17 @@ public class ImageLoad {
      * 图片带状态监听的加载
      *
      * @param context   上下文
+     * @param resId     资源id
+     * @param imageView 目标控件
+     */
+    public static void glideLoad(Context context, @DrawableRes int resId, @NonNull ImageView imageView, RequestListener<Drawable> listener) {
+        load(context, resId).listener(listener).into(imageView);
+    }
+
+    /**
+     * 图片带状态监听的加载
+     *
+     * @param context   上下文
      * @param file      本地文件
      * @param imageView 目标控件
      */
@@ -89,7 +131,7 @@ public class ImageLoad {
     }
 
     /**
-     * 图片带进度监听的加载
+     * 图片带状态监听和形状变换的加载
      *
      * @param context   上下文
      * @param url       图片的链接

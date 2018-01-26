@@ -1,12 +1,14 @@
 package cn.bpzzr.change.ui.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -51,19 +53,22 @@ public class Temp extends BaseFragmentRefreshPage {
     }
 
     @Override
-    public boolean isNeedHeader() {
+    public boolean isAutoRefresh() {
         return false;
     }
 
     @Override
-    public boolean isCanRefresh() {
-        return true;
+    public RecyclerView.LayoutManager getLayoutManager() {
+        return BaseFragmentRefreshPage.getLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL);
     }
 
     @Override
-    public void initialRequest() {
-        //界面初始化完成就会回调
-        autoRefresh();
+    public BaseQuickAdapter<GankTest.ResultsBean, BaseViewHolder> getAdapter() {
+        return new Adapter2Test2(R.layout.item_temp, mDataList);
+    }
+
+    @Override
+    protected void onceRequest() {
         Bundle arguments = getArguments();
         if (arguments != null) {
             String name = arguments.getString("name");
@@ -83,32 +88,37 @@ public class Temp extends BaseFragmentRefreshPage {
                                 });
             }
         }
-
     }
 
     @Override
-    public void viewHasBind() {
-        super.viewHasBind();
-
+    protected void refreshRequest() {
+        retrofitTools.getTest3(this);
     }
 
     @Override
-    public void onRequestStart(String tag) {
-        showLoading();
+    protected void loadMoreRequested() {
+        LogUtil.e("currentPage......" + currentPage);
+        mRecyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //延时两秒，以观察效果
+                refreshRequest();
+            }
+        }, 2000);
     }
 
     @Override
     public void onError(String tag, String msg) {
-        showFailure();
-        if (hasMore){
-            ((BaseQuickAdapter) mAdapter).loadMoreFail();
+        if (hasMore) {
+            (mAdapter).loadMoreFail();
+        } else {
+            showFailure();
         }
     }
 
     @Override
     public void onSuccess(String tag, String result, Object data) {
         LogUtil.e(mFragmentTag, "...result..." + data);
-        showSuccess();
         listData(tag, data);
         adData(tag, data);
         if ("download".equals(tag)) {
@@ -145,23 +155,27 @@ public class Temp extends BaseFragmentRefreshPage {
 
     private void listData(String tag, Object data) {
         if (ServerPath.GANK_ANDROID.equals(tag)) {
+            showSuccess();
             GankTest gankTest = (GankTest) data;
             if (gankTest != null) {
                 List<GankTest.ResultsBean> results = gankTest.getResults();
                 if (results != null && results.size() > 0) {
-                    mDataList.addAll(results);
-                    //((BaseQuickAdapter) mAdapter).addData(results);
-                    mAdapter.notifyDataSetChanged();
-                    //((BaseQuickAdapter) mAdapter).loadMoreComplete();
-                    hasMore = true;
+                    if (isRefreshing) {
+                        mAdapter.setNewData(results);
+                    } else {
+                        mAdapter.addData(results);
+                        mAdapter.loadMoreComplete();
+                    }
+                    hasMore = currentPage < 2;
                 } else {
                     hasMore = false;
+                    showEmpty();
                 }
-               /* if (mDataList.size() == 0) {
-                    mStateLayout.showEmpty();
-                }*/
+                if (mDataList.size() == 0) {
+                    showEmpty();
+                }
             } else {
-                mStateLayout.showEmpty();
+                showEmpty();
             }
         }
     }
@@ -225,47 +239,5 @@ public class Temp extends BaseFragmentRefreshPage {
 
     }
 
-    @Override
-    public RecyclerView.LayoutManager getLayoutManager() {
-        return BaseFragmentRefreshPage.getLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL);
-    }
 
-    @Override
-    public RecyclerView.Adapter getAdapter() {
-        final Adapter2Test2 test2 = new Adapter2Test2(R.layout.item_temp, mDataList);
-        //test2.setEnableLoadMore(false);
-
-        //test2.openLoadAnimation();
-        test2.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
-            @Override
-            public void onLoadMoreRequested() {
-                mRecyclerView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (hasMore) {
-                            //还有更多数据
-                            refreshRequest();
-                        } else {
-                            //没有更多的数据
-                            test2.loadMoreEnd();
-                        }
-                    }
-                },2000);
-
-            }
-        }, mRecyclerView);
-        //test2.disableLoadMoreIfNotFullPage();
-        return test2;
-    }
-
-    @Override
-    protected void refreshRequest() {
-        retrofitTools.getTest3(this);
-    }
-
-
-    @Override
-    protected void loadMore() {
-        LogUtil.e("加载更多数据。。。。。");
-    }
 }

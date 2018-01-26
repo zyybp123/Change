@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.flyco.tablayout.SegmentTabLayout;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ import in.srain.cube.views.ptr.PtrHandler;
  * @author ZYY
  */
 
-public abstract class BaseFragmentRefreshPage<T> extends BaseFragment {
+public abstract class BaseFragmentRefreshPage<T> extends BaseFragment implements BaseQuickAdapter.RequestLoadMoreListener {
     @BindView(R.id.ctb_iv_left)
     public ImageView ctbIvLeft;
     @BindView(R.id.custom_tb_left_container)
@@ -75,7 +76,7 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment {
     /**
      * 数据适配器
      */
-    public RecyclerView.Adapter mAdapter;
+    public BaseQuickAdapter mAdapter;
     /**
      * 布局管理器
      */
@@ -114,33 +115,56 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment {
             LogUtil.e(mFragmentTag + getTag(), "............mLayoutManager is null..........");
         }
         //设置数据适配器
-        RecyclerView.Adapter adapter = getAdapter();
+        BaseQuickAdapter adapter = getAdapter();
         if (adapter != null) {
             this.mAdapter = adapter;
             mRecyclerView.setAdapter(this.mAdapter);
+            mAdapter.setOnLoadMoreListener(this, mRecyclerView);
+            //未满一屏，直接关闭上拉加载更多
+            mAdapter.disableLoadMoreIfNotFullPage();
         } else {
             LogUtil.e(mFragmentTag + getTag(), "............Adapter is null.........");
         }
         //屏蔽闪烁动画
         ((DefaultItemAnimator) mRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
-        //设置滑动状态监听器
-        mRecyclerView.addOnScrollListener(new HasMoreDataScrollListener());
     }
 
+    /**
+     * 默认启用懒加载
+     *
+     * @return true为启用懒加载
+     */
+    @Override
+    public boolean isNeedLazy() {
+        return true;
+    }
 
     /**
-     * 是否需要toolBar
+     * 是否需要toolBar,默认不需要
      *
      * @return true为需要
      */
-    public abstract boolean isNeedHeader();
+    public boolean isNeedHeader() {
+        return false;
+    }
 
     /**
-     * 是否能下拉刷新
+     * 是否能下拉刷新,默认可以下拉刷新
      *
      * @return true为可以下拉刷新
      */
-    public abstract boolean isCanRefresh();
+    public boolean isCanRefresh() {
+        return true;
+    }
+
+    /**
+     * 是否一进入页面就自动刷新,默认不自动刷新
+     *
+     * @return true为是
+     */
+    public boolean isAutoRefresh() {
+        return false;
+    }
 
     /**
      * 设置布局管理器
@@ -152,13 +176,37 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment {
     /**
      * 由外部传入adapter,给recyclerView设置数据
      */
-    public abstract RecyclerView.Adapter getAdapter();
+    public abstract BaseQuickAdapter getAdapter();
+
+    /**
+     * 初始化请求
+     */
+    @Override
+    public void initialRequest() {
+        if (isAutoRefresh()) {
+            //如果要自动刷新，调用一下自动刷新的方法
+            autoRefresh();
+        } else {
+            //显示加载中的状态
+            showLoading();
+            refreshRequest();
+        }
+        //其它只需要发起一次的请求
+        onceRequest();
+    }
+
+    /**
+     * 只需要发起一次的请求
+     */
+    protected abstract void onceRequest();
 
     /**
      * 做下拉刷新的操作
      */
     public void doRefresh() {
+        //发起同下拉刷新相关的请求
         refreshRequest();
+        //标识成刷新中
         onRefreshing();
     }
 
@@ -168,15 +216,23 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment {
     protected abstract void refreshRequest();
 
     /**
-     * 在刷新
+     * 在刷新中
      */
     public void onRefreshing() {
+        //这里的作用是防止下拉刷新的时候还可以上拉加载
+        mAdapter.setEnableLoadMore(false);
         isRefreshing = true;
         currentPage = 1;
     }
 
+
+    @Override
+    public void onRequestStart(String tag) {
+        //不进行操作
+    }
+
     /**
-     * 重置数据集合
+     * 重置数据集合，和刷新状态
      */
     public void reSetDataSet() {
         if (isRefreshing) {
@@ -186,7 +242,7 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment {
     }
 
     /**
-     * 刷新完成
+     * 下拉刷新完成
      */
     public void refreshComplete() {
         if (mPtrClassicFrameLayout != null) {
@@ -195,10 +251,32 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment {
     }
 
     /**
+     * 上拉加载更多的请求的发起
+     */
+    @Override
+    public void onLoadMoreRequested() {
+        mAdapter.setEnableLoadMore(!isRefreshing);
+        if (hasMore) {
+            currentPage++;
+            //还有更多数据
+            loadMoreRequested();
+        } else {
+            //没有更多数据了
+            mAdapter.loadMoreEnd();
+        }
+    }
+
+    /**
+     * 加载更多的请求
+     */
+    protected abstract void loadMoreRequested();
+
+    /**
      * 展示加载中
      */
     public void showLoading() {
-        if (!mPtrClassicFrameLayout.isRefreshing()) {
+        //没有下拉刷新或上拉加载时才显示
+        if (!mPtrClassicFrameLayout.isRefreshing() && !hasMore) {
             mStateLayout.showLoading();
         }
     }
@@ -265,48 +343,6 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment {
     public void autoRefresh() {
         onRefreshing();
         mPtrClassicFrameLayout.autoRefresh();
-    }
-
-    /**
-     * 上拉加载更多
-     * 当滚动状态发生变化的时候被调用
-     * newState 为 0 说明是 静止状态，为 1 说明是开始滚动，为 2 说明是开始惯性滚动
-     */
-    private class HasMoreDataScrollListener extends RecyclerView.OnScrollListener {
-        @Override
-
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            loadMore(recyclerView, newState);
-            // 获取当前可见的最后一个条目位置
-            RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
-            if (manager instanceof LinearLayoutManager) {
-                LinearLayoutManager layoutManager = (LinearLayoutManager) manager;
-                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-                if (mDataList != null && mDataList.size() > 0) {
-                    if (newState == 0 && lastVisibleItemPosition == mDataList.size() - 1 && hasMore) {
-                        // 如果状态变为 静止， 则直接加载下一页数据
-                        currentPage++;
-                        loadMore();
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * 由子类来实现的加载更多的方法
-     * 线性布局管理器时
-     */
-    protected abstract void loadMore();
-
-    /**
-     * 允许子类自己复写，自定义上拉加载更多的方法
-     *
-     * @param recyclerView 控件
-     * @param newState     状态
-     */
-    private void loadMore(RecyclerView recyclerView, int newState) {
-
     }
 
 

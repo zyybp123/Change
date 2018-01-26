@@ -123,4 +123,5 @@ dependencies {
     compile 'org.jetbrains:annotations-java5:15.0'
     implementation project(':ptr-lib')
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.34'
+    compile 'com.youth.banner:banner:1.4.10'
 }

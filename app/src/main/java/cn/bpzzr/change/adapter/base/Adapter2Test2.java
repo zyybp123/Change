@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 
 import java.util.List;
 
@@ -26,9 +27,7 @@ public class Adapter2Test2 extends BaseQuickAdapter<GankTest.ResultsBean, BaseVi
     @Override
     protected void convert(BaseViewHolder helper, GankTest.ResultsBean item) {
         //Glide.with(mContext).load(item.getUserAvatar()).crossFade().into((ImageView) helper.getView(R.id.iv));
-        ImageLoad.glideLoad(mContext,
-                "http://p7.pstatp.com/large/5931000196de8954e8bd",
-                (ImageView) helper.getView(R.id.iv_icon), ImageLoad.FILLET, 8);
+        ImageLoad.glideLoad(mContext, R.mipmap.ic_launcher, (ImageView) helper.getView(R.id.iv_icon));
         helper.setText(R.id.tvTitle, item.getDesc());
     }
 }

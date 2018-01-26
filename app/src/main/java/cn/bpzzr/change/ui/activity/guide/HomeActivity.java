@@ -1,6 +1,9 @@
 package cn.bpzzr.change.ui.activity.guide;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -20,6 +23,8 @@ import cn.bpzzr.change.manager.MyActivityManager;
 import cn.bpzzr.change.net.RetrofitTools;
 import cn.bpzzr.change.interf.ServerPath;
 import cn.bpzzr.change.ui.activity.base.BaseActivity;
+import cn.bpzzr.change.ui.fragment.CategoryFragment;
+import cn.bpzzr.change.ui.fragment.DiscoveryFragment;
 import cn.bpzzr.change.ui.fragment.Temp;
 import cn.bpzzr.change.ui.view.BottomBar;
 import cn.bpzzr.change.ui.view.BottomBarTab;
@@ -27,11 +32,17 @@ import cn.bpzzr.change.ui.view.StateLayout;
 import cn.bpzzr.change.util.LogUtil;
 
 public class HomeActivity extends BaseActivity {
+    /**
+     * 主页选中图标
+     */
     public static final int[] BGS_SELECTED = new int[]{
             R.drawable.maintab_stack_icon_press,
             R.drawable.maintab_category_icon_hover,
             R.drawable.maintab_city_icon_hover
     };
+    /**
+     * 主页未选中图标
+     */
     public static final int[] BGS_UN_SELECTED = new int[]{
             R.drawable.maintab_stack_icon,
             R.drawable.maintab_category_icon,
@@ -45,12 +56,25 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void initView() {
-        String[] titles = getResources().getStringArray(R.array.home_tab_title);
+        //获取主页的title数组
+        final String[] titles = getResources().getStringArray(R.array.home_tab_title);
         final List<BottomBarBean> bottomBarBeen = new ArrayList<>();
+        //数据填充
         for (int i = 0; i < titles.length; i++) {
-            bottomBarBeen.add(new BottomBarBean(BGS_UN_SELECTED[i], BGS_SELECTED[i], titles[i], i == 0));
+            bottomBarBeen.add(new BottomBarBean(
+                    BGS_UN_SELECTED[i],
+                    BGS_SELECTED[i],
+                    titles[i],
+                    i == 0)
+            );
         }
 
+        final List<BaseFragmentPagerBean<String>> fragmentList = new ArrayList<>();
+        fragmentList.add(new BaseFragmentPagerBean<>(Temp.newInstance("1"), "1"));
+        fragmentList.add(new BaseFragmentPagerBean<>(new CategoryFragment(), "2"));
+        fragmentList.add(new BaseFragmentPagerBean<>(new DiscoveryFragment(), "3"));
+
+        //设置Adapter
         baseBottomBar.setAdapter(new BottomBar.BottomBarAdapter() {
             @Override
             public int getTabCount() {
@@ -70,56 +94,44 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onItemClick(View itemView, BottomBar parent, int position) {
                 //管理页面
-                //BottomBarTab barTab = (BottomBarTab) itemView;
-                //barTab.setDotShow();
+                FragmentManager fragmentManager = getFragmentManager();
+
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                Fragment fragmentByTag = fragmentManager.findFragmentByTag(titles[position]);
+
+                if (fragmentByTag == null) {
+                    fragmentTransaction.add(
+                            R.id.frame_layout_container,
+                            fragmentList.get(position).mFragment,
+                            titles[position]).commit();
+                }else{
+                    for (int i = 0; i < fragmentList.size(); i++) {
+                        if (position != i){
+                            fragmentTransaction.hide(fragmentList.get(i).mFragment).commit();
+                        }else{
+                            fragmentTransaction.show(fragmentList.get(position).mFragment).commit();
+                        }
+                    }
+                }
+
             }
 
         });
+        baseBottomBar.getBarTab(0).performClick();
         customTbLl.setVisibility(View.GONE);
 
-        StateLayout stateLayout = new StateLayout(this);
-        frameLayoutContainer.addView(stateLayout);
+        //StateLayout stateLayout = new StateLayout(this);
+        //frameLayoutContainer.addView(stateLayout);
 
-        List<BaseFragmentPagerBean<String>> fragmentList = new ArrayList<>();
-        fragmentList.add(new BaseFragmentPagerBean<>(Temp.newInstance("1"),"1"));
-        fragmentList.add(new BaseFragmentPagerBean<>(Temp.newInstance("2"),"2"));
-        fragmentList.add(new BaseFragmentPagerBean<>(new Temp(),"3"));
-        fragmentList.add(new BaseFragmentPagerBean<>(new Temp(),"4"));
-        fragmentList.add(new BaseFragmentPagerBean<>(Temp.newInstance("5"),"5"));
-        fragmentList.add(new BaseFragmentPagerBean<>(new Temp(),"6"));
-        fragmentList.add(new BaseFragmentPagerBean<>(new Temp(),"7"));
-        stateLayout.setSuccessView(R.layout.base_view_pager);
-        ViewPager baseViewPAger = stateLayout.mSuccessView.findViewById(R.id.base_view_pager);
-        baseViewPAger.setAdapter(
-                new MyFragmentPagerAdapter<>(getFragmentManager(),fragmentList));
+
+        //stateLayout.setSuccessView(R.layout.base_view_pager);
+        //stateLayout.showSuccessView();
+        // ViewPager baseViewPAger = stateLayout.mSuccessView.findViewById(R.id.base_view_pager);
+        //baseViewPAger.setAdapter(
+        //        new MyFragmentPagerAdapter<>(getFragmentManager(), fragmentList));
         //baseViewPAger.setOffscreenPageLimit(7);
     }
-
-    public class MyBottomBarAdapter extends BottomBar.BottomBarAdapter {
-        List<BottomBarBean> bottomBarBeen;
-
-        @Override
-        public int getTabCount() {
-            return bottomBarBeen == null ? 0 : bottomBarBeen.size();
-        }
-
-        @Override
-        public View getTabView(BottomBar parent, int position) {
-            BottomBarTab barTab = new BottomBarTab(parent.getContext());
-            barTab.setBadgeHide();
-            barTab.setDotHide();
-            BottomBarBean bottomBarBean = bottomBarBeen.get(position);
-            barTab.setMBottomBarBean(bottomBarBean);
-            return barTab;
-        }
-
-        @Override
-        public void onItemClick(View itemView, BottomBar parent, int position) {
-            //getSupportFragmentManager();
-        }
-    }
-
-
 
     public static void startSelf(Activity activity) {
         Intent intent = new Intent(activity, HomeActivity.class);

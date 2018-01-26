@@ -186,8 +186,10 @@ public class StateLayout extends FrameLayout {
         LogUtil.e(stateTag, "on success......");
         mStateLlUnSuccess.setVisibility(GONE);
         if (mSuccessView != null) {
-            isSuccessShow = true;
-            mSuccessView.setVisibility(VISIBLE);
+            if (mSuccessView.getVisibility() == GONE) {
+                isSuccessShow = true;
+                mSuccessView.setVisibility(VISIBLE);
+            }
         }
     }
 
@@ -197,7 +199,9 @@ public class StateLayout extends FrameLayout {
     public void hideSuccessView() {
         isSuccessShow = false;
         if (mSuccessView != null) {
-            mSuccessView.setVisibility(GONE);
+            if (mSuccessView.getVisibility() == VISIBLE) {
+                mSuccessView.setVisibility(GONE);
+            }
         }
     }
 
