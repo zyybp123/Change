@@ -1,12 +1,9 @@
-package cn.bpzzr.change.ui.activity.guide;
+package cn.bpzzr.change.ui.activity;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -15,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.bpzzr.change.R;
-import cn.bpzzr.change.adapter.MyFragmentPagerAdapter;
-import cn.bpzzr.change.bean.BaseFragmentPagerBean;
+import cn.bpzzr.change.adapter.MyBottomBarAdapter;
 import cn.bpzzr.change.bean.BottomBarBean;
 import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.manager.MyActivityManager;
@@ -26,12 +22,9 @@ import cn.bpzzr.change.ui.activity.base.BaseActivity;
 import cn.bpzzr.change.ui.fragment.CategoryFragment;
 import cn.bpzzr.change.ui.fragment.DiscoveryFragment;
 import cn.bpzzr.change.ui.fragment.Temp;
-import cn.bpzzr.change.ui.view.BottomBar;
-import cn.bpzzr.change.ui.view.BottomBarTab;
-import cn.bpzzr.change.ui.view.StateLayout;
 import cn.bpzzr.change.util.LogUtil;
 
-public class HomeActivity extends BaseActivity {
+public class HomeActivity extends BaseActivity implements MyBottomBarAdapter.OnSelectedListener {
     /**
      * 主页选中图标
      */
@@ -48,6 +41,10 @@ public class HomeActivity extends BaseActivity {
             R.drawable.maintab_category_icon,
             R.drawable.maintab_city_icon
     };
+    /**
+     * 当前显示的Fragment
+     */
+    private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,80 +54,32 @@ public class HomeActivity extends BaseActivity {
     @Override
     public void initView() {
         //获取主页的title数组
-        final String[] titles = getResources().getStringArray(R.array.home_tab_title);
-        final List<BottomBarBean> bottomBarBeen = new ArrayList<>();
+        String[] titles = getResources().getStringArray(R.array.home_tab_title);
+        //fragment生成
+        List<Fragment> fragmentList = new ArrayList<>();
+        fragmentList.add(Temp.newInstance("1"));
+        fragmentList.add(new CategoryFragment());
+        fragmentList.add(new DiscoveryFragment());
+        //fragment的数量必须和title的数量保持一致
+        List<BottomBarBean> bottomBarBeen = new ArrayList<>();
         //数据填充
         for (int i = 0; i < titles.length; i++) {
             bottomBarBeen.add(new BottomBarBean(
-                    BGS_UN_SELECTED[i],
-                    BGS_SELECTED[i],
-                    titles[i],
-                    i == 0)
-            );
+                    BGS_UN_SELECTED[i], BGS_SELECTED[i], titles[i], i == 0, fragmentList.get(i)));
         }
 
-        final List<BaseFragmentPagerBean<String>> fragmentList = new ArrayList<>();
-        fragmentList.add(new BaseFragmentPagerBean<>(Temp.newInstance("1"), "1"));
-        fragmentList.add(new BaseFragmentPagerBean<>(new CategoryFragment(), "2"));
-        fragmentList.add(new BaseFragmentPagerBean<>(new DiscoveryFragment(), "3"));
-
         //设置Adapter
-        baseBottomBar.setAdapter(new BottomBar.BottomBarAdapter() {
-            @Override
-            public int getTabCount() {
-                return bottomBarBeen.size();
-            }
-
-            @Override
-            public View getTabView(BottomBar parent, final int position) {
-                BottomBarTab barTab = new BottomBarTab(parent.getContext());
-                barTab.setBadgeHide();
-                barTab.setDotHide();
-                BottomBarBean bottomBarBean = bottomBarBeen.get(position);
-                barTab.setMBottomBarBean(bottomBarBean);
-                return barTab;
-            }
-
-            @Override
-            public void onItemClick(View itemView, BottomBar parent, int position) {
-                //管理页面
-                FragmentManager fragmentManager = getFragmentManager();
-
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                Fragment fragmentByTag = fragmentManager.findFragmentByTag(titles[position]);
-
-                if (fragmentByTag == null) {
-                    fragmentTransaction.add(
-                            R.id.frame_layout_container,
-                            fragmentList.get(position).mFragment,
-                            titles[position]).commit();
-                }else{
-                    for (int i = 0; i < fragmentList.size(); i++) {
-                        if (position != i){
-                            fragmentTransaction.hide(fragmentList.get(i).mFragment).commit();
-                        }else{
-                            fragmentTransaction.show(fragmentList.get(position).mFragment).commit();
-                        }
-                    }
-                }
-
-            }
-
-        });
-        baseBottomBar.getBarTab(0).performClick();
+        MyBottomBarAdapter adapter = new MyBottomBarAdapter(bottomBarBeen, getFragmentManager(), this);
+        baseBottomBar.setAdapter(adapter);
+        //默认选中第一页
+        adapter.setDefaultPosition(0);
+        //不要toolbar
         customTbLl.setVisibility(View.GONE);
-
-        //StateLayout stateLayout = new StateLayout(this);
-        //frameLayoutContainer.addView(stateLayout);
-
-
-        //stateLayout.setSuccessView(R.layout.base_view_pager);
-        //stateLayout.showSuccessView();
-        // ViewPager baseViewPAger = stateLayout.mSuccessView.findViewById(R.id.base_view_pager);
-        //baseViewPAger.setAdapter(
-        //        new MyFragmentPagerAdapter<>(getFragmentManager(), fragmentList));
-        //baseViewPAger.setOffscreenPageLimit(7);
+        //控制消息的数量
+        /*BottomBarTab barTab = (BottomBarTab) baseBottomBar.getBarTab(2);
+        barTab.setBadgeText(120);
+        BottomBarTab barTab2 = (BottomBarTab) baseBottomBar.getBarTab(1);
+        barTab2.setDotShow();*/
     }
 
     public static void startSelf(Activity activity) {
@@ -206,5 +155,16 @@ public class HomeActivity extends BaseActivity {
     @Override
     public void onClick(View v) {
 
+    }
+
+    @Override
+    public void onSelected(View itemView, Fragment currentFragment, BottomBarBean bottomBarBean, int position) {
+        //选中事件的监听
+        /*if (position == 0) {
+            //刷新首页数据
+            if (currentFragment instanceof Temp) {
+                ((Temp) currentFragment).autoRefresh();
+            }
+        }*/
     }
 }

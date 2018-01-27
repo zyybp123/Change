@@ -44,7 +44,7 @@ public class BottomBar extends LinearLayout {
             adapter.setOnDataChanged(new OnDataChanged() {
                 @Override
                 public void onChange() {
-                    LogUtil.e(LOG_TAG,"----data has changed----");
+                    LogUtil.e(LOG_TAG, "----data has changed----");
                     addTabView(adapter);
                 }
             });
@@ -61,7 +61,7 @@ public class BottomBar extends LinearLayout {
             LogUtil.e(LOG_TAG, "--------The tab count can only be 0 to 5 !-------");
             tabCount = 0;
         }
-        if (tabCount >= 5){
+        if (tabCount >= 5) {
             LogUtil.e(LOG_TAG, "--------The tab count can only be 0 to 5 !-------");
             tabCount = 5;
         }
@@ -82,18 +82,21 @@ public class BottomBar extends LinearLayout {
      * @return 返回标签对象，若无则返回null
      */
     public View getBarTab(int position) {
-        if (position >= 0 && position < 5) {
-            //在范围中
-            return getChildAt(position);
-        } else {
-            //不在范围中
-            LogUtil.e(LOG_TAG, "----position is out of index!----");
-            return null;
+        int childCount = getChildCount();
+        //容错
+        if (position < 0) {
+            position = 0;
         }
+        if (position >= childCount) {
+            position = childCount - 1;
+        }
+        //在范围中
+        return getChildAt(position);
     }
 
 
     public abstract static class BottomBarAdapter {
+        public String msgTag = this.getClass().getSimpleName();
         /**
          * 数据变化监听器
          */

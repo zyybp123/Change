@@ -1,6 +1,7 @@
 package cn.bpzzr.change.ui.fragment;
 
 import cn.bpzzr.change.R;
+import cn.bpzzr.change.ui.fragment.base.BaseFragment;
 
 /**
  * Created by Administrator on 2018/1/26.

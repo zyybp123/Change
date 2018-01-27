@@ -67,7 +67,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.guide.HomeActivity"
+            android:name=".ui.activity.HomeActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTask">
             <intent-filter>

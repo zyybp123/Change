@@ -1,7 +1,6 @@
 package cn.bpzzr.change.ui.fragment;
 
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -24,6 +23,7 @@ import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.interf.ServerPath;
 import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.manager.ACache;
+import cn.bpzzr.change.ui.fragment.base.BaseFragmentRefreshPage;
 import cn.bpzzr.change.util.image.ImageLoad;
 import cn.bpzzr.change.net.progress.ProgressCallback;
 import cn.bpzzr.change.util.LogUtil;

@@ -31,6 +31,7 @@ import cn.bpzzr.change.R;
 import cn.bpzzr.change.bean.AdBean;
 import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.manager.ACache;
+import cn.bpzzr.change.ui.activity.HomeActivity;
 import cn.bpzzr.change.util.image.ImageLoad;
 import cn.bpzzr.change.util.LogUtil;
 import cn.bpzzr.change.util.StringUtil;

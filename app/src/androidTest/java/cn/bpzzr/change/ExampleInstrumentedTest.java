@@ -33,5 +33,7 @@ public class ExampleInstrumentedTest {
                 "     \n" +
                 "          ");
         assert spaceStr;
+        String ellipsisStr = StringUtil.getEllipsisStr(".心里快", 4, false);
+        assertEquals(".心里快",ellipsisStr);
     }
 }

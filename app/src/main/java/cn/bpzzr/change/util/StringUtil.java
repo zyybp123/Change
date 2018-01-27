@@ -37,4 +37,29 @@ public class StringUtil {
         String replaceAll = str.replaceAll("(?m)^\\\\s*$(\\\\n|\\\\r\\\\n)", "");
         return TextUtils.isEmpty(replaceAll);
     }
+
+    /**
+     * 获取限字符数的字符串（多余的用省略号替代）
+     *
+     * @param str                字符串
+     * @param length             省略后的长度
+     * @param isContainsEllipsis 长度是否算上省略号，true为省略后的长度包含省略号
+     * @return 返回省略后的字符串
+     */
+    public static String getEllipsisStr(String str, int length, boolean isContainsEllipsis) {
+        if (isSpaceStr(str)) {
+            //如果是空行，返回空串
+            return "";
+        } else {
+            if (length < 0) {
+                length = 0;
+            }
+            if (str.length() <= length) {
+                //如果字符串的长度小于等于要省略的长度，直接返回
+                return str;
+            }
+            //长度大于0，且小于字符串的长度
+            return str.substring(0, (isContainsEllipsis ? length - 1 : length)) + "…";
+        }
+    }
 }

@@ -1,4 +1,4 @@
-package cn.bpzzr.change.ui.fragment;
+package cn.bpzzr.change.ui.fragment.base;
 
 import android.app.Activity;
 import android.os.Bundle;

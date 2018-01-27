@@ -1,5 +1,6 @@
 package cn.bpzzr.change.bean;
 
+import android.app.Fragment;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 
@@ -37,6 +38,8 @@ public class BottomBarBean {
     private String loadTagImg;
     //文字加载的标识
     private String loadTagText;
+    //标签绑定的Fragment
+    private Fragment fragment;
 
     public BottomBarBean(int iconRes, String title) {
         this.title = title;
@@ -47,11 +50,12 @@ public class BottomBarBean {
         this.isSelected = isSelected;
     }
 
-    public BottomBarBean(int iconResNormal, int iconResSelect, String title, boolean isSelected) {
+    public BottomBarBean(int iconResNormal, int iconResSelect, String title, boolean isSelected, Fragment fragment) {
         this.iconResNormal = iconResNormal;
         this.iconResSelect = iconResSelect;
         this.title = title;
         this.isSelected = isSelected;
+        this.fragment = fragment;
         this.loadTagImg = BottomBarTab.IMG_LOAD_LOCAL;
         this.loadTagText = BottomBarTab.TEXT_LOAD_LOCAL;
     }
@@ -150,6 +154,14 @@ public class BottomBarBean {
 
     public void setTextColorSelectNet(int textColorSelectNet) {
         this.textColorSelectNet = textColorSelectNet;
+    }
+
+    public Fragment getFragment() {
+        return fragment;
+    }
+
+    public void setFragment(Fragment fragment) {
+        this.fragment = fragment;
     }
 
     @Override
