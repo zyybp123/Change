@@ -3,7 +3,11 @@ package cn.bpzzr.change.util;
 import android.content.Context;
 import android.graphics.Point;
 import android.support.annotation.NonNull;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.DisplayMetrics;
+import android.widget.TextView;
 
 /**
  * Created by Administrator on 2018/1/12.
@@ -57,5 +61,33 @@ public class UiUtil {
     public static int getActualHeight(Context context, int standardScreenValue, int standardValue) {
         int targetScreenHeight = totalSize(context).y;
         return standardValue * targetScreenHeight / standardScreenValue;
+    }
+
+    /**
+     * 在不绘制textView的情况下算出textView的高度，并且根据最大行数得到应该显示最后一个字符的下标，
+     * 请在主线程顺序执行，第一个返回值是最后一个字符的下标，第二个返回值是高度
+     *
+     * @param textView textView
+     * @param content  文本内容
+     * @param width    宽
+     * @param maxLine  最大行数
+     */
+    public static int[] measureTextViewHeight(@NonNull TextView textView, String content, int width, int maxLine) {
+        //LogUtil.e("Alex....", "宽度是" + width);
+        TextPaint textPaint = textView.getPaint();
+        float lineSpacingMultiplier = textView.getLineSpacingMultiplier();
+        StaticLayout staticLayout = new StaticLayout(content, textPaint, width,
+                Layout.Alignment.ALIGN_NORMAL, lineSpacingMultiplier, 0, false);
+        int[] result = new int[2];
+        if (staticLayout.getLineCount() > maxLine) {//如果行数超出限制
+            int lastIndex = staticLayout.getLineStart(maxLine) - 1;
+            result[0] = lastIndex;
+            result[1] = new StaticLayout(content.substring(0, lastIndex), textPaint, width, Layout.Alignment.ALIGN_NORMAL, 1, 0, false).getHeight();
+            return result;
+        } else {//如果行数没有超出限制
+            result[0] = -1;
+            result[1] = staticLayout.getHeight();
+            return result;
+        }
     }
 }

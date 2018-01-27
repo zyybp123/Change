@@ -1,5 +1,6 @@
 package cn.bpzzr.change.ui.activity.guide;
 
+import android.Manifest;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
@@ -22,6 +23,9 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.tbruyelle.rxpermissions2.Permission;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.trello.rxlifecycle2.components.RxActivity;
 
 import java.util.List;
 
@@ -35,10 +39,12 @@ import cn.bpzzr.change.ui.activity.HomeActivity;
 import cn.bpzzr.change.util.image.ImageLoad;
 import cn.bpzzr.change.util.LogUtil;
 import cn.bpzzr.change.util.StringUtil;
+import io.reactivex.functions.Consumer;
 
 import static cn.bpzzr.change.global.Change.mContext;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends RxActivity {
+    private static final String TAG = "SplashActivity";
     ACache mCache;
     List<AdBean.AdsBean.ResourcesBean> resourcesBeanList;
     @BindView(R.id.splash_iv)
@@ -165,6 +171,7 @@ public class SplashActivity extends AppCompatActivity {
                 HomeActivity.startSelf(SplashActivity.this);
             }
         });
+        //requestPermissions();
     }
 
     private void initSurfaceView(final String url) {
@@ -257,5 +264,41 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //屏蔽返回键
+    }
+
+    /**
+     * 权限
+     */
+    private void requestPermissions() {
+        RxPermissions rxPermission = new RxPermissions(this);
+        rxPermission
+                .requestEach(Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_CALENDAR,
+                        Manifest.permission.READ_CALL_LOG,
+                        Manifest.permission.READ_CONTACTS,
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.READ_SMS,
+                        Manifest.permission.RECORD_AUDIO,
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.CALL_PHONE,
+                        Manifest.permission.SEND_SMS)
+                .subscribe(new Consumer<Permission>() {
+                    @Override
+                    public void accept(Permission permission) throws Exception {
+                        if (permission.granted) {
+                            // 用户已经同意该权限
+                            LogUtil.e(TAG, permission.name + " is granted.");
+                        } else if (permission.shouldShowRequestPermissionRationale) {
+                            // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时，还会提示请求权限的对话框
+                            LogUtil.e(TAG, permission.name + " is denied. More info should be provided.");
+                        } else {
+                            // 用户拒绝了该权限，并且选中『不再询问』
+                            LogUtil.e(TAG, permission.name + " is denied.");
+                        }
+                    }
+                });
+
+
     }
 }
