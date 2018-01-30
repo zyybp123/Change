@@ -127,6 +127,11 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment implements
         }
         //屏蔽闪烁动画
         ((DefaultItemAnimator) mRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+        successViewBind();
+    }
+
+    public void successViewBind() {
+        //成功View绑定后
     }
 
     /**
@@ -187,12 +192,18 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment implements
             //如果要自动刷新，调用一下自动刷新的方法
             autoRefresh();
         } else {
-            //显示加载中的状态
-            showLoading();
+            if (isShowLoadingFrist()) {
+                //显示加载中的状态
+                showLoading();
+            }
             refreshRequest();
         }
         //其它只需要发起一次的请求
         onceRequest();
+    }
+
+    public boolean isShowLoadingFrist(){
+        return true;
     }
 
     /**

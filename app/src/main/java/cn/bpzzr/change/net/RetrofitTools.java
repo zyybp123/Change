@@ -2,6 +2,8 @@ package cn.bpzzr.change.net;
 
 import com.google.gson.Gson;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,13 +19,16 @@ import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.interf.ServerPath;
 import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.mvp.MVP;
-import cn.bpzzr.change.net.progress.ProgressCallback;
 import cn.bpzzr.change.net.progress.ProgressInterceptor;
 import cn.bpzzr.change.util.LogUtil;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -41,11 +46,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitTools {
     private static RetrofitTools mInstance = null;
-    private RetrofitClient client;
+    private RetrofitService service;
     private OkHttpClient okClient;
     private Retrofit retrofit;
     private Gson gson;
-    private ProgressCallback progressCallback;
 
     /**
      * 构造 初始化相应参数
@@ -77,7 +81,16 @@ public class RetrofitTools {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okClient)
                 .build();
-        client = retrofit.create(RetrofitClient.class);
+        service = retrofit.create(RetrofitService.class);
+    }
+
+    /**
+     * 获取retrofit，可以将服务接口独立出来
+     *
+     * @return 返回retrofit 对象
+     */
+    public Retrofit getRetrofit() {
+        return retrofit;
     }
 
     /**
@@ -85,8 +98,17 @@ public class RetrofitTools {
      *
      * @return 返回RetrofitClient
      */
-    public RetrofitClient getClient() {
-        return client;
+    public RetrofitService getService() {
+        return service;
+    }
+
+    /**
+     * 获取okClient
+     *
+     * @return 返回RetrofitClient
+     */
+    public OkHttpClient getOkClient() {
+        return okClient;
     }
 
     /**
@@ -106,10 +128,10 @@ public class RetrofitTools {
                     .addConverterFactory(GsonConverterFactory.create())// 添加json转换器
                     .client(okClient)
                     .build();
-            if (client != null) {
-                client = null;
+            if (service != null) {
+                service = null;
             }
-            client = retrofit.create(RetrofitClient.class);
+            service = retrofit.create(RetrofitService.class);
         }
         return this;
     }
@@ -132,27 +154,69 @@ public class RetrofitTools {
     }
 
     public void getTest(MVP.View view) {
-        Call<DoubanTest> call = client.getTest();
+        Call<DoubanTest> call = service.getTest();
         call.enqueue(new MyCallback<>(new MyDataParseSimple<DoubanTest>(view, ServerPath.DOU_BAN_BOOK)));
     }
 
     public void getTest2(MVP.View view) {
-        Call<GankTest> call = client.getTest2();
+        Call<GankTest> call = service.getTest2();
         call.enqueue(new MyCallback<>(new MyDataParseSimple<GankTest>(view, ServerPath.GANK_ANDROID)));
     }
 
     public void getTest3(MVP.View mView) {
-        client.getTest3()
+        service.getTest3()
                 .compose(this.<GankTest>setThread())
                 .subscribe(new MyObserverSimple<GankTest>(mView, ServerPath.GANK_ANDROID));
 
     }
 
-    public void downloadFile(MVP.View mView, String url,ProgressCallback progressCallback) {
-        this.progressCallback = progressCallback;
-        client.download(url)
+    public void downloadFile(MVP.View mView, String url) {
+        service.download(url)
                 .compose(this.<ResponseBody>setThread())
-                .subscribe(new MyObserverSimple<ResponseBody>(mView, "download"));
+                .subscribe(new MyObserverSimple<ResponseBody>(mView, url));
+
+    }
+
+    public void download(String url, File filePath, String fileName) {
+        service.download(url)
+                .map(new Function<ResponseBody, InputStream>() {
+                    @Override
+                    public InputStream apply(ResponseBody responseBody) throws Exception {
+                        //将响应体转换为输入流
+                        return responseBody.byteStream();
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .doOnNext(new Consumer<InputStream>() {
+                    @Override
+                    public void accept(InputStream inputStream) throws Exception {
+                        //在此处写入文件
+                    }
+                })
+                //.observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.computation())
+                .subscribe(new Observer<InputStream>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(InputStream inputStream) {
+                        //
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+        ;
     }
 
     /**
@@ -162,7 +226,7 @@ public class RetrofitTools {
         RequestBody requestBody = RequestBody.create(
                 MediaType.parse("application/json;charset=UTF-8"),
                 gson.toJson(new AdParam()));
-        client.getAds(requestBody)
+        service.getAds(requestBody)
                 .compose(this.<AdBean>setThread())
                 .subscribe(new MyObserverSimple<AdBean>(mView, ServerPath.WANG_YI_AD));
     }
@@ -172,7 +236,7 @@ public class RetrofitTools {
                             String projectResourceClassId, String xyToken, Map<String, RequestBody> map) {
         // 执行请求
         String uuid = "";
-        Call<ResultBaseBean<List<BaseBean>>> call = client
+        Call<ResultBaseBean<List<BaseBean>>> call = service
                 .uploadFiles(projectId, accountId, projectResourceClassId, uuid, xyToken, map);
         call.enqueue(new MyCallback<>(new MyDataParse<List<BaseBean>>(mView, "")));
         return call;

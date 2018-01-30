@@ -3,10 +3,8 @@ package cn.bpzzr.change.net.progress;
 import android.support.annotation.NonNull;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-import cn.bpzzr.change.net.progress.ProgressCallback;
+import cn.bpzzr.change.net.download.FileResponseBody;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
@@ -16,23 +14,12 @@ import okhttp3.Response;
  */
 
 public class ProgressInterceptor implements Interceptor {
-    /**
-     * 监听器map，会存在多个下载同时进行
-     */
-    static final Map<String, ProgressCallback> LISTENER_MAP = new HashMap<>();
-
-    public static void addListener(String url, ProgressCallback listener) {
-        LISTENER_MAP.put(url, listener);
-    }
-
-    public static void removeListener(String url) {
-        LISTENER_MAP.remove(url);
-    }
 
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
         Response originalResponse = chain.proceed(chain.request());
         String url = chain.request().url().toString();
+        //返回写入了监听器的响应体
         return originalResponse.newBuilder()
                 .body(new FileResponseBody(url, originalResponse.body()))
                 .build();

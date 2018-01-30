@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import cn.bpzzr.change.interf.SomeKeys;
-import cn.bpzzr.change.net.progress.FileResponseBody;
-import cn.bpzzr.change.net.progress.ProgressCallback;
 import cn.bpzzr.change.util.LogUtil;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;

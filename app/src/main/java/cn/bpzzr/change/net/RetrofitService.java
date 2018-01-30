@@ -30,7 +30,7 @@ import retrofit2.http.Url;
  * retrofit具体请求方法接口
  */
 
-public interface RetrofitClient {
+public interface RetrofitService {
     /**
      * 以json格式提交参数的header
      */
@@ -85,5 +85,15 @@ public interface RetrofitClient {
     @Streaming
     @GET
     Observable<ResponseBody> download(@Url String url);
+
+    /**
+     * 断点下载的方法
+     *
+     * @param range range头，记录从哪开始下载
+     * @param url   下载路径
+     */
+    @GET
+    @Streaming
+    Observable<ResponseBody> download(@Header("Range") String range, @Url String url);
 
 }

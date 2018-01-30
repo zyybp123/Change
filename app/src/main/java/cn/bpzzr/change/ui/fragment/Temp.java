@@ -10,10 +10,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import cn.bpzzr.change.R;
@@ -25,9 +21,7 @@ import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.manager.ACache;
 import cn.bpzzr.change.ui.fragment.base.BaseFragmentRefreshPage;
 import cn.bpzzr.change.util.image.ImageLoad;
-import cn.bpzzr.change.net.progress.ProgressCallback;
 import cn.bpzzr.change.util.LogUtil;
-import okhttp3.ResponseBody;
 
 import static cn.bpzzr.change.global.Change.mContext;
 
@@ -72,21 +66,17 @@ public class Temp extends BaseFragmentRefreshPage {
         Bundle arguments = getArguments();
         if (arguments != null) {
             String name = arguments.getString("name");
+            String url = "http://yt-adv.nosdn.127.net/channel6/aaej_20180122.mp4";
             if ("1".equals(name)) {
                 retrofitTools.getAds(this);
+                //DownloadManager.getInstance().downLoad(url);
             }
-            if ("2".equals(name)) {
+
+            /*if ("1".equals(name)) {
                 retrofitTools
                         .downloadFile(this,
-                                "http://yt-adv.nosdn.127.net/channel6/aaej_20180122.mp4",
-                                new ProgressCallback() {
-                                    @Override
-                                    public void onLoading(long contentLength, long bytesWritten, boolean done) {
-                                        int progress = (int) ((bytesWritten * 100f / contentLength) + 0.5f);
-                                        //LogUtil.e("download...." + progress);
-                                    }
-                                });
-            }
+                                "http://yt-adv.nosdn.127.net/channel6/aaej_20180122.mp4");
+            }*/
         }
     }
 
@@ -121,34 +111,8 @@ public class Temp extends BaseFragmentRefreshPage {
         LogUtil.e(mFragmentTag, "...result..." + data);
         listData(tag, data);
         adData(tag, data);
-        if ("download".equals(tag)) {
-            ResponseBody body = (ResponseBody) data;
-            InputStream is = null;
-            byte[] buf = new byte[2048];
-            int len;
-            FileOutputStream fos = null;
-            try {
-                is = body.byteStream();
-                File dir = new File(mActivity.getCacheDir(), "splash/mp4");
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-                File file = new File(dir, "123.mp4");
-                fos = new FileOutputStream(file);
-                while ((len = is.read(buf)) != -1) {
-                    fos.write(buf, 0, len);
-                }
-                fos.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (is != null) is.close();
-                    if (fos != null) fos.close();
-                } catch (IOException e) {
-                    LogUtil.e("saveFile", e.getMessage());
-                }
-            }
+        if ("http://yt-adv.nosdn.127.net/channel6/aaej_20180122.mp4".equals(tag)) {
+
 
         }
     }

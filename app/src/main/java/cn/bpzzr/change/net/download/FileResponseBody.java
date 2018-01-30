@@ -1,4 +1,4 @@
-package cn.bpzzr.change.net.progress;
+package cn.bpzzr.change.net.download;
 
 import android.support.annotation.NonNull;
 
@@ -6,6 +6,8 @@ import org.jetbrains.annotations.Contract;
 
 import java.io.IOException;
 
+import cn.bpzzr.change.manager.ProgressManager;
+import cn.bpzzr.change.net.progress.ProgressCallback;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import okio.Buffer;
@@ -36,7 +38,7 @@ public class FileResponseBody extends ResponseBody {
     public FileResponseBody(String url, ResponseBody responseBody) {
         super();
         this.mResponseBody = responseBody;
-        this.mCallback = ProgressInterceptor.LISTENER_MAP.get(url);
+        this.mCallback = ProgressManager.LISTENER_MAP.get(url);
     }
 
     @Override

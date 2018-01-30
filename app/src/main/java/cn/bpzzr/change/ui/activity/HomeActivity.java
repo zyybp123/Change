@@ -22,6 +22,7 @@ import cn.bpzzr.change.ui.activity.base.BaseActivity;
 import cn.bpzzr.change.ui.fragment.CategoryFragment;
 import cn.bpzzr.change.ui.fragment.DiscoveryFragment;
 import cn.bpzzr.change.ui.fragment.Temp;
+import cn.bpzzr.change.ui.fragment.Temp2;
 import cn.bpzzr.change.util.LogUtil;
 
 public class HomeActivity extends BaseActivity implements MyBottomBarAdapter.OnSelectedListener {
@@ -58,7 +59,8 @@ public class HomeActivity extends BaseActivity implements MyBottomBarAdapter.OnS
         //fragment生成
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(Temp.newInstance("1"));
-        fragmentList.add(new CategoryFragment());
+        //fragmentList.add(new CategoryFragment());
+        fragmentList.add(new Temp2());
         fragmentList.add(new DiscoveryFragment());
         //fragment的数量必须和title的数量保持一致
         List<BottomBarBean> bottomBarBeen = new ArrayList<>();

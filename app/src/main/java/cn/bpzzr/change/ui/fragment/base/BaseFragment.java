@@ -169,14 +169,14 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
     /**
      * 初始化界面，比如找到控件
      */
-    public abstract void initView();
-
-    /**
-     * 控件已经绑定成功
-     */
-    public void viewHasBind() {
+    public void initView(){
 
     }
+
+    /**
+     * 根布局已经绑定成功，子类强制实现
+     */
+    public abstract void viewHasBind();
 
     /**
      * 能否加载数据

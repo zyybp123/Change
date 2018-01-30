@@ -1,15 +1,19 @@
 package cn.bpzzr.change.util.image;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.Request;
@@ -23,6 +27,9 @@ import java.io.File;
 
 import cn.bpzzr.change.manager.GlideApp;
 import cn.bpzzr.change.manager.GlideRequest;
+import cn.bpzzr.change.manager.ProgressManager;
+import cn.bpzzr.change.net.progress.ProgressCallback;
+import cn.bpzzr.change.util.LogUtil;
 
 /**
  * Created by ZYY
@@ -47,6 +54,7 @@ public class ImageLoad {
      *
      * @param url 链接
      */
+    @NonNull
     public static GlideRequest<Drawable> load(Context context, String url) {
         return GlideApp.with(context).load(url);
     }
@@ -56,6 +64,7 @@ public class ImageLoad {
      *
      * @param file 图片文件
      */
+    @NonNull
     public static GlideRequest<Drawable> load(Context context, File file) {
         return GlideApp.with(context).load(file);
     }
@@ -65,6 +74,7 @@ public class ImageLoad {
      *
      * @param resId 资源id
      */
+    @NonNull
     public static GlideRequest<Drawable> load(Context context, @DrawableRes int resId) {
         return GlideApp.with(context).load(resId);
     }
@@ -170,66 +180,162 @@ public class ImageLoad {
         }
     }
 
-    private void ss(Context context,String url){
+    /**
+     * 从网络加载图片
+     *
+     * @param url 链接
+     */
+    @NonNull
+    public static GlideRequest<Drawable> load(Fragment fragment, String url) {
+        return GlideApp.with(fragment).load(url);
+    }
+
+    /**
+     * 从文件加载图片
+     *
+     * @param file 图片文件
+     */
+    @NonNull
+    public static GlideRequest<Drawable> load(Fragment fragment, File file) {
+        return GlideApp.with(fragment).load(file);
+    }
+
+    /**
+     * 从资源目录里加载
+     *
+     * @param resId 资源id
+     */
+    @NonNull
+    public static GlideRequest<Drawable> load(Fragment fragment, @DrawableRes int resId) {
+        return GlideApp.with(fragment).load(resId);
+    }
+
+    /**
+     * 图片的简单加载
+     *
+     * @param fragment  跟随fragment
+     * @param url       图片的链接
+     * @param imageView 目标控件
+     */
+    public static void glideLoad(Fragment fragment, String url, @NonNull ImageView imageView) {
+        load(fragment, url).into(imageView);
+    }
+
+    /**
+     * 图片的简单加载
+     *
+     * @param fragment  跟随fragment
+     * @param resId     资源id
+     * @param imageView 目标控件
+     */
+    public static void glideLoad(Fragment fragment, @DrawableRes int resId, @NonNull ImageView imageView) {
+        load(fragment, resId).into(imageView);
+    }
+
+    /**
+     * 图片的简单加载，从本地文件中
+     *
+     * @param fragment  跟随fragment
+     * @param file      本地图片
+     * @param imageView 目标控件
+     */
+    public static void glideLoad(Fragment fragment, File file, @NonNull ImageView imageView) {
+        load(fragment, file).into(imageView);
+    }
+
+    /**
+     * 图片带状态监听的加载
+     *
+     * @param fragment  跟随fragment
+     * @param url       图片的链接
+     * @param imageView 目标控件
+     */
+    public static void glideLoad(Fragment fragment, String url, @NonNull ImageView imageView, RequestListener<Drawable> listener) {
+        load(fragment, url).listener(listener).into(imageView);
+    }
+
+    /**
+     * 图片带状态监听的加载
+     *
+     * @param fragment  跟随fragment
+     * @param resId     资源id
+     * @param imageView 目标控件
+     */
+    public static void glideLoad(Fragment fragment, @DrawableRes int resId, @NonNull ImageView imageView, RequestListener<Drawable> listener) {
+        load(fragment, resId).listener(listener).into(imageView);
+    }
+
+    /**
+     * 图片带状态监听的加载
+     *
+     * @param fragment  跟随fragment
+     * @param file      本地文件
+     * @param imageView 目标控件
+     */
+    public static void glideLoad(Fragment fragment, File file, @NonNull ImageView imageView, RequestListener<Drawable> listener) {
+        load(fragment, file).listener(listener).into(imageView);
+    }
+
+    /**
+     * 图片带状态监听和形状变换的加载
+     *
+     * @param fragment  跟随fragment
+     * @param url       图片的链接
+     * @param imageView 目标控件
+     * @param shape     要显示的图片的形状
+     */
+    public static void glideLoad(Fragment fragment, String url, @NonNull ImageView imageView, int shape, int roundingRadius) {
+        Transformation<Bitmap> transformation;
+        GlideRequest<Drawable> load = load(fragment, url);
+        //如有需要其背景也应该为对应的形状
+        switch (shape) {
+            case CIRCLE:
+                //加载圆形图片，
+                transformation = new CircleCrop();
+                break;
+            case FILLET:
+                //加载全圆角图片，
+                transformation = new RoundedCorners(roundingRadius);
+                //transformation = new MyRoundCorners(context,roundingRadius, MyRoundCorners.CornerType.ALL);
+                break;
+            default:
+                //默认无转换
+                transformation = null;
+                break;
+        }
+        if (transformation == null) {
+            load.into(imageView);
+        } else {
+            load.transform(transformation)
+                    .into(imageView);
+        }
+    }
+
+    public static void ss(Fragment context, final String url, ImageView imageView) {
+        ProgressManager.addListener(url, new ProgressCallback() {
+            @Override
+            public void onLoading(long contentLength, long bytesWritten, boolean done) {
+                LogUtil.e("progress......" + (int) (bytesWritten * 100f / contentLength + 0.5f) + "%");
+            }
+        });
         GlideApp.with(context)
                 .load(url)
-                .into(new Target<Drawable>() {
+                .listener(new RequestListener<Drawable>() {
                     @Override
-                    public void onLoadStarted(@Nullable Drawable placeholder) {
-
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        //加载失败，移除监听器
+                        ProgressManager.removeListener(url);
+                        return false;
                     }
 
                     @Override
-                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
-
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        //加载成功，移除监听器
+                        ProgressManager.removeListener(url);
+                        return false;
                     }
-
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-
-                    }
-
-                    @Override
-                    public void getSize(@NonNull SizeReadyCallback cb) {
-
-                    }
-
-                    @Override
-                    public void removeCallback(@NonNull SizeReadyCallback cb) {
-
-                    }
-
-                    @Override
-                    public void setRequest(@Nullable Request request) {
-
-                    }
-
-                    @Nullable
-                    @Override
-                    public Request getRequest() {
-                        return null;
-                    }
-
-                    @Override
-                    public void onStart() {
-
-                    }
-
-                    @Override
-                    public void onStop() {
-
-                    }
-
-                    @Override
-                    public void onDestroy() {
-
-                    }
-                });
+                })
+                .into(imageView);
     }
 
 

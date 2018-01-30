@@ -95,6 +95,7 @@ public class StateLayout extends FrameLayout {
      */
     public void showLoading() {
         LogUtil.e(stateTag, "on loading......");
+        mStateLlUnSuccess.setVisibility(VISIBLE);
         //隐藏图片，显示进度条
         mStatePbLoading.setVisibility(VISIBLE);
         mStateIv.setVisibility(GONE);
@@ -115,6 +116,7 @@ public class StateLayout extends FrameLayout {
 
     private void showUnSuccess(boolean isEmpty) {
         LogUtil.e(stateTag, "on unSuccess......isEmpty..." + isEmpty);
+        mStateLlUnSuccess.setVisibility(VISIBLE);
         //隐藏进度条，显示图片
         mStatePbLoading.setVisibility(GONE);
         mStateIv.setVisibility(VISIBLE);
