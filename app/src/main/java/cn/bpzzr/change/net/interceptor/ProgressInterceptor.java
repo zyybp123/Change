@@ -1,10 +1,12 @@
-package cn.bpzzr.change.net.progress;
+package cn.bpzzr.change.net.interceptor;
 
 import android.support.annotation.NonNull;
 
 import java.io.IOException;
 
-import cn.bpzzr.change.net.download.FileResponseBody;
+import cn.bpzzr.change.net.common.FileResponseBody;
+import cn.bpzzr.change.util.LogUtil;
+import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
@@ -19,6 +21,8 @@ public class ProgressInterceptor implements Interceptor {
     public Response intercept(@NonNull Chain chain) throws IOException {
         Response originalResponse = chain.proceed(chain.request());
         String url = chain.request().url().toString();
+        Headers headers = originalResponse.headers();
+        //LogUtil.e("response header ..... " + headers.byteCount());
         //返回写入了监听器的响应体
         return originalResponse.newBuilder()
                 .body(new FileResponseBody(url, originalResponse.body()))

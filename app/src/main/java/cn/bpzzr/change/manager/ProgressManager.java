@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.bpzzr.change.net.progress.ProgressCallback;
+import cn.bpzzr.change.net.callback.ProgressCallback;
 import okhttp3.OkHttpClient;
 
 /**

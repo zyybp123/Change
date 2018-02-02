@@ -7,28 +7,23 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.transition.Transition;
 
 import java.io.File;
 
 import cn.bpzzr.change.manager.GlideApp;
 import cn.bpzzr.change.manager.GlideRequest;
 import cn.bpzzr.change.manager.ProgressManager;
-import cn.bpzzr.change.net.progress.ProgressCallback;
+import cn.bpzzr.change.net.callback.ProgressCallback;
 import cn.bpzzr.change.util.LogUtil;
 
 /**

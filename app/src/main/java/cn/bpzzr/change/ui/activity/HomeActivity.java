@@ -21,6 +21,7 @@ import cn.bpzzr.change.interf.ServerPath;
 import cn.bpzzr.change.ui.activity.base.BaseActivity;
 import cn.bpzzr.change.ui.fragment.CategoryFragment;
 import cn.bpzzr.change.ui.fragment.DiscoveryFragment;
+import cn.bpzzr.change.ui.fragment.MineFragment;
 import cn.bpzzr.change.ui.fragment.Temp;
 import cn.bpzzr.change.ui.fragment.Temp2;
 import cn.bpzzr.change.util.LogUtil;
@@ -32,7 +33,8 @@ public class HomeActivity extends BaseActivity implements MyBottomBarAdapter.OnS
     public static final int[] BGS_SELECTED = new int[]{
             R.drawable.maintab_stack_icon_press,
             R.drawable.maintab_category_icon_hover,
-            R.drawable.maintab_city_icon_hover
+            R.drawable.maintab_city_icon_hover,
+            R.drawable.maintab_stack_icon_press
     };
     /**
      * 主页未选中图标
@@ -40,7 +42,8 @@ public class HomeActivity extends BaseActivity implements MyBottomBarAdapter.OnS
     public static final int[] BGS_UN_SELECTED = new int[]{
             R.drawable.maintab_stack_icon,
             R.drawable.maintab_category_icon,
-            R.drawable.maintab_city_icon
+            R.drawable.maintab_city_icon,
+            R.drawable.maintab_stack_icon
     };
     /**
      * 当前显示的Fragment
@@ -62,6 +65,7 @@ public class HomeActivity extends BaseActivity implements MyBottomBarAdapter.OnS
         //fragmentList.add(new CategoryFragment());
         fragmentList.add(new Temp2());
         fragmentList.add(new DiscoveryFragment());
+        fragmentList.add(new MineFragment());
         //fragment的数量必须和title的数量保持一致
         List<BottomBarBean> bottomBarBeen = new ArrayList<>();
         //数据填充

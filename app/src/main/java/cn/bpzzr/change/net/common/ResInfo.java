@@ -1,4 +1,4 @@
-package cn.bpzzr.change.net.download;
+package cn.bpzzr.change.net.common;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import org.greenrobot.greendao.annotation.Entity;
 
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 
 /**
  * Created by Administrator on 2018/1/30.
@@ -13,11 +14,16 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class ResInfo implements Parcelable {
-
+    /**
+     * 本地数据库的自增长id
+     * 如果主键设置为包装类Long类型, 那么在生成的Dao类中会有一个判断非null才插入
+     */
+    @Id(autoincrement = true)
+    private Long localId;
     /**
      * 资源id
      */
-    private int resId;
+    private long resId;
     /**
      * 资源名字，无后缀
      */
@@ -58,12 +64,24 @@ public class ResInfo implements Parcelable {
      * 文件的类型
      */
     private String type;
+    /**
+     * 文件最后修改时间
+     */
+    private long lastModifyTime;
 
 
     public ResInfo() {
     }
 
-    public int getResId() {
+    public Long getLocalId() {
+        return localId;
+    }
+
+    public void setLocalId(Long localId) {
+        this.localId = localId;
+    }
+
+    public long getResId() {
         return resId;
     }
 
@@ -151,6 +169,15 @@ public class ResInfo implements Parcelable {
         this.type = type;
     }
 
+    public long getLastModifyTime() {
+        return lastModifyTime;
+    }
+
+    public void setLastModifyTime(long lastModifyTime) {
+        this.lastModifyTime = lastModifyTime;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -158,7 +185,8 @@ public class ResInfo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.resId);
+        dest.writeValue(this.localId);
+        dest.writeLong(this.resId);
         dest.writeString(this.resName);
         dest.writeString(this.fileDir);
         dest.writeString(this.fullName);
@@ -169,10 +197,16 @@ public class ResInfo implements Parcelable {
         dest.writeString(this.absolutePath);
         dest.writeInt(this.status);
         dest.writeString(this.type);
+        dest.writeLong(this.lastModifyTime);
+    }
+
+    public void setResId(long resId) {
+        this.resId = resId;
     }
 
     protected ResInfo(Parcel in) {
-        this.resId = in.readInt();
+        this.localId = (Long) in.readValue(Long.class.getClassLoader());
+        this.resId = in.readLong();
         this.resName = in.readString();
         this.fileDir = in.readString();
         this.fullName = in.readString();
@@ -183,12 +217,15 @@ public class ResInfo implements Parcelable {
         this.absolutePath = in.readString();
         this.status = in.readInt();
         this.type = in.readString();
+        this.lastModifyTime = in.readLong();
     }
 
-    @Generated(hash = 797803553)
-    public ResInfo(int resId, String resName, String fileDir, String fullName,
-                   long totalSize, long currentSize, int progress, String url,
-                   String absolutePath, int status, String type) {
+    @Generated(hash = 1716068615)
+    public ResInfo(Long localId, long resId, String resName, String fileDir,
+                   String fullName, long totalSize, long currentSize, int progress,
+                   String url, String absolutePath, int status, String type,
+                   long lastModifyTime) {
+        this.localId = localId;
         this.resId = resId;
         this.resName = resName;
         this.fileDir = fileDir;
@@ -200,6 +237,7 @@ public class ResInfo implements Parcelable {
         this.absolutePath = absolutePath;
         this.status = status;
         this.type = type;
+        this.lastModifyTime = lastModifyTime;
     }
 
     public static final Creator<ResInfo> CREATOR = new Creator<ResInfo>() {

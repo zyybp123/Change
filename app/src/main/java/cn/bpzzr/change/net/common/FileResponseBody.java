@@ -1,4 +1,4 @@
-package cn.bpzzr.change.net.download;
+package cn.bpzzr.change.net.common;
 
 import android.support.annotation.NonNull;
 
@@ -7,7 +7,8 @@ import org.jetbrains.annotations.Contract;
 import java.io.IOException;
 
 import cn.bpzzr.change.manager.ProgressManager;
-import cn.bpzzr.change.net.progress.ProgressCallback;
+import cn.bpzzr.change.net.callback.ProgressCallback;
+import cn.bpzzr.change.util.LogUtil;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import okio.Buffer;
@@ -34,10 +35,15 @@ public class FileResponseBody extends ResponseBody {
      * BufferedSource
      */
     private BufferedSource mBufferedSource;
+    /**
+     * 请求的路径
+     */
+    private String url;
 
     public FileResponseBody(String url, ResponseBody responseBody) {
         super();
         this.mResponseBody = responseBody;
+        this.url = url;
         this.mCallback = ProgressManager.LISTENER_MAP.get(url);
     }
 
@@ -51,11 +57,13 @@ public class FileResponseBody extends ResponseBody {
 
     @Override
     public long contentLength() {
+        LogUtil.e("length......" + mResponseBody.contentLength());
         return mResponseBody.contentLength();
     }
 
     @Override
     public MediaType contentType() {
+        LogUtil.e("type......" + mResponseBody.contentType());
         return mResponseBody.contentType();
     }
 
@@ -74,9 +82,13 @@ public class FileResponseBody extends ResponseBody {
             @Override
             public long read(@NonNull Buffer sink, long byteCount) throws IOException {
                 long bytesRead = super.read(sink, byteCount);
+                long contentLength = mResponseBody.contentLength();
+                //LogUtil.e("response body", "thread:" + Thread.currentThread());
+                //处理进度的显示
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;
                 if (mCallback != null) {
-                    mCallback.onLoading(mResponseBody.contentLength(), totalBytesRead, bytesRead == -1);
+                    //只有在文件写入时才会生效的回调
+                    mCallback.onLoading(contentLength, totalBytesRead, totalBytesRead == -1);
                 }
                 return bytesRead;
             }

@@ -12,20 +12,6 @@ import cn.bpzzr.change.ui.fragment.base.BaseFragmentRefreshPage;
  */
 
 public class HomeFragment extends BaseFragmentRefreshPage {
-    @Override
-    public void onError(String tag, String msg) {
-
-    }
-
-    @Override
-    public void onSuccess(String tag, String result, Object data) {
-
-    }
-
-    @Override
-    public void onEmpty(String tag) {
-
-    }
 
     @Override
     public RecyclerView.LayoutManager getLayoutManager() {
@@ -41,6 +27,24 @@ public class HomeFragment extends BaseFragmentRefreshPage {
     protected void onceRequest() {
 
     }
+
+
+    @Override
+    public void onError(String tag, String msg) {
+
+    }
+
+    @Override
+    public void onSuccess(String tag, String result, Object data) {
+
+    }
+
+    @Override
+    public void onEmpty(String tag) {
+
+    }
+
+
 
     @Override
     protected void refreshRequest() {

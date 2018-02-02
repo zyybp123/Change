@@ -1,4 +1,4 @@
-package cn.bpzzr.change.net;
+package cn.bpzzr.change.net.callback;
 
 /**
  * Created by Administrator on 2018/1/9.
@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import cn.bpzzr.change.bean.ResultBaseBean;
 import cn.bpzzr.change.mvp.MVP;
+import cn.bpzzr.change.net.DataParse;
 import cn.bpzzr.change.util.LogUtil;
 import retrofit2.Call;
 
@@ -16,7 +17,7 @@ import retrofit2.Call;
  *
  * @param <T>
  */
-class MyDataParseSimple<T> implements DataParse<T> {
+public class MyDataParseSimple<T> implements DataParse<T> {
 
 
     private MVP.View mView; //实现View接口的界面

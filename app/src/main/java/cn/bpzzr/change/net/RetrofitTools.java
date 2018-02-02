@@ -1,6 +1,10 @@
 package cn.bpzzr.change.net;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
+
+import org.jetbrains.annotations.Contract;
 
 import java.io.File;
 import java.io.InputStream;
@@ -19,7 +23,12 @@ import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.interf.ServerPath;
 import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.mvp.MVP;
-import cn.bpzzr.change.net.progress.ProgressInterceptor;
+import cn.bpzzr.change.net.callback.MyCallback;
+import cn.bpzzr.change.net.callback.MyDataParse;
+import cn.bpzzr.change.net.callback.MyDataParseSimple;
+import cn.bpzzr.change.net.callback.MyObserverSimple;
+import cn.bpzzr.change.net.interceptor.Interceptors;
+import cn.bpzzr.change.net.interceptor.ProgressInterceptor;
 import cn.bpzzr.change.util.LogUtil;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -70,17 +79,18 @@ public class RetrofitTools {
                 .writeTimeout(60, TimeUnit.MINUTES)       //写超时   60min
                 .retryOnConnectionFailure(true)                   //是否自动重连
                 //.sslSocketFactory(sslContext.getSocketFactory())//证书配置
-                .addInterceptor(Interceptors.getHeaderInterceptor(baseUrlMap, baseUrl))
-                .addInterceptor(new ProgressInterceptor())
-                .addNetworkInterceptor(Interceptors.getLogInterceptor())
+                .addInterceptor(Interceptors.getHeaderInterceptor(baseUrlMap, baseUrl))//添加header拦截器
+                .addInterceptor(new ProgressInterceptor())//添加进度拦截器
+                //.addNetworkInterceptor(Interceptors.getLogInterceptor())//添加日志拦截器,大文件下载会产生OOM
                 .build();
         // 初始化Retrofit
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)// Baseurl 必须以/结尾
                 .addConverterFactory(GsonConverterFactory.create())// 添加json转换器
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())//添加rxJava
                 .client(okClient)
                 .build();
+        //拿到服务api
         service = retrofit.create(RetrofitService.class);
     }
 
@@ -165,58 +175,9 @@ public class RetrofitTools {
 
     public void getTest3(MVP.View mView) {
         service.getTest3()
-                .compose(this.<GankTest>setThread())
+                .compose(this.<GankTest>setMainThread())
                 .subscribe(new MyObserverSimple<GankTest>(mView, ServerPath.GANK_ANDROID));
 
-    }
-
-    public void downloadFile(MVP.View mView, String url) {
-        service.download(url)
-                .compose(this.<ResponseBody>setThread())
-                .subscribe(new MyObserverSimple<ResponseBody>(mView, url));
-
-    }
-
-    public void download(String url, File filePath, String fileName) {
-        service.download(url)
-                .map(new Function<ResponseBody, InputStream>() {
-                    @Override
-                    public InputStream apply(ResponseBody responseBody) throws Exception {
-                        //将响应体转换为输入流
-                        return responseBody.byteStream();
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .doOnNext(new Consumer<InputStream>() {
-                    @Override
-                    public void accept(InputStream inputStream) throws Exception {
-                        //在此处写入文件
-                    }
-                })
-                //.observeOn(AndroidSchedulers.mainThread())
-                .observeOn(Schedulers.computation())
-                .subscribe(new Observer<InputStream>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(InputStream inputStream) {
-                        //
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-        ;
     }
 
     /**
@@ -227,7 +188,7 @@ public class RetrofitTools {
                 MediaType.parse("application/json;charset=UTF-8"),
                 gson.toJson(new AdParam()));
         service.getAds(requestBody)
-                .compose(this.<AdBean>setThread())
+                .compose(this.<AdBean>setMainThread())
                 .subscribe(new MyObserverSimple<AdBean>(mView, ServerPath.WANG_YI_AD));
     }
 
@@ -242,11 +203,36 @@ public class RetrofitTools {
         return call;
     }
 
-    public <T> ObservableTransformer<T, T> setThread() {
+    /**
+     * 定义的线程转换方法
+     *
+     * @param <T> 泛型
+     * @return 订阅在io线程，观察者在主线程
+     */
+    @NonNull
+    @Contract(pure = true)
+    public static <T> ObservableTransformer<T, T> setMainThread() {
         return new ObservableTransformer<T, T>() {
             @Override
             public ObservableSource<T> apply(Observable<T> upstream) {
                 return upstream.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
+
+    /**
+     * 定义的线程转换方法
+     *
+     * @param <T> 泛型
+     * @return 订阅在io线程，观察者在计算线程（非io，cpu密集计算，例如图形计算）
+     */
+    @NonNull
+    @Contract(pure = true)
+    public static <T> ObservableTransformer<T, T> setComputationThread() {
+        return new ObservableTransformer<T, T>() {
+            @Override
+            public ObservableSource<T> apply(Observable<T> upstream) {
+                return upstream.subscribeOn(Schedulers.io()).observeOn(Schedulers.computation());
             }
         };
     }

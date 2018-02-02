@@ -1,4 +1,4 @@
-package cn.bpzzr.change.net;
+package cn.bpzzr.change.net.callback;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.ConnectException;
 
 import cn.bpzzr.change.bean.AbnormalBean;
+import cn.bpzzr.change.net.DataParse;
+import cn.bpzzr.change.net.MyAbnormalException;
 import cn.bpzzr.change.util.LogUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -15,7 +17,7 @@ import retrofit2.Response;
 
 /**
  * Created by Administrator on 2018/1/5.
- * 网络请求处理回调
+ * 网络请求处理回调，统一预处理
  */
 
 public class MyCallback<T> implements Callback<T> {

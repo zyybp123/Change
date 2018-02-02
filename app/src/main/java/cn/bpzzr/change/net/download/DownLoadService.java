@@ -1,5 +1,6 @@
 package cn.bpzzr.change.net.download;
 
+import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -17,23 +18,21 @@ import retrofit2.http.Url;
 public interface DownLoadService {
 
     /**
-     * 大文件下载的方法
-     *
-     * @param url 下载的路径
-     * @return 带响应体的call
-     */
-    @Streaming
-    @GET
-    Call<ResponseBody> download(@Url String url);
-
-    /**
      * 断点下载的方法
      *
-     * @param range range头，记录从哪开始下载
+     * @param range range头，记录从哪开始下载，格式为 （key）Range : （value）bytes=（0:起始进度）- （结尾进度，不传则到文件末尾）
      * @param url   下载路径
-     * @return 带响应体的call
      */
     @GET
     @Streaming
-    Call<ResponseBody> download(@Header("Range") String range, @Url String url);
+    Observable<ResponseBody> download(@Header("Range") String range, @Url String url);
+
+    /**
+     * 不断点续传的文件下载的方法
+     *
+     * @param url 下载的路径
+     */
+    @GET
+    @Streaming
+    Observable<ResponseBody> download(@Url String url);
 }

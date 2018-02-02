@@ -1,7 +1,8 @@
-package cn.bpzzr.change.net.progress;
+package cn.bpzzr.change.net.common;
 
 import java.io.IOException;
 
+import cn.bpzzr.change.net.callback.ProgressCallback;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okio.Buffer;

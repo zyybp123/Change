@@ -37,7 +37,10 @@ import in.srain.cube.views.ptr.PtrHandler;
  * @author ZYY
  */
 
-public abstract class BaseFragmentRefreshPage<T> extends BaseFragment implements BaseQuickAdapter.RequestLoadMoreListener {
+public abstract class BaseFragmentRefreshPage<T> extends BaseFragment implements
+        BaseQuickAdapter.RequestLoadMoreListener, BaseQuickAdapter.OnItemChildClickListener,
+        BaseQuickAdapter.OnItemChildLongClickListener, BaseQuickAdapter.OnItemClickListener,
+        BaseQuickAdapter.OnItemLongClickListener {
     @BindView(R.id.ctb_iv_left)
     public ImageView ctbIvLeft;
     @BindView(R.id.custom_tb_left_container)
@@ -122,6 +125,10 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment implements
             mAdapter.setOnLoadMoreListener(this, mRecyclerView);
             //未满一屏，直接关闭上拉加载更多
             mAdapter.disableLoadMoreIfNotFullPage();
+            mAdapter.setOnItemChildClickListener(this);
+            mAdapter.setOnItemChildClickListener(this);
+            mAdapter.setOnItemLongClickListener(this);
+            mAdapter.setOnItemChildLongClickListener(this);
         } else {
             LogUtil.e(mFragmentTag + getTag(), "............Adapter is null.........");
         }
@@ -202,7 +209,7 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment implements
         onceRequest();
     }
 
-    public boolean isShowLoadingFrist(){
+    public boolean isShowLoadingFrist() {
         return true;
     }
 
@@ -346,6 +353,54 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment implements
         mStateLayout.showSuccessView();
         refreshComplete();
         reSetDataSet();
+    }
+
+    /**
+     * 条目子控件的点击事件（有header时要处理position）
+     *
+     * @param adapter  数据适配器
+     * @param view     条目对象
+     * @param position 条目索引
+     */
+    @Override
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+
+    }
+
+    /**
+     * 条目子控件的长按事件（有header时要处理position）
+     *
+     * @param adapter  数据适配器
+     * @param view     条目对象
+     * @param position 条目索引
+     */
+    @Override
+    public boolean onItemChildLongClick(BaseQuickAdapter adapter, View view, int position) {
+        return false;
+    }
+
+    /**
+     * 条目的点击事件（有header时要处理position）
+     *
+     * @param adapter  数据适配器
+     * @param view     条目对象
+     * @param position 条目索引
+     */
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+
+    }
+
+    /**
+     * 条目的点长按事件（有header时要处理position）
+     *
+     * @param adapter  数据适配器
+     * @param view     条目对象
+     * @param position 条目索引
+     */
+    @Override
+    public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
+        return false;
     }
 
     /**

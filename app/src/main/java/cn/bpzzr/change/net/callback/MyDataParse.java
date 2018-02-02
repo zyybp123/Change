@@ -1,22 +1,19 @@
-package cn.bpzzr.change.net;
-
-/**
- * Created by Administrator on 2018/1/9.
- */
+package cn.bpzzr.change.net.callback;
 
 import android.text.TextUtils;
 
 import cn.bpzzr.change.bean.ResultBaseBean;
 import cn.bpzzr.change.mvp.MVP;
+import cn.bpzzr.change.net.DataParse;
 import cn.bpzzr.change.util.LogUtil;
 import retrofit2.Call;
 
 /**
- * 通用处理方法
+ * 通用处理方法，统一返回数据风格并预处理
  *
  * @param <T>
  */
-class MyDataParse<T> implements DataParse<ResultBaseBean<T>> {
+public class MyDataParse<T> implements DataParse<ResultBaseBean<T>> {
 
 
     private MVP.View mView; //实现View接口的界面
