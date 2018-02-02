@@ -3,6 +3,9 @@ package cn.bpzzr.change.util;
 import android.content.Context;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,45 +22,66 @@ import cn.bpzzr.change.R;
  */
 
 public class ToastUtil {
-
+    private static final String TAG = "ToastUtil";
     private Toast mToast;
     private TextView mTextView;
     private TimeCount timeCount;
+    /**
+     * 要显示的信息
+     */
     private String message;
     private Handler mHandler = new Handler();
     private boolean canceled = true;
-    private String text;
 
-    public ToastUtil(Context context, int layoutId, String msg) {
-        message = msg;
-        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        //自定义布局
-        View view = inflater.inflate(layoutId, null);
+    /**
+     * 构造
+     *
+     * @param context    显示toast的上下文
+     * @param layoutId   布局id
+     * @param textViewId 要显示的文本的textView的id
+     * @param message    要显示的信息
+     */
+    public ToastUtil(@NonNull Context context, @LayoutRes int layoutId, @IdRes int textViewId, String message) {
+        this.message = message;
+        //加载自定义布局
+        View view = LayoutInflater.from(context).inflate(layoutId, null);
+        if (view == null) {
+            //加载到的布局为空，就不做处理
+            return;
+        }
         //自定义toast文本
-        mTextView = (TextView)view.findViewById(R.id.tv_prompt);
-        mTextView.setText(msg);
-        Log.i("ToastUtil", "Toast start...");
+        mTextView = view.findViewById(textViewId);
+        if (mTextView == null) {
+            //没有显示文字的控件,不处理
+            return;
+        }
+        mTextView.setText(message);
+        LogUtil.e(TAG, "Toast start...");
         if (mToast == null) {
+            //吐司为空才创建
             mToast = new Toast(context);
-            Log.i("ToastUtil", "Toast create...");
+            LogUtil.e(TAG, "Toast create...");
         }
         //设置toast居中显示
         mToast.setGravity(Gravity.CENTER, 0, 0);
+        //设置默认时长
         mToast.setDuration(Toast.LENGTH_LONG);
+        //设置自定义布局
         mToast.setView(view);
     }
 
     /**
-     * 自定义居中显示toast
+     * 显示toast
      */
     public void show() {
         mToast.show();
-        Log.i("ToastUtil", "Toast show...");
+        LogUtil.e(TAG, "Toast show...");
     }
 
     /**
      * 自定义时长、居中显示toast
-     * @param duration
+     *
+     * @param duration 时长
      */
     public void show(int duration) {
         timeCount = new TimeCount(duration, 1000);
@@ -77,9 +101,12 @@ public class ToastUtil {
             mToast.cancel();
         }
         canceled = true;
-        Log.i("ToastUtil", "Toast that customed duration hide...");
+        LogUtil.e(TAG, "Toast that customer duration hide...");
     }
 
+    /**
+     *
+     */
     private void showUntilCancel() {
         if (canceled) { //如果已经取消显示，就直接return
             return;
@@ -94,20 +121,26 @@ public class ToastUtil {
         }, Toast.LENGTH_LONG);
     }
 
-    public void setText(String text) {
-        this.text = text;
-        if (!TextUtils.isEmpty(text)){
-            mTextView.setText(text);
+    /**
+     * 动态设置文本
+     *
+     * @param message 显示文本
+     */
+    public void setText(String message) {
+        this.message = message;
+        if (mTextView != null && !StringUtil.isSpaceStr(message)) {
+            mTextView.setText(message);
         }
     }
 
     /**
-     *  自定义计时器
+     * 自定义计时器
      */
     private class TimeCount extends CountDownTimer {
 
         public TimeCount(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval); //millisInFuture总计时长，countDownInterval时间间隔(一般为1000ms)
+            //millisInFuture总计时长，countDownInterval时间间隔(一般为500ms),500ms能保证计时的准确性
+            super(millisInFuture, countDownInterval);
         }
 
         @Override
