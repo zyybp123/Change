@@ -22,6 +22,7 @@ import cn.bpzzr.change.bean.ResultBaseBean;
 import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.interf.ServerPath;
 import cn.bpzzr.change.interf.SomeKeys;
+import cn.bpzzr.change.interf.home.HomeService;
 import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.net.callback.MyCallback;
 import cn.bpzzr.change.net.callback.MyDataParse;
@@ -39,6 +40,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
@@ -71,6 +75,7 @@ public class RetrofitTools {
         baseUrlMap.put(SomeKeys.BOOK_DATA, ServerHost.BASE_URL_BOOK);
         baseUrlMap.put(SomeKeys.ONLINE_DATA, ServerHost.BASE_URL_ONLINE);
         baseUrlMap.put(SomeKeys.AD_DATA, ServerHost.BASE_URL_AD);
+        baseUrlMap.put(HomeService.BANNER_TAG, HomeService.BASE_URL_HOME_BANNER);
         gson = new Gson();
         //设置OkHttpClitent;
         okClient = new OkHttpClient.Builder()
@@ -82,6 +87,17 @@ public class RetrofitTools {
                 .addInterceptor(Interceptors.getHeaderInterceptor(baseUrlMap, baseUrl))//添加header拦截器
                 .addInterceptor(new ProgressInterceptor())//添加进度拦截器
                 //.addNetworkInterceptor(Interceptors.getLogInterceptor())//添加日志拦截器,大文件下载会产生OOM
+                .cookieJar(new CookieJar() {
+                    @Override
+                    public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+                        
+                    }
+
+                    @Override
+                    public List<Cookie> loadForRequest(HttpUrl url) {
+                        return null;
+                    }
+                })
                 .build();
         // 初始化Retrofit
         retrofit = new Retrofit.Builder()

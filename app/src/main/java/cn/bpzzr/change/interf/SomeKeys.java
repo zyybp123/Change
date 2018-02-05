@@ -26,4 +26,12 @@ public interface SomeKeys {
      * 用于获取splash页面的广告类型
      */
     String SPLASH_AD_TYPE = "splashAdType";
+    /**
+     * 用于解析响应体的cookie
+     */
+    String COOKIE_SET = "Set-Cookie";
+    /**
+     * 用于存取本地的cookie
+     */
+    String COOKIE = "Cookie";
 }
