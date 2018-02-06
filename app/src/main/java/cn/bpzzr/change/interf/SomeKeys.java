@@ -34,4 +34,16 @@ public interface SomeKeys {
      * 用于存取本地的cookie
      */
     String COOKIE = "Cookie";
+    /**
+     * 保存cookie的文件名
+     */
+    String COOKIE_FILE = "Cookies";
+    /**
+     * 设备id
+     */
+    String MH_DEVICE_ID = "869552027513993_727b9330e50cc7f8";
+    /**
+     * 加密后参数
+     */
+    String MH_ENCRYPT = "cGhFAvTXKhmkQZvmMBVnbNKg82FlBjsQfncVF5lG/XLIgTcKsZzZseK+ZEahH3wu";
 }

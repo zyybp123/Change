@@ -11,7 +11,7 @@ import com.youth.banner.loader.ImageLoader;
  * 为banner引入图片加载器
  */
 
-class GlideImageLoader extends ImageLoader {
+public class GlideImageLoader extends ImageLoader {
     @Override
     public void displayImage(Context context, Object path, ImageView imageView) {
         /**

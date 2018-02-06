@@ -7,7 +7,9 @@ import android.util.Log;
 
 import java.io.IOException;
 
+import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.util.LogUtil;
+import cn.bpzzr.change.util.SharedPreferencesUtil;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -23,21 +25,20 @@ import okhttp3.Response;
 
 public class AddCookiesInterceptor implements Interceptor {
     private static final String TAG = "AddCookiesInterceptor";
-    private Context context;
     private String lang;
+    private SharedPreferencesUtil cookies;
 
     public AddCookiesInterceptor(Context context, String lang) {
         super();
-        this.context = context;
         this.lang = lang;
+        cookies = SharedPreferencesUtil.getInstance(SomeKeys.COOKIE_FILE);
 
     }
 
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
         final Request.Builder builder = chain.request().newBuilder();
-        SharedPreferences sharedPreferences = context.getSharedPreferences("cookie", Context.MODE_PRIVATE);
-        Observable.just(sharedPreferences.getString("cookie", ""))
+        Observable.just(cookies.get(SomeKeys.COOKIE, ""))
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(String cookie) throws Exception {
@@ -48,7 +49,7 @@ public class AddCookiesInterceptor implements Interceptor {
                             cookie = cookie.replace("lang=en", "lang=" + lang);
                         }
                         //添加cookie
-                        //Log.d("http", "AddCookiesInterceptor"+cookie);
+                        LogUtil.e(TAG, cookie);
                         builder.addHeader("cookie", cookie);
                     }
                 });

@@ -28,6 +28,7 @@ import cn.bpzzr.change.net.callback.MyCallback;
 import cn.bpzzr.change.net.callback.MyDataParse;
 import cn.bpzzr.change.net.callback.MyDataParseSimple;
 import cn.bpzzr.change.net.callback.MyObserverSimple;
+import cn.bpzzr.change.net.cookie.MyCookieJar;
 import cn.bpzzr.change.net.interceptor.Interceptors;
 import cn.bpzzr.change.net.interceptor.ProgressInterceptor;
 import cn.bpzzr.change.util.LogUtil;
@@ -87,17 +88,7 @@ public class RetrofitTools {
                 .addInterceptor(Interceptors.getHeaderInterceptor(baseUrlMap, baseUrl))//添加header拦截器
                 .addInterceptor(new ProgressInterceptor())//添加进度拦截器
                 //.addNetworkInterceptor(Interceptors.getLogInterceptor())//添加日志拦截器,大文件下载会产生OOM
-                .cookieJar(new CookieJar() {
-                    @Override
-                    public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
-                        
-                    }
-
-                    @Override
-                    public List<Cookie> loadForRequest(HttpUrl url) {
-                        return null;
-                    }
-                })
+                //.cookieJar(new MyCookieJar())//添加cookie的处理
                 .build();
         // 初始化Retrofit
         retrofit = new Retrofit.Builder()

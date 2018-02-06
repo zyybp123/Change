@@ -1,5 +1,7 @@
 package cn.bpzzr.change.bean;
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
+
 import java.util.List;
 
 /**
@@ -34,7 +36,7 @@ public class GankTest {
         this.results = results;
     }
 
-    public static class ResultsBean {
+    public static class ResultsBean implements MultiItemEntity {
         /**
          * _id : 5a07b7fe421aa90fe7253624
          * createdAt : 2017-11-12T10:54:54.391Z
@@ -58,6 +60,7 @@ public class GankTest {
         private boolean used;
         private String who;
         private List<String> images;
+        private int itemType;
 
         public String get_id() {
             return _id;
@@ -137,6 +140,15 @@ public class GankTest {
 
         public void setImages(List<String> images) {
             this.images = images;
+        }
+
+        public void setItemType(int itemType) {
+            this.itemType = itemType;
+        }
+
+        @Override
+        public int getItemType() {
+            return itemType;
         }
 
         /*@Override

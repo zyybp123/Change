@@ -4,12 +4,18 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
+import com.youth.banner.Banner;
+import com.youth.banner.BannerConfig;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import cn.bpzzr.change.R;
@@ -19,6 +25,7 @@ import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.interf.ServerPath;
 import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.manager.ACache;
+import cn.bpzzr.change.manager.GlideImageLoader;
 import cn.bpzzr.change.ui.fragment.base.BaseFragmentRefreshPage;
 import cn.bpzzr.change.util.image.ImageLoad;
 import cn.bpzzr.change.util.LogUtil;
@@ -31,7 +38,14 @@ import static cn.bpzzr.change.global.Change.mContext;
  */
 
 public class Temp extends BaseFragmentRefreshPage {
+    public static final String[] urls = {
+                "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1499944746588&di=4d54d87b0559d7e82b2e813955d6bbc9&imgtype=0&src=http%3A%2F%2Fpic.90sjimg.com%2Fback_pic%2Fqk%2Fback_origin_pic%2F00%2F03%2F14%2Fc0391a6c1efab3fe00911b04e8cedca4.jpg",
+                "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1499944746582&di=7c42a7baf940c16c8123bd0f2b439d46&imgtype=0&src=http%3A%2F%2Fimg2.3lian.com%2F2014%2Ff5%2F54%2Fd%2F73.jpg",
+                "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1499944866874&di=264a24cecbe5f76780280c717da152bb&imgtype=0&src=http%3A%2F%2Fcdn.duitang.com%2Fuploads%2Fitem%2F201312%2F27%2F20131227231938_fiWVy.thumb.600_0.jpeg",
+                "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1499944866873&di=012e8d3ce636814e1b3f7d997bdf7536&imgtype=0&src=http%3A%2F%2Fh.hiphotos.baidu.com%2Fzhidao%2Fpic%2Fitem%2Fa9d3fd1f4134970acfd58a2192cad1c8a7865d1e.jpg",
+                "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1499944866872&di=1abe5b182dd51b442d3fb01954e0262e&imgtype=0&src=http%3A%2F%2F2t.5068.com%2Fuploads%2Fallimg%2F151104%2F57-151104141235-50.jpg"
 
+        };
     public static Temp newInstance(String text) {
         Temp fragmentOne = new Temp();
         Bundle bundle = new Bundle();
@@ -62,21 +76,32 @@ public class Temp extends BaseFragmentRefreshPage {
     }
 
     @Override
+    public void successViewBind() {
+        Banner banner = (Banner) View.inflate(mContext, R.layout.base_banner_layout, null);
+        //设置banner样式
+        banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
+        //设置图片加载器
+        banner.setImageLoader(new GlideImageLoader());
+        //设置自动轮播
+        banner.isAutoPlay(true);
+        //设置轮播时间
+        banner.setDelayTime(5000);
+        //设置指示器位置（当banner模式中有指示器时）
+        banner.setIndicatorGravity(BannerConfig.CENTER);
+        banner.setImages(Arrays.asList(urls));
+        banner.start();
+        mAdapter.setHeaderViewAsFlow(false);
+        mAdapter.setHeaderView(banner);
+    }
+
+    @Override
     protected void onceRequest() {
         Bundle arguments = getArguments();
         if (arguments != null) {
             String name = arguments.getString("name");
-            String url = "http://yt-adv.nosdn.127.net/channel6/aaej_20180122.mp4";
             if ("1".equals(name)) {
                 retrofitTools.getAds(this);
-                //DownloadManager.getInstance().downLoad(url);
             }
-
-            /*if ("1".equals(name)) {
-                retrofitTools
-                        .downloadFile(this,
-                                "http://yt-adv.nosdn.127.net/channel6/aaej_20180122.mp4");
-            }*/
         }
     }
 

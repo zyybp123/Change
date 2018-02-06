@@ -27,7 +27,7 @@ public class ReceivedCookiesInterceptor implements Interceptor {
 
     public ReceivedCookiesInterceptor(Context context) {
         super();
-        cookies = SharedPreferencesUtil.getInstance("cookies");
+        cookies = SharedPreferencesUtil.getInstance(SomeKeys.COOKIE_FILE);
     }
 
     @Override
