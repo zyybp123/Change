@@ -46,4 +46,38 @@ public interface HomeService {
     @GET(BANNER_PATH)
     Observable<BaseBean> getBanner(@Query("gender") int gender);
 
+    String BAI_DU_TAG = "baiDuVedio";
+    String BASE_URL_HOME_BAI_DU_VIDEO = "http://app.video.baidu.com/";
+    String HOME_BAI_DU_VIDEO_PATH = "wiseselected/";
+
+    String HEADER_BAI_DU_VIDEO = SomeKeys.URL_FLAG + ":" + BAI_DU_TAG;
+
+    @Headers({HEADER_BAI_DU_VIDEO})
+    @GET(HOME_BAI_DU_VIDEO_PATH)
+    Observable<BaseBean> getHomeData(@Query("worktype") String workType,
+                                     @Query("is_new_user") String isNewUser,
+                                     @Query("mtj_cuid") String mtjCuid,
+                                     @Query("mtj_timestamp") String timeStamp,
+                                     @Query("mac_address") String macAddress,
+                                     @Query("ados_ver") String osVersion,
+                                     @Query("dev") String dev,
+                                     @Query("lf") String lf,
+                                     @Query("channel") String channel,
+                                     @Query("version") String version
+                                     );
+
+    //http://app.video.baidu.com/
+    // wiseselected/
+    // ?worktype=adnativecomic
+    // &is_new_user=1
+    // &mtj_cuid=5B55296019F394E0DE0ED91FFABE58DE%7C399315720255968
+    // &mtj_timestamp=1518145076682
+    // &mac_address=02:00:00:00:00:00
+    // &ados_ver=6.0
+    // &dev=LeX620
+    // &lf=eyJsb25naXR1ZGUiOiIxMTYuMjQwOTMxIiwibGF0aXR1ZGUiOiI0MC4wNzQxNDUifQ%3D%3D%0A
+    // &channel=3516c
+    // &version=8.1.2
+
+
 }

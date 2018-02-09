@@ -93,6 +93,10 @@ public class MyBottomBarAdapter extends BottomBar.BottomBarAdapter {
         return fragment;
     }
 
+    public Fragment getCurrentFragment() {
+        return currentFragment;
+    }
+
     /**
      * 设置默认选中的标签
      *

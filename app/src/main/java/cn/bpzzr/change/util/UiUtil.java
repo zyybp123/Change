@@ -1,6 +1,7 @@
 package cn.bpzzr.change.util;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.text.Layout;
@@ -89,5 +90,19 @@ public class UiUtil {
             result[1] = staticLayout.getHeight();
             return result;
         }
+    }
+
+    /**
+     * 根据百分比改变颜色透明度
+     *
+     * @param color    初始的颜色
+     * @param fraction 百分比
+     */
+    public static int changeAlpha(int color, float fraction) {
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        int alpha = (int) (Color.alpha(color) * fraction);
+        return Color.argb(alpha, red, green, blue);
     }
 }

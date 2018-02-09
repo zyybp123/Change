@@ -34,6 +34,8 @@ import retrofit2.Retrofit;
 /**
  * Created by Administrator on 2018/1/29.
  * 文件下载管理器
+ *
+ * @streaming 此注解的作用是一边下载一边往文件写入
  * 使用Retrofit进行文件下载时，通过拦截响应体来获取进度，而下载的本质是文件流是否写入到本地和写入了多少
  */
 
@@ -275,9 +277,22 @@ public class DownloadManager {
         }
     }
 
+    /**
+     * 下载状态监听接口
+     */
     public interface StateChangeListener {
+        /**
+         * 状态变化的回调
+         *
+         * @param state 此时的状态
+         */
         void stateChanged(int state);
 
+        /**
+         * 文件下载成功后的回调
+         *
+         * @param type 文件的类型，可根据类型对文件做不同的处理
+         */
         void openFile(String type);
     }
 
