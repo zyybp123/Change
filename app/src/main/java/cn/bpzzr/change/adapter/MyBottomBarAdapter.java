@@ -7,10 +7,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import java.util.List;
 
 import cn.bpzzr.change.R;
+import cn.bpzzr.change.adapter.base.BaseLinearAdapter;
 import cn.bpzzr.change.bean.BottomBarBean;
 import cn.bpzzr.change.ui.view.BottomBar;
 import cn.bpzzr.change.ui.view.BottomBarTab;
@@ -22,10 +24,22 @@ import cn.bpzzr.change.util.StringUtil;
  * 主页底部导航栏的数据适配器
  */
 
-public class MyBottomBarAdapter extends BottomBar.BottomBarAdapter {
+public class MyBottomBarAdapter extends BaseLinearAdapter {
+    /**
+     * 导航栏数据
+     */
     private List<BottomBarBean> bottomBarBeen;
+    /**
+     * Fragment管理器
+     */
     private FragmentManager fragmentManager;
+    /**
+     * 当前的Fragment
+     */
     private Fragment currentFragment;
+    /**
+     * 选中监听器
+     */
     private OnSelectedListener listener;
 
     /**
@@ -48,7 +62,7 @@ public class MyBottomBarAdapter extends BottomBar.BottomBarAdapter {
     }
 
     @Override
-    public View getTabView(BottomBar parent, int position) {
+    public View getTabView(LinearLayout parent, int position) {
         BottomBarTab barTab = new BottomBarTab(parent.getContext());
         barTab.setBadgeHide();
         barTab.setDotHide();
@@ -58,7 +72,7 @@ public class MyBottomBarAdapter extends BottomBar.BottomBarAdapter {
     }
 
     @Override
-    public void onItemClick(View itemView, BottomBar parent, int position) {
+    public void onItemClick(View itemView, LinearLayout parent, int position) {
         if (canDoIt(position)) {
             Fragment fragment = getFragment(position);
             //将选中事件带出
@@ -108,6 +122,12 @@ public class MyBottomBarAdapter extends BottomBar.BottomBarAdapter {
         }
     }
 
+    /**
+     * 对操作能否进行做判断
+     *
+     * @param position 条目索引
+     * @return 满足条件才返回true
+     */
     private boolean canDoIt(int position) {
         if (fragmentManager == null) {
             LogUtil.e(msgTag, "fragmentManager is null........");

@@ -11,4 +11,6 @@
     <string name="state_on_empty">数据为空…</string>
     <string name="setting">设置</string>
     <string name="separator_page">%s/%s</string>
+    <string name="reset">重置</string>
+    <string name="sure">确定</string>
 </resources>

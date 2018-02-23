@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import cn.bpzzr.change.adapter.base.BaseLinearAdapter;
 import cn.bpzzr.change.util.LogUtil;
 
 /**
@@ -38,10 +39,10 @@ public class BottomBar extends LinearLayout {
                 ViewGroup.LayoutParams.MATCH_PARENT, 1);
     }
 
-    public void setAdapter(final BottomBarAdapter adapter) {
+    public void setAdapter(final BaseLinearAdapter adapter) {
         if (adapter != null) {
             //adapter不为空
-            adapter.setOnDataChanged(new OnDataChanged() {
+            adapter.setOnDataChanged(new BaseLinearAdapter.OnDataChanged() {
                 @Override
                 public void onChange() {
                     LogUtil.e(LOG_TAG, "----data has changed----");
@@ -54,7 +55,7 @@ public class BottomBar extends LinearLayout {
         }
     }
 
-    private void addTabView(BottomBarAdapter adapter) {
+    private void addTabView(BaseLinearAdapter adapter) {
         //控制标签数量在0-5之间
         int tabCount = adapter.getTabCount();
         if (tabCount < 0) {
@@ -95,58 +96,12 @@ public class BottomBar extends LinearLayout {
     }
 
 
-    public abstract static class BottomBarAdapter {
-        public String msgTag = this.getClass().getSimpleName();
-        /**
-         * 数据变化监听器
-         */
-        private OnDataChanged onDataChanged;
-
-        /**
-         * 获取标签的数量
-         */
-        public abstract int getTabCount();
-
-        /**
-         * 获取标签的View对象
-         *
-         * @param parent   容器
-         * @param position 索引
-         * @return 返回View对象
-         */
-        public abstract View getTabView(BottomBar parent, int position);
-
-        /**
-         * 设置条目点击事件
-         *
-         * @param itemView 条目View
-         * @param parent   容器
-         * @param position 索引
-         */
-        public abstract void onItemClick(View itemView, BottomBar parent, int position);
-
-        /**
-         * 数据源发生变化则调用对应的方法
-         */
-        public void notifyDataSetChanged() {
-            onDataChanged.onChange();
-        }
-
-        public void setOnDataChanged(OnDataChanged onDataChanged) {
-            this.onDataChanged = onDataChanged;
-        }
-    }
-
-    public interface OnDataChanged {
-        void onChange();
-    }
-
     public class ItemClickListener implements OnClickListener {
 
         int selectPosition;
-        BottomBarAdapter adapter;
+        BaseLinearAdapter adapter;
 
-        public ItemClickListener(BottomBarAdapter adapter, int selectPosition) {
+        public ItemClickListener(BaseLinearAdapter adapter, int selectPosition) {
             this.adapter = adapter;
             this.selectPosition = selectPosition;
         }

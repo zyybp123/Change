@@ -95,6 +95,7 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment implements
         mStateLayout = mRootView.findViewById(R.id.m_state_layout);
         //设置状态层，并添加列表展示页
         mStateLayout.setSuccessView(R.layout.base_fragment_refresh);
+        mStateLayout.setRetryListener(this);
     }
 
     @Override
