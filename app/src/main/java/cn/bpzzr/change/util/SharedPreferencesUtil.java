@@ -27,7 +27,7 @@ public class SharedPreferencesUtil {
     /**
      * 保存的文件名
      */
-    private static final String NAME = "bpzChangeConfig";
+    public static final String DEFAULT_SP_NAME = "bpzChangeConfig";
     /**
      * 单例
      */
@@ -41,7 +41,7 @@ public class SharedPreferencesUtil {
         spMap = new SimpleArrayMap<>();
         //传入的文件名为空串，则用默认的文件名
         if (StringUtil.isSpaceStr(fileName)) {
-            fileName = NAME;
+            fileName = DEFAULT_SP_NAME;
         }
         //根据文件名获取sp实例
         mSharedPreferences = getMSharedPreferences(fileName);

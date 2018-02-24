@@ -100,6 +100,7 @@ public class LinearContainer extends LinearLayout {
         for (int i = 0; i < tabCount; i++) {
             //获取标签View,并添加到容器
             View tabView = adapter.getTabView(this, i);
+            tabView.setOnClickListener(new ItemClickListener(adapter, i));
             addView(tabView, mParams);
         }
     }
@@ -121,5 +122,24 @@ public class LinearContainer extends LinearLayout {
         }
         //在范围中
         return getChildAt(position);
+    }
+
+    /**
+     * 条目点击事件监听器
+     */
+    public class ItemClickListener implements OnClickListener {
+        int selectPosition;
+        BaseLinearAdapter adapter;
+
+        ItemClickListener(BaseLinearAdapter adapter, int selectPosition) {
+            this.adapter = adapter;
+            this.selectPosition = selectPosition;
+        }
+
+        @Override
+        public void onClick(View v) {
+            //条目点击事件
+            adapter.onItemClick(v, LinearContainer.this, selectPosition);
+        }
     }
 }

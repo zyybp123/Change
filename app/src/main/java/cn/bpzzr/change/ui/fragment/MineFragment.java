@@ -10,7 +10,7 @@ import butterknife.BindView;
 import butterknife.Unbinder;
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.adapter.MyFilterBarAdapter;
-import cn.bpzzr.change.bean.FilterData;
+import cn.bpzzr.change.bean.FilterBarData;
 import cn.bpzzr.change.ui.fragment.base.BaseFragment;
 import cn.bpzzr.change.ui.view.LinearContainer;
 
@@ -25,6 +25,9 @@ public class MineFragment extends BaseFragment {
     Unbinder unbinder;
     @BindView(R.id.lc_con)
     LinearContainer lcCon;
+    private static final String [] FILTER_CONDITION_BAR = new String[]{
+            "推荐","地区","阶段","行业"
+    };
 
     @Override
     public boolean isNeedLazy() {
@@ -45,11 +48,12 @@ public class MineFragment extends BaseFragment {
 
             }
         });
-        List<FilterData<String>> filterDataList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            filterDataList.add(new FilterData<>("条件" + i, "数据" + i));
+        List<FilterBarData> filterBarDataList = new ArrayList<>();
+        filterBarDataList.add(new FilterBarData<>(FILTER_CONDITION_BAR[0], "数据"));
+        for (int i = 0; i < FILTER_CONDITION_BAR.length; i++) {
+            filterBarDataList.add(new FilterBarData<>(FILTER_CONDITION_BAR[i], "数据" + i));
         }
-        lcCon.setAdapter(new MyFilterBarAdapter<>(filterDataList));
+        lcCon.setAdapter(new MyFilterBarAdapter<>(filterBarDataList,mActivity));
 
     }
 

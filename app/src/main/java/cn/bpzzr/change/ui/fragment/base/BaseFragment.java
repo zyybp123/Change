@@ -247,6 +247,7 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
      */
     @Override
     public void onRetry() {
+        LogUtil.e(mFragmentTag + getTag(),"retry()");
         initialRequest();
     }
 }
