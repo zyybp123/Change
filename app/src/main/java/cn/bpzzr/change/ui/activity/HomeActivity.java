@@ -10,6 +10,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.youth.banner.Banner;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +50,7 @@ public class HomeActivity extends BaseActivity implements MyBottomBarAdapter.OnS
             R.drawable.maintab_city_icon,
             R.drawable.maintab_stack_icon
     };
+    List<Fragment> fragmentList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +62,7 @@ public class HomeActivity extends BaseActivity implements MyBottomBarAdapter.OnS
         //获取主页的title数组
         String[] titles = getResources().getStringArray(R.array.home_tab_title);
         //fragment生成
-        List<Fragment> fragmentList = new ArrayList<>();
+        fragmentList = new ArrayList<>();
         //fragmentList.add(Temp.newInstance("1"));
         fragmentList.add(new HomeFragment());
         //fragmentList.add(new CategoryFragment());
@@ -86,7 +89,7 @@ public class HomeActivity extends BaseActivity implements MyBottomBarAdapter.OnS
         barTab.setBadgeText(120);
         BottomBarTab barTab2 = (BottomBarTab) baseBottomBar.getBarTab(1);
         barTab2.setDotShow();*/
-        setTrans(adapter.getCurrentFragment());
+        //setTrans(adapter.getCurrentFragment());
     }
 
     /**
@@ -199,6 +202,18 @@ public class HomeActivity extends BaseActivity implements MyBottomBarAdapter.OnS
                 ((Temp) currentFragment).autoRefresh();
             }
         }*/
-        setTrans(currentFragment);
+        HomeFragment homeFragment = (HomeFragment) fragmentList.get(0);
+        Banner banner = (Banner) homeFragment
+                .getAdapter()
+                .getViewByPosition(homeFragment.mRecyclerView, 0, R.id.base_banner);
+        //setTrans(currentFragment);
+        if (banner != null) {
+            if (!(currentFragment instanceof HomeFragment)) {
+                banner.stopAutoPlay();
+
+            } else {
+                banner.startAutoPlay();
+            }
+        }
     }
 }

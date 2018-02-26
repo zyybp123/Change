@@ -17,18 +17,18 @@ import cn.bpzzr.change.global.Change;
  * 筛选条件单选的数据适配器
  */
 
-public class Adapter2FilterSelectOne<T> extends BaseQuickAdapter<FilterRadioData<T>, BaseViewHolder> {
+public class Adapter2FilterSelectOne extends BaseQuickAdapter<FilterRadioData, BaseViewHolder> {
     private int defaultColor;
     private int selectColor;
 
-    public Adapter2FilterSelectOne(int layoutResId, @Nullable List<FilterRadioData<T>> data) {
+    public Adapter2FilterSelectOne(int layoutResId, @Nullable List<FilterRadioData> data) {
         super(layoutResId, data);
         defaultColor = Change.mContext.getResources().getColor(R.color.color_999);
         selectColor = Change.mContext.getResources().getColor(R.color.colorPrimary);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, FilterRadioData<T> item) {
+    protected void convert(BaseViewHolder helper, FilterRadioData item) {
         helper.setText(R.id.tv_name, item.getRadioData().toString());
         TextView tvName = helper.getView(R.id.tv_name);
         tvName.setTextColor(item.isSelected() ? selectColor : defaultColor);

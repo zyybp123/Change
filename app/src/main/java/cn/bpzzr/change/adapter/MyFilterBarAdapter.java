@@ -6,13 +6,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.adapter.base.BaseLinearAdapter;
 import cn.bpzzr.change.bean.FilterBarData;
-import cn.bpzzr.change.bean.FilterRadioData;
 import cn.bpzzr.change.ui.view.DropDownView;
 import cn.bpzzr.change.util.LogUtil;
 
@@ -21,23 +19,19 @@ import cn.bpzzr.change.util.LogUtil;
  * 筛选条数据适配器
  */
 
-public class MyFilterBarAdapter<T> extends BaseLinearAdapter {
-    private List<FilterBarData<T>> mDataList;
+public class MyFilterBarAdapter extends BaseLinearAdapter {
+    private List<FilterBarData> mDataList;
     private int defaultColor;
     private int selectColor;
-    DropDownView dropDownView;
-    List<FilterRadioData<String>> radioDataList = new ArrayList<>();
-    private Activity activity;
+    private DropDownView dropDownView;
+    private OnTabClickListener listener;
 
-    public MyFilterBarAdapter(List<FilterBarData<T>> mDataList, Activity mActivity) {
+    public MyFilterBarAdapter(List<FilterBarData> mDataList, Activity mActivity, OnTabClickListener listener) {
         this.mDataList = mDataList;
-        this.activity = mActivity;
+        this.listener = listener;
         defaultColor = mActivity.getResources().getColor(R.color.color_999);
         selectColor = mActivity.getResources().getColor(R.color.colorPrimary);
         dropDownView = new DropDownView(mActivity);
-        for (int i = 0; i < 5; i++) {
-            radioDataList.add(new FilterRadioData<>("data" + i, false));
-        }
     }
 
     @Override
@@ -65,22 +59,27 @@ public class MyFilterBarAdapter<T> extends BaseLinearAdapter {
     @Override
     public void onItemClick(View itemView, LinearLayout parent, int position) {
         LogUtil.e(msgTag, "click....." + position);
-        //点击事件，根据显示状态改变三角形的方向
-        boolean showPage = mDataList.get(position).isShowPage();
         //处理单选
         selectOne(position);
+        boolean showPage = mDataList.get(position).isShowPage();
         notifyDataSetChanged();
-
         //决定下拉菜单的显示
-        if (position % 2 == 0 && mDataList.get(position).isShowPage()) {
-            View page = dropDownView.getSelectOnePage(activity, radioDataList);
-            dropDownView.initPop(parent, page);
+        if (listener != null) {
+            listener.clickTab(itemView, parent, position, showPage, dropDownView, mDataList.get(position));
         }
     }
 
     private void selectOne(int position) {
         for (int i = 0; i < mDataList.size(); i++) {
-                mDataList.get(i).setShowPage(i==position);
+            mDataList.get(i).setShowPage(i == position);
         }
+    }
+
+    /**
+     * 监听条目的点击事件
+     */
+    public interface OnTabClickListener {
+        void clickTab(View itemView, LinearLayout parent, int position,
+                      boolean showPage, DropDownView dropDownView, FilterBarData filterBarData);
     }
 }

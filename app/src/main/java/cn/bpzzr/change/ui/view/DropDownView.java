@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -13,13 +14,17 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.adapter.Adapter2FilterSelectOne;
 import cn.bpzzr.change.bean.FilterRadioData;
 import cn.bpzzr.change.ui.fragment.base.BaseFragmentRefreshPage;
+import cn.bpzzr.change.ui.page.BasePage;
 import cn.bpzzr.change.util.LogUtil;
+import cn.bpzzr.change.util.StringUtil;
 import cn.bpzzr.change.util.UiUtil;
 
 import static cn.bpzzr.change.global.Change.mContext;
@@ -59,6 +64,10 @@ public class DropDownView implements View.OnClickListener {
      * 布局参数，将子页面添加进容器时用到
      */
     FrameLayout.LayoutParams mLayoutParams;
+    /**
+     * pop内的页面map，按筛选页面的标识存储
+     */
+    private Map<String, BasePage> pageMap;
 
     public DropDownView(Context context) {
         //加载根布局
@@ -89,6 +98,8 @@ public class DropDownView implements View.OnClickListener {
         pw.setBackgroundDrawable(new ColorDrawable(mContext.getResources().getColor(R.color.black_a50)));
         //设置点击空白是否消失
         //pw.setOutsideTouchable(true);
+        //初始一个新的map
+        pageMap = new HashMap<>();
     }
 
     /**
@@ -96,26 +107,50 @@ public class DropDownView implements View.OnClickListener {
      *
      * @param v 相对于哪个控件显示
      */
-    public void initPop(View v, View page) {
+    public void initPop(View v, BasePage page) {
         if (mRootView == null) {
             //如果根布局为null直接返回，不做处理
             LogUtil.e(TAG, "root view is null !");
             return;
         }
+        if (page == null) {
+            //如果要添加的页面为空，则不处理
+            LogUtil.e(TAG, "page is null !");
+            return;
+        }
+        View pageMRootView = page.getMRootView();
+        if (pageMRootView == null) {
+            //如果要添加的页面的根布局为空则不处理
+            LogUtil.e(TAG, "pageMRootView is null !");
+            return;
+        }
         if (pw == null) {
+            LogUtil.e(TAG, "popupWindow is null !");
             //如果pop对象为null则重新创建
             pw = new PopupWindow(mRootView, LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.MATCH_PARENT);
         }
         if (mLayoutParams == null) {
+            LogUtil.e(TAG, "mLayoutParams is null !");
             //布局参数为null则重新创建
             mLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             //设置其离底部边距为屏幕高度的四分之一
             mLayoutParams.bottomMargin = UiUtil.totalSize(mContext).y / 4;
         }
+        if (pageMap == null) {
+            LogUtil.e(TAG, "pageMap is null !");
+            //如果map为null则新建一个map
+            pageMap = new HashMap<>();
+        }
+        if (!pageMap.containsValue(page)) {
+            //如果map中没有此页面，则将页面添加到map，再加入容器
+            pageMap.put(StringUtil.getNotNullStr(page.getPageTag()), page);
+        }
+        //如果已经包含了此页面，则直接添加进容器
+        mPageContainer.removeAllViews();
+        mPageContainer.addView(pageMRootView, mLayoutParams);
         //不为null则不重新创建，并添加子页面
-        mPageContainer.addView(page, mLayoutParams);
         if (!pw.isShowing()) {
             LogUtil.e(TAG, "SDK INT ...." + Build.VERSION.SDK_INT);
             //如果pop不在显示中，就显示
@@ -168,12 +203,12 @@ public class DropDownView implements View.OnClickListener {
      * @param data    填充的数据
      * @return 返回页面对象
      */
-    public View getSelectOnePage(Context context, List<FilterRadioData<String>> data) {
+    public View getSelectOnePage(Context context, List<FilterRadioData> data) {
         View view = View.inflate(context, R.layout.drop_down_select_one, null);
         RecyclerView recyclerView = view.findViewById(R.id.rv);
         recyclerView.setLayoutManager(BaseFragmentRefreshPage.
                 getLinearLayoutManager(context, LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(new Adapter2FilterSelectOne<>(R.layout.item_filter_select_one, data));
+        recyclerView.setAdapter(new Adapter2FilterSelectOne(R.layout.item_filter_select_one, data));
         return view;
     }
 
@@ -184,7 +219,7 @@ public class DropDownView implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.ll_root:
                 //点击根布局，隐藏pop
                 hidePop();
