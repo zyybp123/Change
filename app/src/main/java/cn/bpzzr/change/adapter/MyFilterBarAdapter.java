@@ -2,6 +2,7 @@ package cn.bpzzr.change.adapter;
 
 import android.app.Activity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,7 +41,7 @@ public class MyFilterBarAdapter extends BaseLinearAdapter {
     }
 
     @Override
-    public View getTabView(LinearLayout parent, int position) {
+    public View getTabView(ViewGroup parent, int position) {
         View itemView = View.inflate(parent.getContext(), R.layout.filter_tab_layout, null);
         TextView tvMenu = itemView.findViewById(R.id.tv_menu);
         FilterBarData filterBarData = mDataList.get(position);
@@ -57,7 +58,7 @@ public class MyFilterBarAdapter extends BaseLinearAdapter {
     }
 
     @Override
-    public void onItemClick(View itemView, LinearLayout parent, int position) {
+    public void onItemClick(View itemView, ViewGroup parent, int position) {
         LogUtil.e(msgTag, "click....." + position);
         //处理单选
         selectOne(position);
@@ -79,7 +80,7 @@ public class MyFilterBarAdapter extends BaseLinearAdapter {
      * 监听条目的点击事件
      */
     public interface OnTabClickListener {
-        void clickTab(View itemView, LinearLayout parent, int position,
+        void clickTab(View itemView, ViewGroup parent, int position,
                       boolean showPage, DropDownView dropDownView, FilterBarData filterBarData);
     }
 }

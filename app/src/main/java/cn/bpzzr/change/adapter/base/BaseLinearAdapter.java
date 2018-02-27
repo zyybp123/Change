@@ -1,6 +1,7 @@
 package cn.bpzzr.change.adapter.base;
 
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import cn.bpzzr.change.ui.view.BottomBar;
@@ -29,7 +30,7 @@ public abstract class BaseLinearAdapter {
      * @param position 索引
      * @return 返回View对象
      */
-    public abstract View getTabView(LinearLayout parent, int position);
+    public abstract View getTabView(ViewGroup parent, int position);
 
     /**
      * 设置条目点击事件
@@ -38,7 +39,7 @@ public abstract class BaseLinearAdapter {
      * @param parent   容器
      * @param position 索引
      */
-    public abstract void onItemClick(View itemView, LinearLayout parent, int position);
+    public abstract void onItemClick(View itemView, ViewGroup parent, int position);
 
     /**
      * 数据源发生变化则调用对应的方法

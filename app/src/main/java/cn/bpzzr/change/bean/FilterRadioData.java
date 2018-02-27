@@ -1,23 +1,35 @@
 package cn.bpzzr.change.bean;
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
+
 /**
  * Created by Administrator on 2018/2/24.
  * 带选中状态的筛选条件的数据实体
  */
 
-public class FilterRadioData<T> {
+public class FilterRadioData<T> implements MultiItemEntity {
     /**
-     * 单选条目的数据，重写toString方法以便于显示名字
+     * 条目的数据，重写toString方法以便于显示名字
      */
     private T radioData;
     /**
      * 记录是否被选中
      */
     private boolean isSelected;
+    /**
+     * 记录条目的类型
+     */
+    private int itemType;
 
     public FilterRadioData(T radioData, boolean isSelected) {
         this.radioData = radioData;
         this.isSelected = isSelected;
+    }
+
+    public FilterRadioData(T radioData, boolean isSelected, int itemType) {
+        this.radioData = radioData;
+        this.isSelected = isSelected;
+        this.itemType = itemType;
     }
 
     public T getRadioData() {
@@ -34,5 +46,14 @@ public class FilterRadioData<T> {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
+
+    @Override
+    public int getItemType() {
+        return itemType;
     }
 }

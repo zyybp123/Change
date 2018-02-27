@@ -5,7 +5,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.flexbox.FlexboxLayoutManager;
 
 import java.util.List;
 
@@ -13,17 +16,15 @@ import cn.bpzzr.change.R;
 import cn.bpzzr.change.adapter.Adapter2FilterSelectOne;
 import cn.bpzzr.change.bean.FilterRadioData;
 import cn.bpzzr.change.ui.fragment.base.BaseFragmentRefreshPage;
-import cn.bpzzr.change.util.LogUtil;
 
 /**
- * Created by Administrator on 2018/2/26.
- * 单选的筛选条件页面
+ * Created by Administrator on 2018/2/27.
  */
 
-public class FilterSelectOnePage extends BasePage<List<FilterRadioData>> implements BaseQuickAdapter.OnItemClickListener {
+public class FilterSelectMorePage extends BasePage<List<FilterRadioData>> {
     private Adapter2FilterSelectOne adapter;
 
-    public FilterSelectOnePage(Context context, List<FilterRadioData> data) {
+    FilterSelectMorePage(Context context, List<FilterRadioData> data) {
         super(context, data);
     }
 
@@ -31,17 +32,20 @@ public class FilterSelectOnePage extends BasePage<List<FilterRadioData>> impleme
     public View loadRootView() {
         View view = View.inflate(context, R.layout.drop_down_select_one, null);
         RecyclerView recyclerView = view.findViewById(R.id.rv);
-        recyclerView.setLayoutManager(BaseFragmentRefreshPage.
-                getLinearLayoutManager(context, LinearLayoutManager.VERTICAL));
-        adapter = new Adapter2FilterSelectOne(R.layout.item_filter_select_one, data);
+        FlexboxLayoutManager layoutManager = BaseFragmentRefreshPage.getFlexBoxLayoutManager(context);
+        //横向
+        layoutManager.setFlexDirection(FlexDirection.ROW);
+        //换行
+        layoutManager.setFlexWrap(FlexWrap.WRAP);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new Adapter2FilterSelectOne(R.layout.item_filter_select_more, data);
         recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(this);
         return view;
     }
 
     @Override
     public void initialRequest() {
-        //
+
     }
 
     @Override
@@ -65,14 +69,4 @@ public class FilterSelectOnePage extends BasePage<List<FilterRadioData>> impleme
     }
 
 
-    @Override
-    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-        LogUtil.e("position" + position);
-        //处理单选点击事件
-        for (int i = 0; i < data.size(); i++) {
-            data.get(i).setSelected(i == position);
-        }
-        adapter.notifyDataSetChanged();
-
-    }
 }

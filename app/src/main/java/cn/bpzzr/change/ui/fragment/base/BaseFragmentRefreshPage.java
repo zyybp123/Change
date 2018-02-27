@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.flyco.tablayout.SegmentTabLayout;
+import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.flexbox.FlexboxLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -469,5 +471,15 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment implements
     @NonNull
     public static StaggeredGridLayoutManager getStaggeredGridLayoutManager(int spanCount, int orientation) {
         return new StaggeredGridLayoutManager(spanCount, orientation);
+    }
+
+    /**
+     * 获取FlexBox布局管理器
+     *
+     * @param context 上下文
+     */
+    @NonNull
+    public static FlexboxLayoutManager getFlexBoxLayoutManager(Context context) {
+        return new FlexboxLayoutManager(context);
     }
 }

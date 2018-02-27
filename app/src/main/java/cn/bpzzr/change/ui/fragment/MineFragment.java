@@ -2,6 +2,7 @@ package cn.bpzzr.change.ui.fragment;
 
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class MineFragment extends BaseFragment implements MyFilterBarAdapter.OnT
         //2.单选下拉菜单
         recommendConditions = new ArrayList<>();
         recommendConditions.add(new FilterRadioData<>(
-                new RecommendCondition("0", "推荐"), false));
+                new RecommendCondition("0", "推荐"), true));
         recommendConditions.add(new FilterRadioData<>(
                 new RecommendCondition("1", "最新"), false));
         filterBarDataList.add(new FilterBarData<>(FILTER_CONDITION_BAR[1], recommendConditions,
@@ -79,7 +80,7 @@ public class MineFragment extends BaseFragment implements MyFilterBarAdapter.OnT
     }
 
     @Override
-    public void clickTab(View itemView, LinearLayout parent, int position,
+    public void clickTab(View itemView, ViewGroup parent, int position,
                          boolean showPage, DropDownView dropDownView, FilterBarData filterBarData) {
         if (dropDownView == null) {
             LogUtil.e(mFragmentTag + getTag(), "dropDownView is null !");

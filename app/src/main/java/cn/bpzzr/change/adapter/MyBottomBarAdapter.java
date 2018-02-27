@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.List;
@@ -62,7 +63,7 @@ public class MyBottomBarAdapter extends BaseLinearAdapter {
     }
 
     @Override
-    public View getTabView(LinearLayout parent, int position) {
+    public View getTabView(ViewGroup parent, int position) {
         BottomBarTab barTab = new BottomBarTab(parent.getContext());
         barTab.setBadgeHide();
         barTab.setDotHide();
@@ -72,7 +73,7 @@ public class MyBottomBarAdapter extends BaseLinearAdapter {
     }
 
     @Override
-    public void onItemClick(View itemView, LinearLayout parent, int position) {
+    public void onItemClick(View itemView, ViewGroup parent, int position) {
         if (canDoIt(position)) {
             Fragment fragment = getFragment(position);
             //将选中事件带出
