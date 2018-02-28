@@ -68,6 +68,10 @@ public class DropDownView implements View.OnClickListener {
      * pop内的页面map，按筛选页面的标识存储
      */
     private Map<String, BasePage> pageMap;
+    /**
+     * 当前页面
+     */
+    private BasePage currentPage;
 
     public DropDownView(Context context) {
         //加载根布局
@@ -150,6 +154,8 @@ public class DropDownView implements View.OnClickListener {
         //如果已经包含了此页面，则直接添加进容器
         mPageContainer.removeAllViews();
         mPageContainer.addView(pageMRootView, mLayoutParams);
+        //保存当前page实例
+        currentPage = page;
         //不为null则不重新创建，并添加子页面
         if (!pw.isShowing()) {
             LogUtil.e(TAG, "SDK INT ...." + Build.VERSION.SDK_INT);
@@ -197,24 +203,12 @@ public class DropDownView implements View.OnClickListener {
     }
 
     /**
-     * 获取单选的页面
+     * 获取当前pop里的页面对象
      *
-     * @param context 上下文
-     * @param data    填充的数据
-     * @return 返回页面对象
+     * @return 返回当前pop里的页面对象
      */
-    public View getSelectOnePage(Context context, List<FilterRadioData> data) {
-        View view = View.inflate(context, R.layout.drop_down_select_one, null);
-        RecyclerView recyclerView = view.findViewById(R.id.rv);
-        recyclerView.setLayoutManager(BaseFragmentRefreshPage.
-                getLinearLayoutManager(context, LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(new Adapter2FilterSelectOne(R.layout.item_filter_select_one, data));
-        return view;
-    }
-
-    public View getSelectTabPage(Context context) {
-        View view = View.inflate(context, R.layout.drop_down_select_one, null);
-        return view;
+    public BasePage getCurrentPage() {
+        return currentPage;
     }
 
     @Override

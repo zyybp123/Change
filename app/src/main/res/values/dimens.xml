@@ -4,4 +4,6 @@
     <dimen name="c_edit_divide_height">0.5dp</dimen>
     <dimen name="dp200">200dp</dimen>
     <dimen name="dp_62">62dp</dimen>
+    <dimen name="dp_15">15dp</dimen>
+    <dimen name="dp_5">5dp</dimen>
 </resources>

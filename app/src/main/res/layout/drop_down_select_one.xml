@@ -13,6 +13,7 @@
         android:scrollbarStyle="outsideOverlay"
         android:scrollbarThumbVertical="@color/colorPrimary"
         android:scrollbarSize="2dp"
+        android:background="@color/colorWhite"
         >
 
     </android.support.v7.widget.RecyclerView>

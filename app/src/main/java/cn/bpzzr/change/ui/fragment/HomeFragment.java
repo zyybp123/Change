@@ -11,18 +11,29 @@ import android.view.ViewGroup;
 import android.view.Window;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.Gson;
 
 import java.util.List;
 
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.adapter.Adapter2Home;
+import cn.bpzzr.change.bean.AdBean;
+import cn.bpzzr.change.bean.AdParam;
 import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.interf.ServerPath;
+import cn.bpzzr.change.interf.kaishu.AppInitService;
+import cn.bpzzr.change.interf.kaishu.KaiShuHost;
+import cn.bpzzr.change.net.callback.MyObserverSimple;
+import cn.bpzzr.change.net.common.FileRequestBody;
 import cn.bpzzr.change.ui.activity.HomeActivity;
 import cn.bpzzr.change.ui.fragment.base.BaseFragmentRefreshPage;
 import cn.bpzzr.change.ui.view.MyScrollListener;
 import cn.bpzzr.change.util.LogUtil;
 import cn.bpzzr.change.util.UiUtil;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 import static android.support.v7.widget.LinearLayoutManager.VERTICAL;
 import static cn.bpzzr.change.adapter.Adapter2Home.ITEM_BANNER;
@@ -48,10 +59,7 @@ public class HomeFragment extends BaseFragmentRefreshPage {
 
     @Override
     public void successViewBind() {
-        //为RecyclerView添加滑动状态监听器
-        /*mRecyclerView.addOnScrollListener(new MyScrollListener(
-                screenHeight - mActivity.getResources().getDimensionPixelSize(R.dimen.dp_62)
-                , LinearLayoutManager.VERTICAL, mRecyclerView));*/
+
     }
 
     private void setTrans(float trans) {
@@ -86,6 +94,16 @@ public class HomeFragment extends BaseFragmentRefreshPage {
     protected void onceRequest() {
         hasMore = false;
         //retrofitTools.getTest3(this);
+        RequestBody requestBody = RequestBody.create(
+                MediaType.parse("application/json;charset=UTF-8"),
+                "{\"platform\":\"kaishu\",\"appversion\":\"V4.2.0\",\"sysversion\":\"23\",\"appid\":\"992099001\",\"channelid\":\"yingyongbao\",\"phonemodel\":\"Le X620\",\"phonedevicecode\":\"869552027513993\",\"channelmsg\":\"android\"}");
+        retrofitTools
+                .getRetrofit()
+                .create(AppInitService.class)
+                .getDeviceId(requestBody)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new MyObserverSimple<>(this, AppInitService.PATH_DEVICE_ID));
     }
 
     @Override
@@ -127,8 +145,6 @@ public class HomeFragment extends BaseFragmentRefreshPage {
                     resultsBean1.setItemType(ITEM_CARD);
                     mDataList.add(1, resultsBean1);
                     mAdapter.notifyDataSetChanged();
-                } else {
-                    showEmpty();
                 }
                 if (mDataList.size() == 0) {
                     showEmpty();

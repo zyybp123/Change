@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayout;
 
 import cn.bpzzr.change.adapter.base.BaseLinearAdapter;
@@ -66,7 +67,7 @@ public class FlexContainer extends FlexboxLayout {
 
     private void init(Context context, AttributeSet attrs) {
         //获取此线性布局的方向,设置布局参数
-        setFlexDirection(FlexboxLayout.FLEX_DIRECTION_ROW);
+        setFlexDirection(FlexDirection.ROW);
         /*int orientation = getOrientation();
         if (orientation == VERTICAL) {
             if (mIsAverage) {

@@ -4,11 +4,14 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/dp_4"
-    android:paddingEnd="@dimen/dp_10"
-    android:paddingStart="@dimen/dp_10"
-    android:paddingTop="@dimen/dp_4"
+    android:paddingEnd="@dimen/dp_15"
+    android:paddingStart="@dimen/dp_15"
+    android:paddingTop="@dimen/dp_5"
     android:maxLines="1"
     android:ellipsize="end"
-    android:textColor="@color/color_333">
+    android:background="@color/color_ef"
+    android:textColor="@color/color_999"
+    android:layout_margin="@dimen/dp_10"
+    >
 
 </TextView>

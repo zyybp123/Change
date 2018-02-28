@@ -1,6 +1,7 @@
 package cn.bpzzr.change.util;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.support.annotation.NonNull;
@@ -8,7 +9,10 @@ import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.widget.TextView;
+
+import static cn.bpzzr.change.global.Change.mContext;
 
 /**
  * Created by Administrator on 2018/1/12.
@@ -62,6 +66,50 @@ public class UiUtil {
     public static int getActualHeight(Context context, int standardScreenValue, int standardValue) {
         int targetScreenHeight = totalSize(context).y;
         return standardValue * targetScreenHeight / standardScreenValue;
+    }
+
+    /**
+     * dp转px
+     *
+     * @param context 上下文
+     * @param dpValue dp值
+     * @return 返回px值
+     */
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    /**
+     * px转dp
+     *
+     * @param context 上下文
+     * @param pxValue px值
+     * @return 返回dp值
+     */
+    public static int px2dip(Context context, float pxValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
+    }
+
+    /**
+     * 根据设备信息获取当前分辨率下指定单位对应的像素大小； px,dip,sp -> px
+     *
+     * @param context 上下文
+     * @param unit    单位 COMPLEX_UNIT_PX:
+     *                COMPLEX_UNIT_DIP:
+     *                COMPLEX_UNIT_SP:等
+     * @param size    对应单位的大小
+     * @return 返回像素大小
+     */
+    public float getRawSize(Context context, int unit, float size) {
+        Resources r;
+        if (context == null) {
+            r = Resources.getSystem();
+        } else {
+            r = context.getResources();
+        }
+        return TypedValue.applyDimension(unit, size, r.getDisplayMetrics());
     }
 
     /**

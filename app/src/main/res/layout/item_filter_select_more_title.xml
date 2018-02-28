@@ -6,7 +6,7 @@
     android:layout_margin="10dp"
     android:ellipsize="end"
     android:maxLines="1"
-    android:textColor="@color/color_999"
+    android:textColor="@color/color_333"
     android:textSize="14sp">
 
 </TextView>

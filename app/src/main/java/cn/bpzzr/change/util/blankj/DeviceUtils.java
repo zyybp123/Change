@@ -20,6 +20,8 @@ import java.util.List;
 
 import cn.bpzzr.change.global.Change;
 
+import static cn.bpzzr.change.global.Change.mContext;
+
 /**
  * <pre>
  *     author: Blankj
@@ -57,7 +59,6 @@ public final class DeviceUtils {
      */
 
     private DeviceUtils() {
-        throw new UnsupportedOperationException("u can't instantiate me...");
     }
 
     /**
@@ -78,6 +79,50 @@ public final class DeviceUtils {
     }
 
     /**
+     * 获取版本号
+     *
+     * @return 当前应用版本号
+     */
+    public static int getVersionCode() {
+        try {
+            return mContext
+                    .getPackageManager()
+                    .getPackageInfo(mContext.getPackageName(), 0)
+                    .versionCode;
+        } catch (Exception localException) {
+            localException.printStackTrace();
+        }
+        return 10;
+    }
+
+    /**
+     * 获取版本名称
+     *
+     * @return 当前应用版本名称
+     */
+    public static String getVersionName() {
+        try {
+            return mContext
+                    .getPackageManager()
+                    .getPackageInfo(mContext.getPackageName(), 0)
+                    .versionName;
+        } catch (Exception localException) {
+            localException.printStackTrace();
+        }
+        return "1.0";
+    }
+
+    /**
+     * 获取带V的版本名称
+     *
+     * @return 当前应用版本名称
+     */
+    @NonNull
+    public static String getVersionNameWithV() {
+        return "V" + getVersionName();
+    }
+
+    /**
      * 获取设备系统版本号
      *
      * @return 设备系统版本号
@@ -87,6 +132,33 @@ public final class DeviceUtils {
         return Build.VERSION.SDK_INT;
     }
 
+    /**
+     * 获取设备厂商
+     * <p>如 Xiaomi</p>
+     *
+     * @return 设备厂商
+     */
+
+    @Contract(pure = true)
+    public static String getManufacturer() {
+        return Build.MANUFACTURER;
+    }
+
+    /**
+     * 获取设备型号
+     * <p>如 MI2SC</p>
+     *
+     * @return 设备型号
+     */
+    public static String getModel() {
+        String model = Build.MODEL;
+        if (model != null) {
+            model = model.trim().replaceAll("\\s*", "");
+        } else {
+            model = "";
+        }
+        return model;
+    }
 
     /**
      * 获取设备 AndroidID
@@ -198,33 +270,6 @@ public final class DeviceUtils {
         return "02:00:00:00:00:00";
     }
 
-    /**
-     * 获取设备厂商
-     * <p>如 Xiaomi</p>
-     *
-     * @return 设备厂商
-     */
-
-    @Contract(pure = true)
-    public static String getManufacturer() {
-        return Build.MANUFACTURER;
-    }
-
-    /**
-     * 获取设备型号
-     * <p>如 MI2SC</p>
-     *
-     * @return 设备型号
-     */
-    public static String getModel() {
-        String model = Build.MODEL;
-        if (model != null) {
-            model = model.trim().replaceAll("\\s*", "");
-        } else {
-            model = "";
-        }
-        return model;
-    }
 
     /**
      * 关机
@@ -282,4 +327,6 @@ public final class DeviceUtils {
     public static void reboot2Bootloader() {
         ShellUtils.execCmd("reboot bootloader", true);
     }
+
+
 }

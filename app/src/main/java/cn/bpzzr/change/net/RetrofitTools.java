@@ -22,7 +22,8 @@ import cn.bpzzr.change.bean.ResultBaseBean;
 import cn.bpzzr.change.interf.ServerHost;
 import cn.bpzzr.change.interf.ServerPath;
 import cn.bpzzr.change.interf.SomeKeys;
-import cn.bpzzr.change.interf.home.HomeService;
+import cn.bpzzr.change.interf.kaishu.HomeService;
+import cn.bpzzr.change.interf.kaishu.KaiShuHost;
 import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.net.callback.MyCallback;
 import cn.bpzzr.change.net.callback.MyDataParse;
@@ -59,11 +60,35 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class RetrofitTools {
+    /**
+     * 测试环境
+     */
+    public static final int APP_TEST = 0;
+    /**
+     * 开发环境
+     */
+    public static final int APP_DEVELOP = 1;
+    /**
+     * game环境
+     */
+    public static final int APP_GAME = 2;
+    /**
+     * 线上环境
+     */
+    public static final int APP_NORMAL = 3;
+    /**
+     * 本类实例
+     */
     private static RetrofitTools mInstance = null;
     private RetrofitService service;
     private OkHttpClient okClient;
     private Retrofit retrofit;
     private Gson gson;
+    /**
+     * 标明当前环境，上线时需修改
+     */
+    public static int appEnvironment = APP_NORMAL;
+
 
     /**
      * 构造 初始化相应参数
@@ -76,7 +101,20 @@ public class RetrofitTools {
         baseUrlMap.put(SomeKeys.BOOK_DATA, ServerHost.BASE_URL_BOOK);
         baseUrlMap.put(SomeKeys.ONLINE_DATA, ServerHost.BASE_URL_ONLINE);
         baseUrlMap.put(SomeKeys.AD_DATA, ServerHost.BASE_URL_AD);
-        baseUrlMap.put(HomeService.BANNER_TAG, HomeService.BASE_URL_HOME_BANNER);
+        switch (appEnvironment) {
+            case APP_DEVELOP:
+                baseUrlMap.put(KaiShuHost.TAG_KAI_SHU, KaiShuHost.BASE_URL_KAI_SHU_STORY_DEVELOP);
+                break;
+            case APP_TEST:
+                baseUrlMap.put(KaiShuHost.TAG_KAI_SHU, KaiShuHost.BASE_URL_KAI_SHU_STORY_TEST);
+                break;
+            case APP_GAME:
+                baseUrlMap.put(KaiShuHost.TAG_KAI_SHU, KaiShuHost.BASE_URL_KAI_SHU_STORY_GAME);
+                break;
+            case APP_NORMAL:
+                baseUrlMap.put(KaiShuHost.TAG_KAI_SHU, KaiShuHost.BASE_URL_KAI_SHU_STORY_NORMAL);
+                break;
+        }
         gson = new Gson();
         //设置OkHttpClitent;
         okClient = new OkHttpClient.Builder()

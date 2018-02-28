@@ -12,6 +12,8 @@ import java.util.List;
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.bean.FilterRadioData;
 import cn.bpzzr.change.bean.GankTest;
+import cn.bpzzr.change.bean.SkillWordBean;
+import cn.bpzzr.change.bean.SubTagBean;
 import cn.bpzzr.change.global.Change;
 
 /**
@@ -19,9 +21,7 @@ import cn.bpzzr.change.global.Change;
  * 筛选条件单选的数据适配器
  */
 
-public class Adapter2FilterSelectMore extends BaseMultiItemQuickAdapter<FilterRadioData, BaseViewHolder> {
-    private int defaultColor;
-    private int selectColor;
+public class Adapter2FilterSelectMore extends BaseMultiItemQuickAdapter<SubTagBean, BaseViewHolder> {
     /**
      * 标题类型条目
      */
@@ -37,19 +37,20 @@ public class Adapter2FilterSelectMore extends BaseMultiItemQuickAdapter<FilterRa
      *
      * @param data A new list is created out of this one to avoid mutable list
      */
-    public Adapter2FilterSelectMore(List<FilterRadioData> data) {
+    public Adapter2FilterSelectMore(List<SubTagBean> data) {
         super(data);
         addItemType(ITEM_TYPE_TITLE, R.layout.item_filter_select_more_title);
         addItemType(ITEM_TYPE_TAG, R.layout.item_filter_select_more_tag);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, FilterRadioData item) {
+    protected void convert(BaseViewHolder helper, SubTagBean item) {
         switch (helper.getItemViewType()) {
             case ITEM_TYPE_TITLE:
-
+                helper.setText(R.id.tv_title, item.getName());
                 break;
             case ITEM_TYPE_TAG:
+                helper.setText(R.id.tv_name, item.getName());
                 break;
         }
     }

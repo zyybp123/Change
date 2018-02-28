@@ -6,6 +6,7 @@ package cn.bpzzr.change.interf;
  */
 
 public interface SomeKeys {
+    String ANDROID = "android";
     String VIDEO_DATA = "videoData";
     String BOOK_DATA = "bookData";
     String ONLINE_DATA = "onlineData";

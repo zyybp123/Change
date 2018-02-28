@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.bpzzr.change.interf.SomeKeys;
+import cn.bpzzr.change.interf.kaishu.KaiShuHost;
 import cn.bpzzr.change.util.LogUtil;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -23,7 +24,7 @@ public class HeaderInterceptor implements Interceptor {
     private Map<String, String> baseUrlMap;
     private String baseUrl;
 
-    public HeaderInterceptor(Map<String, String> baseUrlMap, String baseUrl) {
+    HeaderInterceptor(Map<String, String> baseUrlMap, String baseUrl) {
         this.baseUrlMap = baseUrlMap;
         this.baseUrl = baseUrl;
     }
@@ -47,6 +48,16 @@ public class HeaderInterceptor implements Interceptor {
                 //为空值，取默认URL
                 newBaseUrl = HttpUrl.parse(baseUrl);
             } else {
+                if (KaiShuHost.TAG_KAI_SHU.equals(headerValue)) {
+                    //kai shu api 添加统一的header
+                    //builder.addHeader(KaiShuHost.HEADER_KAI_TOKEN, "");
+                    //builder.addHeader(KaiShuHost.HEADER_KAI_DEVICE_ID, "");
+                    //builder.addHeader(KaiShuHost.HEADER_KAI_USER_ID, "");
+                    builder.addHeader(KaiShuHost.HEADER_KAI_APP_ID, "992099001");
+                    //builder.addHeader(KaiShuHost.HEADER_KAI_API_VER, "");
+                    //builder.addHeader(KaiShuHost.HEADER_KAI_APP_VERSION, "");
+                    //builder.addHeader(KaiShuHost.HEADER_KAI_CHANNEL_ID, "");
+                }
                 //不为空值，从map里取值
                 String url = baseUrlMap.get(headerValue);
                 if (TextUtils.isEmpty(url)) {
