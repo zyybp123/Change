@@ -11,6 +11,7 @@ import java.util.List;
 
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.adapter.Adapter2Test3;
+import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.net.download.DownloadManager;
 import cn.bpzzr.change.net.common.ResInfo;
 import cn.bpzzr.change.ui.fragment.base.BaseFragmentRefreshPage;
@@ -28,7 +29,7 @@ import io.reactivex.schedulers.Schedulers;
  * 临时测试页
  */
 
-public class Temp2 extends BaseFragmentRefreshPage<ResInfo> {
+public class Temp2 extends BaseFragmentRefreshPage<ResInfo> implements MVP.View{
     public static final String[] URLS = new String[]{
             "http://xytzq01.oss-cn-shanghai.aliyuncs.com/data/project/project_22019/resource/document/a41be61c2b8849a68c35461b916935e6.pdf",
             "http://appdlc.hicloud.com/dl/appdl/application/apk/9c/9cf5bc5a91d14d82a88a08f10cc359b2/cc.thedream.qinsmoon.HUAWEI.1712251337.apk",
@@ -115,6 +116,11 @@ public class Temp2 extends BaseFragmentRefreshPage<ResInfo> {
 
     @Override
     protected void loadMoreRequested() {
+
+    }
+
+    @Override
+    public void onRequestStart(String tag) {
 
     }
 

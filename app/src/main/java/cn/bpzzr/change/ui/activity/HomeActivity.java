@@ -21,13 +21,11 @@ import cn.bpzzr.change.bean.BottomBarBean;
 import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.manager.MyActivityManager;
 import cn.bpzzr.change.net.RetrofitTools;
-import cn.bpzzr.change.interf.ServerPath;
+import cn.bpzzr.change.interf.home.ServerPath;
 import cn.bpzzr.change.ui.activity.base.BaseActivity;
-import cn.bpzzr.change.ui.fragment.CategoryFragment;
 import cn.bpzzr.change.ui.fragment.DiscoveryFragment;
 import cn.bpzzr.change.ui.fragment.HomeFragment;
 import cn.bpzzr.change.ui.fragment.MineFragment;
-import cn.bpzzr.change.ui.fragment.Temp;
 import cn.bpzzr.change.ui.fragment.Temp2;
 import cn.bpzzr.change.util.LogUtil;
 

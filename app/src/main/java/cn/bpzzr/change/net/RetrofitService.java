@@ -8,7 +8,7 @@ import cn.bpzzr.change.bean.BaseBean;
 import cn.bpzzr.change.bean.DoubanTest;
 import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.bean.ResultBaseBean;
-import cn.bpzzr.change.interf.ServerPath;
+import cn.bpzzr.change.interf.home.ServerPath;
 import cn.bpzzr.change.interf.SomeKeys;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;

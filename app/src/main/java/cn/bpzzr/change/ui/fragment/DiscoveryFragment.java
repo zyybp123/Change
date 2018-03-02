@@ -30,25 +30,6 @@ public class DiscoveryFragment extends BaseFragment {
 
     }
 
-    @Override
-    public void onRequestStart(String tag) {
-
-    }
-
-    @Override
-    public void onError(String tag, String msg) {
-
-    }
-
-    @Override
-    public void onSuccess(String tag, String result, Object data) {
-
-    }
-
-    @Override
-    public void onEmpty(String tag) {
-
-    }
 
 
 }

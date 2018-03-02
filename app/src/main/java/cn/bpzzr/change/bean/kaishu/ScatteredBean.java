@@ -13,6 +13,15 @@ public class ScatteredBean {
      */
     private String deviceid;
 
+    /**
+     * session
+     */
+    private String sessioncode;
+    /**
+     * 令牌
+     */
+    private String token;
+
     public String getData() {
         return data;
     }
@@ -27,5 +36,21 @@ public class ScatteredBean {
 
     public void setDeviceid(String deviceid) {
         this.deviceid = deviceid;
+    }
+
+    public String getSessioncode() {
+        return sessioncode;
+    }
+
+    public void setSessioncode(String sessioncode) {
+        this.sessioncode = sessioncode;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

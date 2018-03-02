@@ -7,6 +7,9 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import cn.bpzzr.change.interf.SomeKeys;
+import cn.bpzzr.change.util.AESUtil;
+import cn.bpzzr.change.util.KaiShuDeviceUtil;
 import cn.bpzzr.change.util.StringUtil;
 
 import static org.junit.Assert.*;

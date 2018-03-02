@@ -13,7 +13,7 @@ public class BaseResultBean<T> {
     /**
      * 错误信息
      */
-    private int errmsg;
+    private String errmsg;
     /**
      * 数据结果
      */
@@ -35,11 +35,11 @@ public class BaseResultBean<T> {
         this.result = result;
     }
 
-    public int getErrmsg() {
+    public String getErrmsg() {
         return errmsg;
     }
 
-    public void setErrmsg(int errmsg) {
+    public void setErrmsg(String errmsg) {
         this.errmsg = errmsg;
     }
 }

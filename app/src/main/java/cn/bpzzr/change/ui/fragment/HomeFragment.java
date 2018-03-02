@@ -1,35 +1,28 @@
 package cn.bpzzr.change.ui.fragment;
 
-import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.google.gson.Gson;
 
 import java.util.List;
 
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.adapter.Adapter2Home;
-import cn.bpzzr.change.bean.AdBean;
-import cn.bpzzr.change.bean.AdParam;
 import cn.bpzzr.change.bean.GankTest;
-import cn.bpzzr.change.interf.ServerPath;
-import cn.bpzzr.change.interf.kaishu.AppInitService;
-import cn.bpzzr.change.interf.kaishu.KaiShuHost;
+import cn.bpzzr.change.interf.home.ServerPath;
+import cn.bpzzr.change.interf.kaishu.KaiHomeService;
+import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.net.callback.MyObserverSimple;
-import cn.bpzzr.change.net.common.FileRequestBody;
-import cn.bpzzr.change.ui.activity.HomeActivity;
 import cn.bpzzr.change.ui.fragment.base.BaseFragmentRefreshPage;
-import cn.bpzzr.change.ui.view.MyScrollListener;
+import cn.bpzzr.change.util.AESUtil;
+import cn.bpzzr.change.util.KaiShuDeviceUtil;
 import cn.bpzzr.change.util.LogUtil;
-import cn.bpzzr.change.util.UiUtil;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
@@ -45,7 +38,7 @@ import static cn.bpzzr.change.adapter.Adapter2Home.ITEM_NORMAL;
  * 主页
  */
 
-public class HomeFragment extends BaseFragmentRefreshPage {
+public class HomeFragment extends BaseFragmentRefreshPage implements MVP.View{
 
     @Override
     public RecyclerView.LayoutManager getLayoutManager() {
@@ -59,6 +52,8 @@ public class HomeFragment extends BaseFragmentRefreshPage {
 
     @Override
     public void successViewBind() {
+        //KotlinTest test = new KotlinTest("12", "HomePage.......");
+        //String name = test.getName();
 
     }
 
@@ -99,11 +94,23 @@ public class HomeFragment extends BaseFragmentRefreshPage {
                 "{\"platform\":\"kaishu\",\"appversion\":\"V4.2.0\",\"sysversion\":\"23\",\"appid\":\"992099001\",\"channelid\":\"yingyongbao\",\"phonemodel\":\"Le X620\",\"phonedevicecode\":\"869552027513993\",\"channelmsg\":\"android\"}");
         retrofitTools
                 .getRetrofit()
-                .create(AppInitService.class)
+                .create(KaiHomeService.class)
                 .getDeviceId(requestBody)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new MyObserverSimple<>(this, AppInitService.PATH_DEVICE_ID));
+                .subscribe(new MyObserverSimple<>(this, KaiHomeService.PATH_DEVICE_ID));
+
+        AESUtil aesUtil = new AESUtil(KaiShuDeviceUtil.APP_SECRET_KAI_NORMAL);
+        String decrypt = aesUtil.decrypt("wgWN92buwMm/je7gtXl0YPvMqUZfjBb3TYahBFb+WXrdjeLhiKI+fBv+AQnS2gdY0Vdv1yPwrs+M" +
+                "CQxGUY2xWHtYy3a/ezym7SyuDeMpCaJBDkrDoao+S4DF6bjdoy8ogTTxxniH7lCzgVMzJxNHm+T5" +
+                "2gBUKmEL7OwlDrD+uUa0t2yI9SNSmT8c+n3lEgs73qyZf/jhecXmdqUi4sZSi90x+1vO3LmUaUUt" +
+                "gV763OeslebBJrp7xOULQH/3Cn8X");
+        String decrypt2 = aesUtil.decrypt("9Wk6r7DBfdobfB+Zb2rWw2UoFAPMZ1KcG+/6UCmYuat2BZMAUPWzojkCByKhJ1uDNx7uMcZKbYTj" +
+                "gip0kZ8oXxnlzPixOVZqahfGYCasTKtd1cjCqblx/1wcntJtRaM4CwS51gux7CrnnRJuj9FyFY7s" +
+                "80tx7g8aqj+agqRGwwH6JvodLuZRAsBhndMrkvJR6uVcTKmI8+1fQfGhI7tsdf80YR+eM2vqAjld" +
+                "SrQStHagpEfc5efN66MxeHX3S6N7mIG/d53DI+dxIEL2X+h9OOEpQpCaeOGu3IEdsf9wWAedRM6L" +
+                "3RLKrQ/t8xd18P/DYGZSCL8kPdukGCDGp3ZBa6TKG2fesMox/ta4LDQlBNI=");
+        LogUtil.e(mFragmentTag + getTag(), "解密 >> " + decrypt2);
     }
 
     @Override
@@ -113,6 +120,11 @@ public class HomeFragment extends BaseFragmentRefreshPage {
 
     @Override
     protected void loadMoreRequested() {
+    }
+
+    @Override
+    public void onRequestStart(String tag) {
+
     }
 
     @Override

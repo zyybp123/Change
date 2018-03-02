@@ -4,33 +4,26 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
-import com.youth.banner.Banner;
-import com.youth.banner.BannerConfig;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.adapter.base.Adapter2Test2;
 import cn.bpzzr.change.bean.AdBean;
 import cn.bpzzr.change.bean.GankTest;
-import cn.bpzzr.change.interf.ServerPath;
+import cn.bpzzr.change.interf.home.ServerPath;
 import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.manager.ACache;
-import cn.bpzzr.change.manager.GlideImageLoader;
+import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.ui.fragment.base.BaseFragmentRefreshPage;
 import cn.bpzzr.change.util.image.ImageLoad;
 import cn.bpzzr.change.util.LogUtil;
 
-import static cn.bpzzr.change.adapter.Adapter2Home.ITEM_CARD;
 import static cn.bpzzr.change.global.Change.mContext;
 
 /**
@@ -38,7 +31,7 @@ import static cn.bpzzr.change.global.Change.mContext;
  * on 2018/1/19 23:07.
  */
 
-public class Temp extends BaseFragmentRefreshPage {
+public class Temp extends BaseFragmentRefreshPage implements MVP.View{
     public static final String[] urls = {
             "http://a.hiphotos.baidu.com/image/pic/item/500fd9f9d72a6059f550a1832334349b023bbae3.jpg",
             "http://d.hiphotos.baidu.com/image/pic/item/a044ad345982b2b713b5ad7d3aadcbef76099b65.jpg",
@@ -109,6 +102,11 @@ public class Temp extends BaseFragmentRefreshPage {
                 refreshRequest();
             }
         }, 2000);
+    }
+
+    @Override
+    public void onRequestStart(String tag) {
+
     }
 
     @Override

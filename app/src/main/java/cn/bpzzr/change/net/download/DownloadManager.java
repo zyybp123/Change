@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import cn.bpzzr.change.bean.gen.ResInfoDao;
-import cn.bpzzr.change.interf.ServerHost;
+import cn.bpzzr.change.interf.home.ServerHost;
 import cn.bpzzr.change.manager.GreenDaoManager;
 import cn.bpzzr.change.manager.ProgressManager;
 import cn.bpzzr.change.net.MyAbnormalException;

@@ -13,12 +13,12 @@ import com.trello.rxlifecycle2.components.RxFragment;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import cn.bpzzr.change.interf.ServerHost;
+import cn.bpzzr.change.interf.home.ServerHost;
 import cn.bpzzr.change.manager.BroadcastManager;
-import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.net.RetrofitTools;
 import cn.bpzzr.change.ui.view.StateLayout;
 import cn.bpzzr.change.util.LogUtil;
+import dagger.android.DaggerFragment;
 
 /**
  * Created by ZYY
@@ -28,7 +28,7 @@ import cn.bpzzr.change.util.LogUtil;
  * @author ZYY
  */
 
-public abstract class BaseFragment extends RxFragment implements MVP.Presenter, MVP.View, StateLayout.RetryListener {
+public abstract class BaseFragment<T> extends RxFragment implements StateLayout.RetryListener {
     public String mFragmentTag = this.getClass().getSimpleName();
     /**
      * 屏幕的宽高
@@ -65,6 +65,11 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
      * 宿主Activity
      */
     public Activity mActivity;
+    //protected FragmentComponent mFragmentComponent;
+    /**
+     * 网络请求管理器
+     */
+    protected T mPresenter;
 
     /**
      * 空参构造，初始化一些值
@@ -100,7 +105,7 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
         screenHeight = dm.heightPixels;
         //获取广播管理器实例
         broadcastManager = BroadcastManager.getInstance(activity);
-        //获取宿主activity实例
+        //获取宿主activity实例，缓存到内存（可能会内存泄漏，但比getActivity获得null安全一些）
         mActivity = activity;
     }
 
@@ -108,8 +113,15 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //DaggerFragment
+        //initInjector();
         LogUtil.e(mFragmentTag + getTag(), " onCreate()......" + getUserVisibleHint());
     }
+
+    /**
+     * dagger2的注入初始化
+     */
+    //public abstract void initInjector();
 
     /**
      * 是否需要懒加载，由子类实现
@@ -160,6 +172,7 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
         initView();
         //此时的View一定存在，在此完成绑定等相关操作
         unbinder = ButterKnife.bind(this, view);
+        //留给子类在绑定完控件后初始化页面
         viewHasBind();
         isInit = true;
         //初始化完成的时候去加载数据
@@ -169,7 +182,7 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
     /**
      * 初始化界面，比如找到控件
      */
-    public void initView(){
+    public void initView() {
 
     }
 
@@ -183,8 +196,10 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
      */
     private void isCanLoadData() {
         if (!isInit) {
+            //未完成初始化，直接返回
             return;
         }
+        //如果需要懒加载
         if (isNeedLazy) {
             if (getUserVisibleHint() && isFirstLoad) {
                 //可见，且第一次可见才发起数据请求
@@ -192,9 +207,15 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
                 isFirstLoad = false;
             }
         } else {
+            //不需要懒加载，直接发起请求
             initialRequest();
         }
     }
+
+    /**
+     * 发起请求的方法
+     */
+    public abstract void initialRequest();
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -247,7 +268,7 @@ public abstract class BaseFragment extends RxFragment implements MVP.Presenter, 
      */
     @Override
     public void onRetry() {
-        LogUtil.e(mFragmentTag + getTag(),"retry()");
+        LogUtil.e(mFragmentTag + getTag(), "retry()");
         initialRequest();
     }
 }

@@ -44,7 +44,7 @@ public class KaiShuDeviceUtil {
     public static final String APP_SECRET_KAI_NORMAL = "ODZDNjUzNkFGMzVFRUQ0ODIxNEJDQ0YzM0MzMzE0MEQ=";
     public static final String KAI_SHU = "kaishu";
     public static final String KAI_SHU_VERSION_NAME = "4.2.0";
-    public static final int KAI_SHU_VERSION_CODE = 1;
+    public static final int KAI_SHU_VERSION_CODE = 420;
 
 
     private KaiShuDeviceUtil() {

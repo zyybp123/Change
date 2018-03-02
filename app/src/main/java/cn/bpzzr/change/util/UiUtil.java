@@ -96,7 +96,7 @@ public class UiUtil {
      * 根据设备信息获取当前分辨率下指定单位对应的像素大小； px,dip,sp -> px
      *
      * @param context 上下文
-     * @param unit    单位 COMPLEX_UNIT_PX:
+     * @param unit    单位 TypeValue.COMPLEX_UNIT_PX:
      *                COMPLEX_UNIT_DIP:
      *                COMPLEX_UNIT_SP:等
      * @param size    对应单位的大小

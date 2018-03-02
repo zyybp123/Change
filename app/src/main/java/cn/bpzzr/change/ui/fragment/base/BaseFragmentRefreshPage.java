@@ -246,12 +246,6 @@ public abstract class BaseFragmentRefreshPage<T> extends BaseFragment implements
         currentPage = 1;
     }
 
-
-    @Override
-    public void onRequestStart(String tag) {
-        //不进行操作
-    }
-
     /**
      * 重置数据集合，和刷新状态
      */

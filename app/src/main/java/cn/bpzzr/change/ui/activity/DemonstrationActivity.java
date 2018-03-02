@@ -6,17 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.bean.UserBean;
 import cn.bpzzr.change.databinding.ActivityDemonstrationBinding;
-import cn.bpzzr.change.interf.ServerHost;
+import cn.bpzzr.change.interf.home.ServerHost;
 import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.net.RetrofitTools;
 import cn.bpzzr.change.ui.view.CustomEditText;
