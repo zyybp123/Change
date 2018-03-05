@@ -18,43 +18,26 @@ import io.reactivex.disposables.Disposable;
 
 /**
  * Created by ZYY
- * on 2018/1/8 22:13.
- * 实现一个统一处理的观察者
+ * kai shu story request result base class
  */
 
-public class KaiObserver<T> implements Observer<BaseResultBean<T>> {
+public abstract class KaiObserver<T> implements Observer<BaseResultBean<T>> {
     private static final String mTag = "KaiObserver";
-    /**
-     * 实现View接口的页面
-     */
-    private MVP.View<T> mView;
     /**
      * 具体的方法的标识（用静态的子路径做标识）
      */
-    private String methodTag;
-    /**
-     * 扩展监听器
-     */
-    private ExtendListener<T> listener;
+    private String methodTag = "methodTag";
 
-    public KaiObserver(MVP.View<T> mView, String methodTag) {
-        this.mView = mView;
+    public KaiObserver(String methodTag) {
         this.methodTag = methodTag;
-    }
-
-    public KaiObserver(MVP.View<T> mView, String methodTag, ExtendListener<T> listener) {
-        this(mView, methodTag);
-        this.listener = listener;
-    }
-
-    public KaiObserver() {
-
     }
 
     @Override
     public void onSubscribe(Disposable d) {
-        mView.onRequestStart(mTag);
+        onRequestStart();
     }
+
+    protected abstract void onRequestStart();
 
     @Override
     public void onNext(BaseResultBean<T> resultBaseBean) {
@@ -69,20 +52,23 @@ public class KaiObserver<T> implements Observer<BaseResultBean<T>> {
                     T result = resultBaseBean.getResult();
                     if (result != null) {
                         //数据不为空则回调成功的方法，带回方法标识，错误描述，数据结果
-                        mView.onSuccess(methodTag, describe, result);
-                        if (listener != null){
-                            listener.onExtend(methodTag, result);
-                        }
+                        onResult(methodTag, result);
                     } else {
-                        mView.onEmpty(methodTag);
+                        onResultEmpty(methodTag);
                     }
                     break;
             }
 
         } else {
-            mView.onError(methodTag, "......response body is null......");
+            onResultError(methodTag, "......response body is null......");
         }
     }
+
+    protected abstract void onResultError(String methodTag, String errorMsg);
+
+    protected abstract void onResultEmpty(String methodTag);
+
+    protected abstract void onResult(String methodTag, T result);
 
     @Override
     public void onError(Throwable e) {
@@ -90,19 +76,19 @@ public class KaiObserver<T> implements Observer<BaseResultBean<T>> {
         try {
             if (e instanceof ConnectException) {
                 LogUtil.e(mTag, "网络连接异常..." + e.getMessage());
-                mView.onError(methodTag, "网络连接异常");
+                onResultError(methodTag, "网络连接异常");
             } else if (e instanceof TimeoutException) {
                 LogUtil.e(mTag, "网络连接超时..." + e.getMessage());
-                mView.onError(methodTag, "网络连接超时");
+                onResultError(methodTag, "网络连接超时");
             } else if (e instanceof NetworkErrorException) {
                 LogUtil.e(mTag, "网络工作异常..." + e.getMessage());
-                mView.onError(methodTag, "网络工作异常");
+                onResultError(methodTag, "网络工作异常");
             } else if (e instanceof UnknownHostException) {
                 LogUtil.e(mTag, "主机解析异常..." + e.getMessage());
-                mView.onError(methodTag, "主机解析异常");
+                onResultError(methodTag, "主机解析异常");
             } else {
                 LogUtil.e(mTag, "...other...error...");
-                mView.onError(methodTag, e.getMessage());
+                onResultError(methodTag, e.getMessage());
             }
         } catch (Exception e1) {
             e1.printStackTrace();
@@ -112,14 +98,10 @@ public class KaiObserver<T> implements Observer<BaseResultBean<T>> {
 
     @Override
     public void onComplete() {
-        //onRequestEnd();
+        onRequestEnd();
     }
 
-    /**
-     * 扩展监听器接口，主要将onNext预处理之后的数据回调到外部做分类处理
-     */
-    public interface ExtendListener<T> {
-        void onExtend(String methodTag, T result);
-    }
+    protected abstract void onRequestEnd();
+
 
 }

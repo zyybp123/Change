@@ -19,6 +19,7 @@ import cn.bpzzr.change.net.RetrofitTools;
 import cn.bpzzr.change.ui.view.StateLayout;
 import cn.bpzzr.change.util.LogUtil;
 import dagger.android.DaggerFragment;
+import okhttp3.HttpUrl;
 
 /**
  * Created by ZYY
@@ -109,19 +110,11 @@ public abstract class BaseFragment<T> extends RxFragment implements StateLayout.
         mActivity = activity;
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //DaggerFragment
-        //initInjector();
         LogUtil.e(mFragmentTag + getTag(), " onCreate()......" + getUserVisibleHint());
     }
-
-    /**
-     * dagger2的注入初始化
-     */
-    //public abstract void initInjector();
 
     /**
      * 是否需要懒加载，由子类实现
@@ -166,8 +159,7 @@ public abstract class BaseFragment<T> extends RxFragment implements StateLayout.
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        LogUtil.e(mFragmentTag + getTag(), " onViewCreated()");
-        LogUtil.e(mFragmentTag + getTag(), "" + mRootView);
+        LogUtil.e(mFragmentTag + getTag(), " onViewCreated() ---> " + mRootView);
         //留给子类初始化控件用
         initView();
         //此时的View一定存在，在此完成绑定等相关操作

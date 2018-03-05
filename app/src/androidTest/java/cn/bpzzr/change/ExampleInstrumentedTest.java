@@ -26,7 +26,7 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("cn.bpzzr.change", appContext.getPackageName());
+        /*assertEquals("cn.bpzzr.change", appContext.getPackageName());
         boolean spaceStr = StringUtil.isSpaceStr("     \n" +
                 "\n" +
                 "\n" +
@@ -37,6 +37,10 @@ public class ExampleInstrumentedTest {
                 "          ");
         assert spaceStr;
         String ellipsisStr = StringUtil.getEllipsisStr(".心里快", 4, false);
-        assertEquals(".心里快",ellipsisStr);
+        assertEquals(".心里快",ellipsisStr);*/
+
+        //assertTrue(StringUtil.isAHttpUrl("http://d.android.com/tools/testing"));
+        //assertEquals("testing",StringUtil.getFileName("testing"));
+        assertEquals("png",StringUtil.getFileSuffixName("."));
     }
 }

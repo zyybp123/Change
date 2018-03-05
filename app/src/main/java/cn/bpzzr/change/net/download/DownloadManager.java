@@ -444,21 +444,4 @@ public class DownloadManager {
         }
     }
 
-
-    /**
-     * 根据路径获取文件的名字
-     *
-     * @param path URL或文件路径
-     * @return 空串或本身或最后一个分隔符后的串
-     */
-    public static String getFileName(String path) {
-        if (StringUtil.isSpaceStr(path)) {
-            //如果传入路径为空，返回空串
-            return "";
-        }
-        //最后一个 / 的索引
-        int separatorIndex = path.lastIndexOf("/");
-        //如果不含 / ，就直接返回该串，否则就返回 / 后的内容
-        return (separatorIndex < 0) ? path : path.substring(separatorIndex + 1, path.length());
-    }
 }

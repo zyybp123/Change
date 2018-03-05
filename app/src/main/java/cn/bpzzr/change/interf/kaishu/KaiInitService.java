@@ -19,7 +19,7 @@ import static cn.bpzzr.change.interf.kaishu.KaiShuHost.HEADER_KAI_SHU;
  * kai shu story 首页所需的请求
  */
 
-public interface KaiHomeService {
+public interface KaiInitService {
     /**
      * 获取设备号的路径
      */

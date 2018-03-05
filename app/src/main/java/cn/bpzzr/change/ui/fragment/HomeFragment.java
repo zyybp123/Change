@@ -16,13 +16,14 @@ import cn.bpzzr.change.R;
 import cn.bpzzr.change.adapter.Adapter2Home;
 import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.interf.home.ServerPath;
-import cn.bpzzr.change.interf.kaishu.KaiHomeService;
+import cn.bpzzr.change.interf.kaishu.KaiInitService;
 import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.net.callback.MyObserverSimple;
 import cn.bpzzr.change.ui.fragment.base.BaseFragmentRefreshPage;
 import cn.bpzzr.change.util.AESUtil;
 import cn.bpzzr.change.util.KaiShuDeviceUtil;
 import cn.bpzzr.change.util.LogUtil;
+import cn.bpzzr.change.util.StringUtil;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
@@ -54,6 +55,7 @@ public class HomeFragment extends BaseFragmentRefreshPage implements MVP.View{
     public void successViewBind() {
         //KotlinTest test = new KotlinTest("12", "HomePage.......");
         //String name = test.getName();
+        LogUtil.e(mFragmentTag + getTag(),"is a http url..."+ StringUtil.isAHttpUrl("1234"));
 
     }
 
@@ -94,11 +96,11 @@ public class HomeFragment extends BaseFragmentRefreshPage implements MVP.View{
                 "{\"platform\":\"kaishu\",\"appversion\":\"V4.2.0\",\"sysversion\":\"23\",\"appid\":\"992099001\",\"channelid\":\"yingyongbao\",\"phonemodel\":\"Le X620\",\"phonedevicecode\":\"869552027513993\",\"channelmsg\":\"android\"}");
         retrofitTools
                 .getRetrofit()
-                .create(KaiHomeService.class)
+                .create(KaiInitService.class)
                 .getDeviceId(requestBody)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new MyObserverSimple<>(this, KaiHomeService.PATH_DEVICE_ID));
+                .subscribe(new MyObserverSimple<>(this, KaiInitService.PATH_DEVICE_ID));
 
         AESUtil aesUtil = new AESUtil(KaiShuDeviceUtil.APP_SECRET_KAI_NORMAL);
         String decrypt = aesUtil.decrypt("wgWN92buwMm/je7gtXl0YPvMqUZfjBb3TYahBFb+WXrdjeLhiKI+fBv+AQnS2gdY0Vdv1yPwrs+M" +

@@ -17,6 +17,7 @@ import cn.bpzzr.change.net.common.ResInfo;
 import cn.bpzzr.change.ui.fragment.base.BaseFragmentRefreshPage;
 import cn.bpzzr.change.util.ListUtil;
 import cn.bpzzr.change.util.LogUtil;
+import cn.bpzzr.change.util.StringUtil;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -68,8 +69,8 @@ public class Temp2 extends BaseFragmentRefreshPage<ResInfo> implements MVP.View{
             info.setResId(i);
             info.setFileDir(mActivity.getFilesDir().getAbsolutePath());
             info.setUrl(URLS[i]);
-            info.setFullName(DownloadManager.getFileName(URLS[i]));
-            info.setResName(DownloadManager.getFileName(URLS[i]));
+            info.setFullName(StringUtil.getFileName(URLS[i]));
+            info.setResName(StringUtil.getFileName(URLS[i]));
             mDataList.add(info);
         }
         downloadManager = DownloadManager.getInstance(1);

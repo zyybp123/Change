@@ -11,8 +11,6 @@ import retrofit2.http.Url;
 /**
  * Created by Administrator on 2018/1/30.
  * 下载方法接口
- * <p>
- * 此处不采用RxJava的方式，因为拿到call可以做中断，取消
  */
 
 public interface DownLoadService {
