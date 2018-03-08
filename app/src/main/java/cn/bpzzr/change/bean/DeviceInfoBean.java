@@ -1,19 +1,23 @@
 package cn.bpzzr.change.bean;
 
+import cn.bpzzr.change.interf.SomeKeys;
+import cn.bpzzr.change.util.KaiShuDeviceUtil;
+import cn.bpzzr.change.util.blankj.DeviceUtils;
+
 /**
  * Created by Administrator on 2018/3/1.
  * 设备信息等相关数据实体类
  */
 
 public class DeviceInfoBean {
-    private String platform;
-    private String appversion;
-    private String sysversion;
-    private String appid;
+    private String platform = KaiShuDeviceUtil.getPlatform();
+    private String appversion = KaiShuDeviceUtil.getVersionNameWithV();
+    private int sysversion = DeviceUtils.getSDKVersion();
+    private String appid = KaiShuDeviceUtil.getAppId();
     private String channelid;
-    private String phonemodel;
+    private String phonemodel = KaiShuDeviceUtil.getDeviceModel();
     private String phonedevicecode;
-    private String channelmsg;
+    private String channelmsg = KaiShuDeviceUtil.getChannelMsg();
 
     /**
      * {"platform":"kaishu",

@@ -1,5 +1,6 @@
 package cn.bpzzr.change.util;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -8,6 +9,8 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,7 +40,7 @@ import static cn.bpzzr.change.net.RetrofitTools.appEnvironment;
  */
 
 public class KaiShuDeviceUtil {
-
+    private static final String TAG = "KaiShuDeviceUtil";
     public static final String APP_ID_KAI_TEST = "123456";
     public static final String APP_ID_KAI_NORMAL = "992099001";
     public static final String APP_SECRET_KAI_TEST = "aabbcc";
@@ -49,11 +52,6 @@ public class KaiShuDeviceUtil {
 
     private KaiShuDeviceUtil() {
     }
-
-    /*public static boolean checkPermission(Context paramContext, String paramString) {
-        return paramContext.getPackageManager().checkPermission(paramString, paramContext.getPackageName()) == 0;
-    }*/
-
 
     /**
      * 获取应用id
@@ -183,6 +181,7 @@ public class KaiShuDeviceUtil {
                     }
             }
         } catch (SocketException localSocketException) {
+            LogUtil.e(TAG, "ex ---> " + localSocketException.getMessage());
             localSocketException.printStackTrace();
         }
         return null;
@@ -199,7 +198,43 @@ public class KaiShuDeviceUtil {
         return null;
     }
 
-/*    public static String getDeviceIdSameImei(Context paramContext) {
+    public static String getSimIccId(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            //大于等于Android 5.1.0 L版本
+            SubscriptionManager sub = (SubscriptionManager) context
+                    .getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+            if (sub == null) {
+                LogUtil.e(TAG, "SubscriptionManager is null !");
+                return "";
+            }
+            List<SubscriptionInfo> info = sub.getActiveSubscriptionInfoList();
+            if (info == null) {
+                LogUtil.e(TAG, "infoList is null !");
+                return "";
+            }
+            int count = sub.getActiveSubscriptionInfoCount();
+            if (count > 0) {
+                if (count > 1) {
+                    //数量大于一，为双卡
+                    String icc1 = info.get(0).getIccId();
+                    String icc2 = info.get(1).getIccId();
+                    return icc1 + "," + icc2;
+                } else {
+                    //数量等于一，为单卡
+                    return info.get(0).getIccId();
+                }
+            } else {
+                Log.d(TAG, " ----> 无SIM卡");
+                return "";
+            }
+        } else {
+            //小于5.1.0 以下的版本，需要权限
+            TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            return"";// tm.getSimSerialNumber();
+        }
+    }
+
+    /*public static String getDeviceIdSameImei(Context paramContext) {
         String str1;
         if (paramContext == null)
             str1 = "";
@@ -346,6 +381,7 @@ public class KaiShuDeviceUtil {
 
     /**
      * 检测是否安装了qq客户端
+     *
      * @return 未安装则返回false
      */
     public static boolean isQQClientAvailable() {
@@ -383,7 +419,6 @@ public class KaiShuDeviceUtil {
             paramString = "";
         return localSharedPreferences.edit().putString("uid260v", paramString).commit();
     }
-
 
 
     // ERROR //

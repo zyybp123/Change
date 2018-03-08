@@ -2,10 +2,13 @@ package cn.bpzzr.change.mvp.presenter;
 
 import cn.bpzzr.change.bean.kaishu.BaseResultBean;
 import cn.bpzzr.change.bean.kaishu.ScatteredBean;
+import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.interf.kaishu.KaiInitService;
 import cn.bpzzr.change.net.RetrofitTools;
 import cn.bpzzr.change.net.callback.KaiObserver;
+import cn.bpzzr.change.util.KaiShuDeviceUtil;
 import cn.bpzzr.change.util.LogUtil;
+import cn.bpzzr.change.util.SharedPreferencesUtil;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import okhttp3.RequestBody;
@@ -145,10 +148,16 @@ public class KaiAppInitPre {
         protected void onResult(String methodTag, ScatteredBean result) {
             switch (methodTag) {
                 case KaiInitService.PATH_DEVICE_ID:
-                    result.getDeviceid();
+                    String deviceId = result.getDeviceid();
+                    SharedPreferencesUtil
+                            .getInstance(KaiShuDeviceUtil.KAI_SHU)
+                            .put(SomeKeys.KAI_DEVICE_ID, deviceId);
                     break;
                 case KaiInitService.PATH_SESSION_CODE:
-                    result.getSessioncode();
+                    String sessionCode = result.getSessioncode();
+                    SharedPreferencesUtil
+                            .getInstance(KaiShuDeviceUtil.KAI_SHU)
+                            .put(SomeKeys.KAI_SESSION_CODE, sessionCode);
                     break;
                 case KaiInitService.PATH_PLATFORM_TOKEN:
                     result.getToken();

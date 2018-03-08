@@ -47,4 +47,6 @@ public interface SomeKeys {
      * 加密后参数
      */
     String MH_ENCRYPT = "cGhFAvTXKhmkQZvmMBVnbNKg82FlBjsQfncVF5lG/XLIgTcKsZzZseK+ZEahH3wu";
+    String KAI_DEVICE_ID = "deviceId";
+    String KAI_SESSION_CODE = "sessionCode";
 }
