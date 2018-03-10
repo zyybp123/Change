@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.youth.banner.Banner;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +23,8 @@ import cn.bpzzr.change.adapter.MyBottomBarAdapter;
 import cn.bpzzr.change.bean.BottomBarBean;
 import cn.bpzzr.change.bean.GankTest;
 import cn.bpzzr.change.manager.MyActivityManager;
+import cn.bpzzr.change.mvp.BasePresenter;
+import cn.bpzzr.change.mvp.presenter.KaiAppInitPre;
 import cn.bpzzr.change.net.RetrofitTools;
 import cn.bpzzr.change.interf.home.ServerPath;
 import cn.bpzzr.change.ui.activity.base.BaseActivity;
@@ -28,6 +33,9 @@ import cn.bpzzr.change.ui.fragment.HomeFragment;
 import cn.bpzzr.change.ui.fragment.MineFragment;
 import cn.bpzzr.change.ui.fragment.Temp2;
 import cn.bpzzr.change.util.LogUtil;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okio.BufferedSink;
 
 public class HomeActivity extends BaseActivity implements MyBottomBarAdapter.OnSelectedListener {
     /**
@@ -53,6 +61,11 @@ public class HomeActivity extends BaseActivity implements MyBottomBarAdapter.OnS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public BasePresenter getMPresenter() {
+        return null;
     }
 
     @Override
@@ -142,15 +155,9 @@ public class HomeActivity extends BaseActivity implements MyBottomBarAdapter.OnS
     RetrofitTools instance;
     String test = "";
 
-    @Override
-    public void initialRequest() {
-        /*instance = RetrofitTools.getInstance(ServerHost.BASE_URL_BOOK);
-        instance.getTest(this);
-        instance.getTest2(this);
-        instance.getTest3(this);*/
-    }
 
-    @Override
+
+/*    @Override
     public void onRequestStart(String tag) {
 
     }
@@ -184,7 +191,7 @@ public class HomeActivity extends BaseActivity implements MyBottomBarAdapter.OnS
     @Override
     public void onEmpty(String tag) {
 
-    }
+    }*/
 
     @Override
     public void onClick(View v) {
@@ -213,5 +220,30 @@ public class HomeActivity extends BaseActivity implements MyBottomBarAdapter.OnS
                 banner.startAutoPlay();
             }
         }
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void showSuccess() {
+
+    }
+
+    @Override
+    public void showFailure() {
+
+    }
+
+    @Override
+    public void showNoNet() {
+
+    }
+
+    @Override
+    public void onRetry() {
+
     }
 }

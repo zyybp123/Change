@@ -14,13 +14,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.flyco.tablayout.SegmentTabLayout;
+import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.components.RxActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.manager.ACache;
+import cn.bpzzr.change.mvp.BasePresenter;
 import cn.bpzzr.change.mvp.MVP;
+import cn.bpzzr.change.mvp.interf.MView;
 import cn.bpzzr.change.ui.view.BottomBar;
 import cn.bpzzr.change.util.KeyBoardUtils;
 import cn.bpzzr.change.util.LogUtil;
@@ -31,7 +35,7 @@ import cn.bpzzr.change.util.UiUtil;
  * activity 基础类
  */
 
-public abstract class BaseActivity extends RxActivity implements MVP.View, MVP.Presenter, View.OnClickListener {
+public abstract class BaseActivity<P extends BasePresenter> extends RxActivity implements MView, View.OnClickListener {
     //屏幕的宽高
     public int screenWidth;
     public int screenHeight;
@@ -65,6 +69,9 @@ public abstract class BaseActivity extends RxActivity implements MVP.View, MVP.P
     @BindView(R.id.base_bottom_bar)
     public BottomBar baseBottomBar;
     public ACache aCache;
+    Unbinder unbinder;
+
+    public P mPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,17 +88,48 @@ public abstract class BaseActivity extends RxActivity implements MVP.View, MVP.P
         mLogTag = this.getClass().getSimpleName();
         aCache = ACache.get(this);
         LogUtil.e(mLogTag, "screenWidth..." + screenWidth + "...screenHeight..." + screenHeight);
-        //初始化请求
-        initialRequest();
+        //初始化请求管理器
+        mPresenter = getMPresenter();
+        attachView();
         initView();
     }
 
+    protected void attachView() {
+        if (mPresenter != null) {
+            mPresenter.attachView(this);
+        } else {
+            LogUtil.e(mLogTag, "MPresenter is null !");
+        }
+    }
+
+
+    /**
+     * 获取网络请求管理器
+     *
+     * @return 返回管理器实例
+     */
+    public abstract P getMPresenter();
 
     /**
      * 由子类实现的初始化方法
      */
     public abstract void initView();
 
+    @Override
+    public <T> LifecycleTransformer<T> bindToLife() {
+        return this.bindToLifecycle();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+        if (mPresenter != null) {
+            mPresenter.detachView();
+        } else {
+            LogUtil.e(mLogTag, "MPresenter is null !");
+        }
+    }
 
     /**
      * 清除editText的焦点
@@ -187,4 +225,5 @@ public abstract class BaseActivity extends RxActivity implements MVP.View, MVP.P
     public View[] filterViewByIds() {
         return null;
     }
+
 }

@@ -4,8 +4,10 @@ import cn.bpzzr.change.bean.kaishu.BaseResultBean;
 import cn.bpzzr.change.bean.kaishu.ScatteredBean;
 import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.interf.kaishu.KaiInitService;
+import cn.bpzzr.change.mvp.BasePresenter;
 import cn.bpzzr.change.net.RetrofitTools;
 import cn.bpzzr.change.net.callback.KaiObserver;
+import cn.bpzzr.change.temp.net.RxSchedulers;
 import cn.bpzzr.change.util.KaiShuDeviceUtil;
 import cn.bpzzr.change.util.LogUtil;
 import cn.bpzzr.change.util.SharedPreferencesUtil;
@@ -17,7 +19,7 @@ import okhttp3.RequestBody;
  * Created by Administrator on 2018/3/5.
  */
 
-public class KaiAppInitPre {
+public class KaiAppInitPre extends BasePresenter{
     private String TAG = "KaiAppInitPresenter";
     private RetrofitTools retrofitTools;
     private KaiInitService initService;

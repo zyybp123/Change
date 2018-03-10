@@ -8,13 +8,13 @@ import com.trello.rxlifecycle2.LifecycleTransformer;
  */
 
 public interface MvpControl {
-    interface BasePresenter<T extends MvpControl.BaseView> {
+    interface BasePresenter {
         /**
-         * 关联 view 层
+         * 关联 view 层,一个presenter可以对应多个View
          *
-         * @param view view层
+         * @param views view层
          */
-        void attachView(T view);
+        void attachView(MvpControl.BaseView... views);
 
         /**
          * 解除对view层的关联
