@@ -1,5 +1,8 @@
 package cn.bpzzr.change.mvp.presenter;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import cn.bpzzr.change.bean.kaishu.BaseResultBean;
 import cn.bpzzr.change.bean.kaishu.ScatteredBean;
 import cn.bpzzr.change.interf.SomeKeys;
@@ -8,6 +11,7 @@ import cn.bpzzr.change.mvp.BasePresenter;
 import cn.bpzzr.change.net.RetrofitTools;
 import cn.bpzzr.change.net.callback.KaiObserver;
 import cn.bpzzr.change.temp.net.RxSchedulers;
+import cn.bpzzr.change.util.AESUtil;
 import cn.bpzzr.change.util.KaiShuDeviceUtil;
 import cn.bpzzr.change.util.LogUtil;
 import cn.bpzzr.change.util.SharedPreferencesUtil;
@@ -17,9 +21,10 @@ import okhttp3.RequestBody;
 
 /**
  * Created by Administrator on 2018/3/5.
+ * kai shu story app init
  */
 
-public class KaiAppInitPre extends BasePresenter{
+public class KaiAppInitPre extends BasePresenter {
     private String TAG = "KaiAppInitPresenter";
     private RetrofitTools retrofitTools;
     private KaiInitService initService;
@@ -48,6 +53,7 @@ public class KaiAppInitPre extends BasePresenter{
      * @param body
      */
     public void getDeviceId(RequestBody body) {
+        //body = new E
         getInitService();
         initService.getDeviceId(body)
                 .compose(RetrofitTools.<BaseResultBean<ScatteredBean>>setMainThread())
@@ -162,10 +168,38 @@ public class KaiAppInitPre extends BasePresenter{
                             .put(SomeKeys.KAI_SESSION_CODE, sessionCode);
                     break;
                 case KaiInitService.PATH_PLATFORM_TOKEN:
-                    result.getToken();
+                    String token = result.getToken();
+                    SharedPreferencesUtil
+                            .getInstance(KaiShuDeviceUtil.KAI_SHU)
+                            .put(SomeKeys.KAI_TOKEN, token);
                     break;
                 case KaiInitService.PATH_INITIALIZE:
-                    result.getData();
+                    String data = result.getData();
+                    AESUtil aesUtil = new AESUtil(KaiShuDeviceUtil.APP_SECRET_KAI_NORMAL);
+                    String decrypt = aesUtil.decrypt(data);
+                    BaseResultBean<ScatteredBean> resultBean = new Gson().fromJson(decrypt,
+                            new TypeToken<BaseResultBean<ScatteredBean>>() {
+                            }.getType());
+                    if (resultBean != null) {
+                        int errCode = resultBean.getErrcode();
+                        if (errCode == 0) {
+                            ScatteredBean scatteredBean = resultBean.getResult();
+                            //代表获取成功
+                            SharedPreferencesUtil
+                                    .getInstance(KaiShuDeviceUtil.KAI_SHU)
+                                    .put(SomeKeys.KAI_DEVICE_ID, scatteredBean.getDeviceid());
+                            SharedPreferencesUtil
+                                    .getInstance(KaiShuDeviceUtil.KAI_SHU)
+                                    .put(SomeKeys.KAI_SESSION_CODE, scatteredBean.getSessioncode());
+                            SharedPreferencesUtil
+                                    .getInstance(KaiShuDeviceUtil.KAI_SHU)
+                                    .put(SomeKeys.KAI_TOKEN, scatteredBean.getToken());
+                        } else {
+                            LogUtil.e(TAG, "methodTag ---> " + methodTag + " errorCode is " + errCode);
+                        }
+                    } else {
+                        LogUtil.e(TAG, "methodTag ---> " + methodTag + " resultBean is null !");
+                    }
                     break;
                 default:
                     LogUtil.e(TAG, "methodTag ---> " + methodTag + " result ---> " + result);

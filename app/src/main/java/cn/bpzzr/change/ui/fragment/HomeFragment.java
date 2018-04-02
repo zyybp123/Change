@@ -93,7 +93,10 @@ public class HomeFragment extends BaseFragmentRefreshPage implements MVP.View{
         //retrofitTools.getTest3(this);
         RequestBody requestBody = RequestBody.create(
                 MediaType.parse("application/json;charset=UTF-8"),
-                "{\"platform\":\"kaishu\",\"appversion\":\"V4.2.0\",\"sysversion\":\"23\",\"appid\":\"992099001\",\"channelid\":\"yingyongbao\",\"phonemodel\":\"Le X620\",\"phonedevicecode\":\"869552027513993\",\"channelmsg\":\"android\"}");
+                "{\"platform\":\"kaishu\",\"appversion\":\"V4.2.0\"," +
+                        "\"sysversion\":\"23\",\"appid\":\"992099001\",\"channelid\":" +
+                        "\"yingyongbao\",\"phonemodel\":\"Le X620\",\"phonedevicecode\":" +
+                        "\"869552027513993\",\"channelmsg\":\"android\"}");
         retrofitTools
                 .getRetrofit()
                 .create(KaiInitService.class)

@@ -1,5 +1,7 @@
 package cn.bpzzr.change.bean;
 
+import org.json.JSONObject;
+
 import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.util.KaiShuDeviceUtil;
 import cn.bpzzr.change.util.blankj.DeviceUtils;
@@ -18,6 +20,14 @@ public class DeviceInfoBean {
     private String phonemodel = KaiShuDeviceUtil.getDeviceModel();
     private String phonedevicecode;
     private String channelmsg = KaiShuDeviceUtil.getChannelMsg();
+    private int osvsion = DeviceUtils.getSDKVersion();
+
+
+    public String getDeviceIdParam (){
+        JSONObject jsonObject = new JSONObject();
+        return "";
+    }
+
 
     /**
      * {"platform":"kaishu",
