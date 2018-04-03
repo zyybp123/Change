@@ -40,14 +40,7 @@ public class ScanAllFiles {
      * 视频内部Uri
      */
     private static final Uri VIDEO_URI_INTERNAL = MediaStore.Video.Media.INTERNAL_CONTENT_URI;
-    /**
-     * 音频外部Uri
-     */
-    private static final Uri AUDIO_URI_EXTERNAL = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-    /**
-     * 音频内部Uri
-     */
-    private static final Uri AUDIO_URI_INTERNAL = MediaStore.Audio.Media.INTERNAL_CONTENT_URI;
+
     /**
      * 图片外部Uri
      */
@@ -59,62 +52,7 @@ public class ScanAllFiles {
 
 
 
-    /**
-     * 获取数据库音频文件
-     *
-     * @param mContext 上下文
-     * @return 返回包装了相关信息的数据实体集合
-     */
-    public static ArrayList<FileInfo> scanMusicFile(Context mContext) {
-        //要查询的参数列表
-        String[] columns = {MediaStore.Audio.Media._ID,
-                //文件名
-                MediaStore.Audio.Media.DISPLAY_NAME,
-                //不带扩展名的文件名
-                MediaStore.Audio.Media.TITLE,
-                //资源时长
-                MediaStore.Audio.Media.DURATION,
-                //艺术家
-                MediaStore.Audio.Media.ARTIST,
-                //专辑封面
-                MediaStore.Audio.Media.ALBUM,
-                //年代
-                MediaStore.Audio.Media.YEAR,
-                //文件的类型
-                MediaStore.Audio.Media.MIME_TYPE,
-                //文件大小
-                MediaStore.Audio.Media.SIZE,
-                //文件的路径
-                MediaStore.Audio.Media.DATA};
-        //获取对应的游标
-        Cursor cursor = mContext.getContentResolver().query(
-                //uri路径
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                //要查询的参数
-                columns,
-                //只查询大小超过1M的音频文件
-                "_size>?", new String[]{1024 * 1024 + ""},
-                //排序条件
-                null);
-        ArrayList<FileInfo> fileList = new ArrayList<>();
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String name = cursor
-                        .getString(cursor
-                                .getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME));
-                String type = cursor.getString(cursor
-                        .getColumnIndexOrThrow(MediaStore.Audio.Media.MIME_TYPE));
 
-                String data = cursor.getString(cursor
-                        .getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
-                Log.e(TAG, "Name,Type,data--->" + name + " ," + type + ", " + data);
-                FileInfo file = new FileInfo(name, type, data);
-                fileList.add(file);
-
-            }
-        }
-        return fileList;
-    }
 
     /**
      * 返回指定类型的文件

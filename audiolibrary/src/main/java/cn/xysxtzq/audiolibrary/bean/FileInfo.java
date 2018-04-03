@@ -48,6 +48,9 @@ public class FileInfo implements Parcelable {
      */
     public boolean isSelect;
 
+    public FileInfo() {
+    }
+
     public FileInfo(String title, String type, String data) {
         this.title = title;
         this.data = data;
@@ -179,15 +182,4 @@ public class FileInfo implements Parcelable {
         this.isSelect = in.readByte() != 0;
     }
 
-    public static final Creator<FileInfo> CREATOR = new Creator<FileInfo>() {
-        @Override
-        public FileInfo createFromParcel(Parcel source) {
-            return new FileInfo(source);
-        }
-
-        @Override
-        public FileInfo[] newArray(int size) {
-            return new FileInfo[size];
-        }
-    };
 }
