@@ -14,7 +14,7 @@ public class FileInfo implements Parcelable {
     /**
      * 文件Id
      */
-    public String fileId;
+    public long fileId;
     /**
      * 文件名
      */
@@ -69,17 +69,29 @@ public class FileInfo implements Parcelable {
         this.size = size;
     }
 
-    public FileInfo(String fileId, String name, String type, String data, long dateModify, long size) {
+    public FileInfo(long fileId, String name, String type, String data, long dateModify, long size) {
         this(name, type, data, dateModify, size);
         this.fileId = fileId;
     }
 
 
-    public String getFileId() {
+    public static final Creator<FileInfo> CREATOR = new Creator<FileInfo>() {
+        @Override
+        public FileInfo createFromParcel(Parcel in) {
+            return new FileInfo(in);
+        }
+
+        @Override
+        public FileInfo[] newArray(int size) {
+            return new FileInfo[size];
+        }
+    };
+
+    public long getFileId() {
         return fileId;
     }
 
-    public void setFileId(String fileId) {
+    public void setFileId(long fileId) {
         this.fileId = fileId;
     }
 
@@ -149,7 +161,7 @@ public class FileInfo implements Parcelable {
 
     @Override
     public String toString() {
-        return fileId;
+        return ""+fileId + fullName;
     }
 
     @Override
@@ -159,7 +171,7 @@ public class FileInfo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.fileId);
+        dest.writeLong(this.fileId);
         dest.writeString(this.displayName);
         dest.writeString(this.title);
         dest.writeString(this.type);
@@ -171,7 +183,7 @@ public class FileInfo implements Parcelable {
     }
 
     protected FileInfo(Parcel in) {
-        this.fileId = in.readString();
+        this.fileId = in.readLong();
         this.displayName = in.readString();
         this.title = in.readString();
         this.type = in.readString();

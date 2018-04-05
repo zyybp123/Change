@@ -5,49 +5,50 @@ import android.media.AudioManager;
 import android.os.RemoteException;
 
 
+import cn.xysxtzq.audiolibrary.interf.PlayState;
 
 import static android.content.Context.AUDIO_SERVICE;
 
 /**
  * Created by DuanJiaNing on 2017/8/19.
  * 服务端调用
- *  * 参考文章 http://www.jianshu.com/p/bc2f779a5400;
+ * * 参考文章 http://www.jianshu.com/p/bc2f779a5400;
  */
 
-public class AudioFocusManager /*implements AudioManager.OnAudioFocusChangeListener*/ {
+public class AudioFocusManager implements AudioManager.OnAudioFocusChangeListener {
 
-   /* private final Context context;
-    private final IPlayControl control;
+    private final Context context;
+    //private final IPlayControl control;
 
     private final AudioManager mAudioManager;
 
     private boolean isPausedByFocusLossTransient;
     private int mVolumeWhenFocusLossTransientCanDuck;
 
-    public AudioFocusManager(Context context, IPlayControl control) {
-        this.control = control;
+    public AudioFocusManager(Context context/*, IPlayControl control*/) {
+        //this.control = control;
         this.context = context;
         this.mAudioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
     }
 
-    *//**
+    /*
      * 播放音乐前先请求音频焦点
-     *//*
+     */
     public boolean requestAudioFocus() {
         return mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
                 == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
     }
 
-    *//**
+    /**
      * 退出播放器后不再占用音频焦点
-     *//*
+     */
     public void abandonAudioFocus() {
         mAudioManager.abandonAudioFocus(this);
     }
 
-    *//**
-     * 音频焦点监听回调
-     *//*
+    /**
+      * 音频焦点监听回调
+      */
     @Override
     public void onAudioFocusChange(int focusChange) {
         int volume;
@@ -95,29 +96,39 @@ public class AudioFocusManager /*implements AudioManager.OnAudioFocusChangeListe
         }
     }
 
+    /**
+     * 播放
+     */
     private void play() {
-        try {
+        /*try {
             control.resume();
         } catch (RemoteException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
+    /**
+     * 强制停止
+     */
     private void forceStop() {
-        try {
+        /*try {
             control.pause();
         } catch (RemoteException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
+    /**
+     * 将要播放
+     * @return 返回是否能开始播放 true为可以播放
+     */
     private boolean willPlay() {
-        try {
-            return control.status() == PlayController.STATUS_PLAYING;
+        /*try {
+            return control.status() == PlayState.STATUS_PLAYING;
         } catch (RemoteException e) {
             e.printStackTrace();
             return false;
-        }
+        }*/
+        return false;
     }
-*/
 }

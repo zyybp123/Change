@@ -395,7 +395,9 @@ public class AudioMediaPlayer implements MediaPlayer.OnCompletionListener, Media
         }
     }
 
-    //用于提取频谱
+    /**
+     * 用于提取频谱
+     */
     public int getAudioSessionId() {
         return mPlayer.getAudioSessionId();
     }

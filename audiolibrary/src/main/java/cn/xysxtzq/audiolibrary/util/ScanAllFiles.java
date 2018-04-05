@@ -92,7 +92,7 @@ public class ScanAllFiles {
             c = mContext.getContentResolver().query(uri, columns, selection, null, order);
             if (c != null) {
                 while (c.moveToNext()) {
-                    String fileId = c.getString(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID));
+                    long fileId = c.getLong(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID));
                     String title = c.getString(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.TITLE));
                     String data = c.getString(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA));
                     String type = c.getString(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE));
@@ -140,7 +140,7 @@ public class ScanAllFiles {
             c = mContext.getContentResolver().query(uri, columns, selection, IMAGE_LIST, order);
             if (c != null) {
                 while (c.moveToNext()) {
-                    String fileId = c.getString(c.getColumnIndexOrThrow(MediaStore.Images.ImageColumns._ID));
+                    long fileId = c.getLong(c.getColumnIndexOrThrow(MediaStore.Images.ImageColumns._ID));
                     String title = c.getString(c.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.TITLE));
                     String data = c.getString(c.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA));
                     String type = c.getString(c.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.MIME_TYPE));
@@ -187,7 +187,7 @@ public class ScanAllFiles {
             c = mContext.getContentResolver().query(uri, columns, selection, VIDEO_LIST, order);
             if (c != null) {
                 while (c.moveToNext()) {
-                    String fileId = c.getString(c.getColumnIndexOrThrow(MediaStore.Video.VideoColumns._ID));
+                    long fileId = c.getLong(c.getColumnIndexOrThrow(MediaStore.Video.VideoColumns._ID));
                     String title = c.getString(c.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.TITLE));
                     String data = c.getString(c.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.DATA));
                     String type = c.getString(c.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.MIME_TYPE));

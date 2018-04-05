@@ -1,13 +1,18 @@
 package cn.xysxtzq.audiolibrary.bean;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Parcel;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -33,6 +38,8 @@ public class AudioInfo extends FileInfo {
             MediaStore.Audio.Media.ARTIST,
             //专辑封面
             MediaStore.Audio.Media.ALBUM,
+            //专辑封面id，可通过其获取封面图片
+            MediaStore.Audio.AudioColumns.ALBUM_ID,
             //年代
             MediaStore.Audio.Media.YEAR,
             //文件的类型
@@ -86,7 +93,7 @@ public class AudioInfo extends FileInfo {
         super(name, type, data, dateModify, size);
     }
 
-    public AudioInfo(String fileId, String name, String type, String data, long dateModify, long size) {
+    public AudioInfo(long fileId, String name, String type, String data, long dateModify, long size) {
         super(fileId, name, type, data, dateModify, size);
     }
 
@@ -161,7 +168,7 @@ public class AudioInfo extends FileInfo {
                     sortOrder);
             if (cursor != null) {
                 while (cursor.moveToNext()) {
-                    String id = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
+                    long id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
                     String displayName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME));
                     String title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
                     long fileSize = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE));
@@ -242,6 +249,23 @@ public class AudioInfo extends FileInfo {
      */
     public static ArrayList<AudioInfo> getInternalAudioList(Context mContext) {
         return getAudioList(AUDIO_URI_INTERNAL, mContext, DEFAULT_SIZE, DEFAULT_SORT_ORDER);
+    }
+
+    /**
+     * 从媒体库加载封面
+     */
+    private Bitmap loadCoverFromMediaStore(Context context,long albumId) {
+        ContentResolver resolver = context.getContentResolver();
+        Uri uri = Uri.parse("content://media/external/audio/albumart");
+        InputStream is;
+        try {
+            is = resolver.openInputStream(uri);
+        } catch (FileNotFoundException ignored) {
+            return null;
+        }
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        return BitmapFactory.decodeStream(is, null, options);
     }
 
     @Override
