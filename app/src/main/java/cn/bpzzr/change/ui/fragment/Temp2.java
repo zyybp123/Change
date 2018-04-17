@@ -12,12 +12,11 @@ import java.util.List;
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.adapter.Adapter2Test3;
 import cn.bpzzr.change.mvp.MVP;
-import cn.bpzzr.change.net.download.DownloadManager;
 import cn.bpzzr.change.net.common.ResInfo;
+import cn.bpzzr.change.net.download.DownloadManager;
 import cn.bpzzr.change.ui.fragment.base.BaseFragmentRefreshPage;
 import cn.bpzzr.change.util.ListUtil;
 import cn.bpzzr.change.util.LogUtil;
-import cn.bpzzr.change.util.StringUtil;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -30,19 +29,13 @@ import io.reactivex.schedulers.Schedulers;
  * 临时测试页
  */
 
-public class Temp2 extends BaseFragmentRefreshPage<ResInfo> implements MVP.View{
+public class Temp2 extends BaseFragmentRefreshPage<ResInfo> implements MVP.View {
     public static final String[] URLS = new String[]{
-            "http://xytzq01.oss-cn-shanghai.aliyuncs.com/data/project/project_22019/resource/document/a41be61c2b8849a68c35461b916935e6.pdf",
-            "http://appdlc.hicloud.com/dl/appdl/application/apk/9c/9cf5bc5a91d14d82a88a08f10cc359b2/cc.thedream.qinsmoon.HUAWEI.1712251337.apk",
-            "http://appdl.hicloud.com/dl/appdl/application/apk/c6/c6733db75f724f6282034082e3a35ce1/com.ss.android.ugc.live.1801221453.apk",
-            "http://yt-adv.nosdn.127.net/channel4/aqfs_20180129.mp4",
-            "http://yt-adv.nosdn.127.net/channel4/awyx_20180129.mp4",
-            "https://dongfeng.alicdn.com/201801/4f965e8bc0174f77b53e346711f36696.mp4",
-            "https://dongfeng.alicdn.com/201801/8d88f7513e724f4888d2d904eeee28bf.mp4",
-            "http://yt-adv.nosdn.127.net/channel6/atyw_20180105.mp4",
-            "http://yt-adv.nosdn.127.net/channel6/azfz_20180105.mp4",
-            "http://yt-adv.nosdn.127.net/channel6/atbo_20180102.mp4",
-            "http://yt-adv.nosdn.127.net/channel6/aqju_20180102.mp4"
+            "http://27.221.106.19/vg2/7/22/29662087-1-80.flv?expires=1522943700&platform=android&ssig=rQY0RZcmesXmaGo3I-sspA&oi=2071269990&nfa=VTtnXeacAlS5k6cLdWuWIA==&dynamic=1&hfa=2029324752&hfb=NzUxMjI5MWJlMDBjMDY0YTQxNjFjMTJiYWE0MjEwYmQ=&trid=ce64629355fe459c90f1b15a49ff00ed",
+            "http://27.221.106.19/vg2/7/22/29662087-2-80.flv?expires=1522943700&platform=android&ssig=ql04dy6MCYxxisjhraAXDw&oi=2071269990&nfa=VTtnXeacAlS5k6cLdWuWIA==&dynamic=1&hfb=NzUxMjI5MWJlMDBjMDY0YTQxNjFjMTJiYWE0MjEwYmQ=&trid=ce64629355fe459c90f1b15a49ff00ed",
+            "http://27.221.106.19/vg2/7/22/29662087-3-80.flv?expires=1522943700&platform=android&ssig=yBBVF2Z2T3wLA7bjEuOKRQ&oi=2071269990&nfa=VTtnXeacAlS5k6cLdWuWIA==&dynamic=1&hfb=NzUxMjI5MWJlMDBjMDY0YTQxNjFjMTJiYWE0MjEwYmQ=&trid=ce64629355fe459c90f1b15a49ff00ed",
+            "http://27.221.106.19/vg2/7/22/29662087-4-80.flv?expires=1522943700&platform=android&ssig=FlUdk_tEpgw-mLKTA8x5Pw&oi=2071269990&nfa=VTtnXeacAlS5k6cLdWuWIA==&dynamic=1&hfb=NzUxMjI5MWJlMDBjMDY0YTQxNjFjMTJiYWE0MjEwYmQ=&trid=ce64629355fe459c90f1b15a49ff00ed",
+
     };
     private DownloadManager downloadManager;
 
@@ -69,8 +62,8 @@ public class Temp2 extends BaseFragmentRefreshPage<ResInfo> implements MVP.View{
             info.setResId(i);
             info.setFileDir(mActivity.getFilesDir().getAbsolutePath());
             info.setUrl(URLS[i]);
-            info.setFullName(StringUtil.getFileName(URLS[i]));
-            info.setResName(StringUtil.getFileName(URLS[i]));
+            info.setFullName("01" + i + ".flv");
+            info.setResName("01" + i);
             mDataList.add(info);
         }
         downloadManager = DownloadManager.getInstance(1);
