@@ -1,1 +1,1 @@
-include ':app', ':ptr-lib', ':audiolibrary'
+include ':app', ':ptr-lib', ':audiolibrary', ':myuilibrary'

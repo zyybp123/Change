@@ -43,7 +43,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
-    <uses-permission android:name="xysx.com.tzq.permission.HOME_LAUNCHER"/>
+    <uses-permission android:name="xysx.com.tzq.permission.HOME_LAUNCHER" />
 
 
     <permission
@@ -100,6 +100,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </service>
+
+        <service
+            android:name="cn.xysxtzq.audiolibrary.service.MyJobIntentService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>
