@@ -1,10 +1,24 @@
 package cn.xysxtzq.myuilibrary.util;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
+import android.support.v7.content.res.AppCompatResources;
+import android.widget.ImageButton;
+
+import cn.xysxtzq.myuilibrary.entity.StrokeEntity;
+
 
 /**
  * Created by Administrator on 2018/5/7.
@@ -13,76 +27,83 @@ import android.support.annotation.ColorInt;
 
 public class BgResUtil {
 
+    private static final String TAG = "BgResUtil";
+
     private BgResUtil() {
 
     }
 
     /**
-     * <shape xmlns:android="http://schemas.android.com/apk/res/android"
-     * android:shape="ring"  //形状
-     * android:useLevel="false" //是否当作drawable使用
-     * android:dither="false" //抖动
-     * android:innerRadius="20dp" //ring的特殊属性
-     * android:innerRadiusRatio="3dp"
-     * android:thickness="2dp"
-     * android:thicknessRatio="3dp"
-     * android:tint="@android:color/holo_red_light"
-     * android:tintMode="src_over"
-     * >
-     * <corners
-     * android:bottomLeftRadius="12dp"
-     * android:bottomRightRadius="3dp"
-     * android:topLeftRadius="3dp"
-     * android:topRightRadius="12dp" />
-     * <size
-     * android:width="50dp"
-     * android:height="50dp" />
-     * <solid android:color="#396" />
-     * <padding
-     * android:bottom="1dp"
-     * android:left="1dp"
-     * android:right="1dp"
-     * android:top="1dp" />
-     * <stroke
-     * android:width="1dp"
-     * android:color="#234"
-     * android:dashGap="3dp"
-     * android:dashWidth="5dp" />
-     * <gradient
-     * android:angle="90"
-     * android:centerColor="#FFF"
-     * android:centerX="20"
-     * android:centerY="20"
-     * android:endColor="#963"
-     * android:gradientRadius="25dp"
-     * android:startColor="#369"
-     * android:type="sweep"
-     * android:useLevel="true" />
-     * </shape>
+     * 代码生成shape图片
+     *
+     * @param shape        形状 GradientDrawable.RECTANGLE（矩形）, OVAL（圆）, LINE（线）, RING（环形）
+     * @param color        颜色
+     * @param size         宽,高 传入null不设置
+     * @param strokeEntity 包装了边框信息的数据实体
+     * @return 返回图片对象
      */
-
-    private static GradientDrawable getDrawable(int shape, @ColorInt int color) {
+    public static GradientDrawable getDrawable(int shape, @ColorInt int color,
+                                               Point size,
+                                               StrokeEntity strokeEntity) {
         GradientDrawable drawable = new GradientDrawable();
+        drawable.setShape(shape);
+        if (size != null) {
+            drawable.setSize(size.x, size.y);
+        }
+        drawable.setColor(color);
+        StrokeEntity.setStroke(drawable, strokeEntity);
         return drawable;
     }
-
 
     /**
-     * 用代码的方式生成图片，对应XML中的shape
+     * 获取矩形图片
      *
-     * @return 返回图片
+     * @param color        颜色
+     * @param strokeEntity 边框信息
      */
-    public static GradientDrawable generateDrawable(int color, int strokeColor, int strokeWidth) {
-        GradientDrawable drawable = new GradientDrawable();
-        //设置形状，默认为矩形，RECTANGLE（矩形）, OVAL（圆）, LINE（线）, RING（环形）
-        drawable.setShape(GradientDrawable.RECTANGLE);
-        //shape的颜色
-        drawable.setColor(color);
-        //drawable.setCornerRadius(65);
-        //shape的描边
-        drawable.setStroke(strokeWidth, strokeColor);
+    public static GradientDrawable getRecBg(@ColorInt int color, StrokeEntity strokeEntity) {
+        return getDrawable(GradientDrawable.RECTANGLE, color, null, strokeEntity);
+    }
+
+    /**
+     * 获取矩形图片
+     *
+     * @param color        颜色
+     * @param strokeEntity 边框信息
+     * @param radius       圆角数组（左上，右上，右下，左下）
+     */
+    public static GradientDrawable getRecBg(@ColorInt int color, StrokeEntity strokeEntity, float... radius) {
+        GradientDrawable drawable = getDrawable(GradientDrawable.RECTANGLE, color, null, strokeEntity);
+        setCorners(drawable, radius);
         return drawable;
     }
+
+    /**
+     * 设置圆角的方法
+     *
+     * @param drawable     图片
+     * @param cornerRadius 圆角数组（左上，右上，右下，左下）
+     */
+    public static void setCorners(GradientDrawable drawable, float[] cornerRadius) {
+        if (drawable == null || cornerRadius == null) {
+            LogUtil.e(TAG, "drawable or cornerRadius is null !");
+            return;
+        }
+        int length = cornerRadius.length;
+        if (length > 0) {
+            float[] corners = new float[8];
+            for (int i = 0; i < 8; i++) {
+                if (i / 2 < cornerRadius.length) {
+                    corners[i] = cornerRadius[i / 2];
+                } else {
+                    corners[i] = 0;
+                }
+            }
+            //1、2两个参数表示左上角，3、4表示右上角，5、6表示右下角，7、8表示左下角
+            drawable.setCornerRadii(corners);
+        }
+    }
+
 
     /**
      * 使用代码的方式生成状态选择器，对应XML中的Selector
@@ -101,6 +122,13 @@ public class BgResUtil {
         return drawable;
     }
 
+    /**
+     * 颜色状态选择器
+     *
+     * @param pressed 按下的色值
+     * @param normal  正常的色值
+     * @return 返回对应的颜色状态选择器
+     */
     public static ColorStateList getColorSelector(int pressed, int normal) {
         int[][] states = new int[][]{
                 {android.R.attr.state_checked},
@@ -111,4 +139,54 @@ public class BgResUtil {
         int[] colors = new int[]{pressed, pressed, pressed, normal};
         return new ColorStateList(states, colors);
     }
+
+    /**
+     * 动态创建带上分隔线或下分隔线的Drawable。
+     *
+     * @param separatorColor 分割线颜色。
+     * @param bgColor        Drawable 的背景色。
+     * @param top            true 则分割线为上分割线，false 则为下分割线。
+     * @return 返回所创建的 Drawable。
+     */
+    public static LayerDrawable createItemSeparatorBg(@ColorInt int separatorColor, @ColorInt int bgColor, int separatorHeight, boolean top) {
+
+        ShapeDrawable separator = new ShapeDrawable();
+        separator.getPaint().setStyle(Paint.Style.FILL);
+        separator.getPaint().setColor(separatorColor);
+
+        ShapeDrawable bg = new ShapeDrawable();
+        bg.getPaint().setStyle(Paint.Style.FILL);
+        bg.getPaint().setColor(bgColor);
+
+        Drawable[] layers = {separator, bg};
+        LayerDrawable layerDrawable = new LayerDrawable(layers);
+
+        layerDrawable.setLayerInset(1, 0, top ? separatorHeight : 0, 0, top ? 0 : separatorHeight);
+        return layerDrawable;
+    }
+
+
+    /////////////// VectorDrawable /////////////////////
+    @Nullable
+    public static Drawable getVectorDrawable(Context context, @DrawableRes int resVector) {
+        try {
+            return AppCompatResources.getDrawable(context, resVector);
+        } catch (Exception e) {
+            LogUtil.e(TAG, "Error in getVectorDrawable. resVector=" + resVector + ", resName=" + context.getResources().getResourceName(resVector) + e.getMessage());
+            return null;
+        }
+    }
+
+    public static Bitmap vectorDrawableToBitmap(Context context, @DrawableRes int resVector) {
+        Drawable drawable = getVectorDrawable(context, resVector);
+        if (drawable != null) {
+            Bitmap b = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(b);
+            drawable.setBounds(0, 0, c.getWidth(), c.getHeight());
+            drawable.draw(c);
+            return b;
+        }
+        return null;
+    }
+
 }

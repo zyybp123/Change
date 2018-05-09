@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,6 +22,8 @@ import butterknife.Unbinder;
 import cn.bpzzr.change.R;
 import cn.bpzzr.change.ui.fragment.base.BaseFragment;
 import cn.bpzzr.change.util.LogUtil;
+import cn.xysxtzq.myuilibrary.entity.StrokeEntity;
+import cn.xysxtzq.myuilibrary.util.BgResUtil;
 
 /**
  * Created by Administrator on 2018/1/26.
@@ -30,7 +33,6 @@ import cn.bpzzr.change.util.LogUtil;
 public class DiscoveryFragment extends BaseFragment {
     @BindView(R.id.tv_discovery)
     TextView tvDiscovery;
-    Unbinder unbinder;
 
     @Override
     public boolean isNeedLazy() {
@@ -45,6 +47,14 @@ public class DiscoveryFragment extends BaseFragment {
 
     @Override
     public void viewHasBind() {
+        StrokeEntity strokeEntity = new StrokeEntity(true);
+        strokeEntity.width = 5;
+        strokeEntity.color = getResources().getColor(R.color.black_a80);
+        GradientDrawable recBg = BgResUtil
+                .getRecBg(getResources().getColor(R.color.colorPrimary), strokeEntity);
+
+        tvDiscovery.setBackground(recBg);
+
         tvDiscovery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,11 +69,10 @@ public class DiscoveryFragment extends BaseFragment {
                     intent.putExtra("USER_DATA", "");
                     if (null == intent.resolveActivity(mActivity.getPackageManager())) {
                         //避免找不到时采用隐式意图打开界面的错误
-
                     } else {
                         startActivity(intent);
                     }
-                    startActivity(intent);
+                    //startActivity(intent);
                 } else {
                     LogUtil.e(mFragmentTag, "未安装投智圈！");
                 }

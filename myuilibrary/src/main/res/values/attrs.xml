@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PTextView">
+        <attr name="pColor" format="color" />
+        <attr name="pCornerRadius" format="dimension" />
+        <attr name="pLeftTopCornerRadius" format="dimension" />
+        <attr name="pRightTopCornerRadius" format="dimension" />
+        <attr name="pRightBottomCornerRadius" format="dimension" />
+        <attr name="pLeftBottomCornerRadius" format="dimension" />
+        <attr name="strokeColor" format="color" />
+        <attr name="strokeWidth" format="dimension" />
+    </declare-styleable>
+</resources>

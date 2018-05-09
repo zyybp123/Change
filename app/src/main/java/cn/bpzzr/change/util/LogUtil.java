@@ -2,6 +2,8 @@ package cn.bpzzr.change.util;
 
 import android.util.Log;
 
+
+import cn.bpzzr.change.BuildConfig;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 
 /**
@@ -10,7 +12,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
  */
 
 public class LogUtil {
-    public static boolean isShowLog = true;
+    public static boolean isShowLog = BuildConfig.LOG_DEBUG;
     private static String TAG = LogUtil.class.getSimpleName();
 
     public static void d(String tag, String msg) {
