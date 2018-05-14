@@ -21,6 +21,7 @@ import cn.bpzzr.change.interf.home.ServerHost;
 import cn.bpzzr.change.interf.home.ServerPath;
 import cn.bpzzr.change.interf.SomeKeys;
 import cn.bpzzr.change.interf.kaishu.KaiShuHost;
+import cn.bpzzr.change.interf.tzq.TzqHost;
 import cn.bpzzr.change.mvp.MVP;
 import cn.bpzzr.change.net.callback.MyCallback;
 import cn.bpzzr.change.net.callback.MyDataParse;
@@ -89,6 +90,7 @@ public class RetrofitTools {
         baseUrlMap.put(SomeKeys.BOOK_DATA, ServerHost.BASE_URL_BOOK);
         baseUrlMap.put(SomeKeys.ONLINE_DATA, ServerHost.BASE_URL_ONLINE);
         baseUrlMap.put(SomeKeys.AD_DATA, ServerHost.BASE_URL_AD);
+        baseUrlMap.put(TzqHost.TAG_TZQ, TzqHost.TZQ_BASE_URL);
         switch (appEnvironment) {
             case APP_DEVELOP:
                 baseUrlMap.put(KaiShuHost.TAG_KAI_SHU, KaiShuHost.BASE_URL_KAI_SHU_STORY_DEVELOP);

@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/audiolibrary" />
             <option value="$PROJECT_DIR$/myuilibrary" />
             <option value="$PROJECT_DIR$/ptr-lib" />
+            <option value="$PROJECT_DIR$/tzqlibrary" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
