@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -22,15 +23,9 @@ import cn.xysxtzq.myuilibrary.util.LogUtil;
 /**
  * Created by Administrator on 2018/2/24.
  * 封装一个利用popupWindow的显示控件（为全屏的pop）
- * TOP,相对于某控件显示（例如下拉筛选菜单）
- * CENTER,在屏幕中间
- * BOTTOM,在屏幕底部，例如底部筛选栏
  */
 
 public class PPopupWindow {
-    public static final int TOP = 0;
-    public static final int CENTER = 1;
-    public static final int BOTTOM = 2;
     private static final String TAG = "PPopupWindow";
     private PopupWindow pw;
     /**
@@ -70,26 +65,30 @@ public class PPopupWindow {
         });
         mPageContainer = mRootView.findViewById(R.id.fl_page);
         createLayoutParam();
-        //设置高度
-        pw.setHeight(DimensionUtil.totalSize(context).y);
-        //popupWindow引入根布局
-        pw = new PopupWindow(mRootView, LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        createPop(context);
         //初始一个新的map
         pageMap = new HashMap<>();
     }
 
-    private PopupWindow getPopupWindow() {
+    private void createPop(Context context) {
+        //创建pop
+        pw = new PopupWindow(mRootView, LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        //设置高度,背景，动画，点击空白是否消失
+        pw.setHeight(DimensionUtil.totalSize(context).y - DimensionUtil.getStatusBarHeight(context));
+        pw.setBackgroundDrawable(new ColorDrawable(Color.argb(127, 0, 0, 0)));
+        //pw.setAnimationStyle(R.style.FilterPopupAnimation);
+        //pw.setOutsideTouchable(true);
+    }
+
+    public PopupWindow getPopupWindow() {
         return pw;
     }
 
-
-    private void setMLayoutParams(int mLeftMargin, int mTopMargin, int mRightMargin, int mBottomMargin) {
-        if (mLayoutParams == null) {
-            //创建一个布局参数
-            mLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
-        }
+    /**
+     * 设置布局边距 左，上，右，下
+     */
+    public void setMargins(int mLeftMargin, int mTopMargin, int mRightMargin, int mBottomMargin) {
         this.mLeftMargin = mLeftMargin;
         this.mTopMargin = mTopMargin;
         this.mRightMargin = mRightMargin;
@@ -102,35 +101,13 @@ public class PPopupWindow {
                 ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
-    private void setMargin() {
-        mLayoutParams.leftMargin = mLeftMargin;
-        mLayoutParams.topMargin = mTopMargin;
-        mLayoutParams.rightMargin = mRightMargin;
-        mLayoutParams.bottomMargin = mBottomMargin;
-    }
 
-    public void setAnim(){
-        //设置出现的动画
-        //pw.setAnimationStyle(R.style.FilterPopupAnimation);
-        //设置背景
-        pw.setBackgroundDrawable(new ColorDrawable(Color.argb(127, 0, 0, 0)));
-        //设置点击空白是否消失
-        //pw.setOutsideTouchable(true);
-    }
-
-    public void setBackground(){
-
-    }
-
-    public  void setOutside(){
-
-    }
     /**
      * 初始化popWindow
      *
      * @param v 相对于哪个控件显示
      */
-    public void initPop(View v, BasePage page) {
+    public void showPop(View v, BasePage page, boolean isFull) {
         if (mRootView == null || page == null) {
             LogUtil.e(TAG, "root view or page is null !" + mRootView + "..." + page);
             return;
@@ -143,8 +120,7 @@ public class PPopupWindow {
         if (pw == null) {
             LogUtil.e(TAG, "popupWindow is null !");
             //如果pop对象为null则重新创建
-            pw = new PopupWindow(mRootView, LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT);
+            createPop(mRootView.getContext());
         }
         if (mLayoutParams == null) {
             LogUtil.e(TAG, "mLayoutParams is null !");
@@ -162,16 +138,35 @@ public class PPopupWindow {
         }
         //如果已经包含了此页面，则直接添加进容器
         mPageContainer.removeAllViews();
+        setMargin();
         mPageContainer.addView(pageMRootView, mLayoutParams);
         //保存当前page实例
         currentPage = page;
-        //不为null则不重新创建，并添加子页面
         if (!pw.isShowing()) {
             //如果pop不在显示中，就显示
-            showAsDropDown(pw, v, 0, 0);
+            if (isFull) {
+                //定位显示（起始坐标为左上角）
+                pw.showAtLocation(v, Gravity.TOP, 0, 0);
+            } else {
+                //相对于某控件显示（偏移量均为0）
+                showAsDropDown(pw, v, 0, 0);
+            }
             //设置是否显示
             isShow = false;
         }
+    }
+
+    /**
+     * 设置边距，控制位置
+     */
+    private void setMargin() {
+        if (mLayoutParams == null) {
+            createLayoutParam();
+        }
+        mLayoutParams.leftMargin = mLeftMargin;
+        mLayoutParams.topMargin = mTopMargin;
+        mLayoutParams.rightMargin = mRightMargin;
+        mLayoutParams.bottomMargin = mBottomMargin;
     }
 
     /**

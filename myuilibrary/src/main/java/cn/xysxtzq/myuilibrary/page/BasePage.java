@@ -3,6 +3,8 @@ package cn.xysxtzq.myuilibrary.page;
 import android.content.Context;
 import android.view.View;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2018/1/9.
  * 作为独立模块使用的页面基类
@@ -13,15 +15,16 @@ public abstract class BasePage<T> {
      * 页面根布局
      */
     private View mRootView;
-    /**
-     * 上下文
-     */
     protected Context context;
-    public T data;
+    public List<T> data;
+    public OnItemClickListener<T> listener;
+    public boolean isWrapContent;
 
-    BasePage(Context context, T data) {
+    BasePage(Context context, List<T> data,OnItemClickListener<T> listener,boolean isWrapContent) {
         this.context = context;
         this.data = data;
+        this.listener = listener;
+        this.isWrapContent = isWrapContent;
         this.mRootView = loadRootView();
     }
 
@@ -48,5 +51,9 @@ public abstract class BasePage<T> {
      */
     public String getPageTag() {
         return this.getClass().getName();
+    }
+
+    public interface OnItemClickListener<T> {
+        void onClick(int position, T data);
     }
 }

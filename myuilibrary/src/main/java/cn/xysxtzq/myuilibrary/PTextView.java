@@ -4,9 +4,14 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
+
+import cn.xysxtzq.myuilibrary.entity.StrokeEntity;
+import cn.xysxtzq.myuilibrary.util.BgResUtil;
+import cn.xysxtzq.myuilibrary.util.LogUtil;
 
 /**
  * Created by Administrator on 2018/5/7.
@@ -18,9 +23,7 @@ import android.util.AttributeSet;
  */
 
 public class PTextView extends AppCompatTextView {
-    /**
-     * 圆角
-     */
+    public static final String TAG = "PTextView";
     float cornerRadius = 4;
     float leftTopRadius;
     float rightTopRadius;
@@ -30,7 +33,7 @@ public class PTextView extends AppCompatTextView {
     int color = Color.TRANSPARENT;
     ColorStateList colorStateList;
 
-    int strokeWidth;
+    float strokeWidth;
     int strokeColor;
     ColorStateList strokeColorStateList;
     //int
@@ -40,7 +43,7 @@ public class PTextView extends AppCompatTextView {
     }
 
     public PTextView(Context context, AttributeSet attrs) {
-        super(context, attrs, 0);
+        this(context, attrs, 0);
     }
 
     public PTextView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -51,8 +54,23 @@ public class PTextView extends AppCompatTextView {
     private void initAttr(Context context, AttributeSet attrs) {
         TypedArray typeArray = context.getTheme().obtainStyledAttributes(attrs,
                 R.styleable.PTextView, 0, 0);
-        color = typeArray.getColor(R.styleable.PTextView_strokeColor, color);
         colorStateList = typeArray.getColorStateList(R.styleable.PTextView_pColor);
-        //mLeftImgRes = typeArray.getResourceId(R.styleable.CustomEditText_mLeftImgRes, R.drawable.phone);
+        leftTopRadius = typeArray.getDimension(R.styleable.PTextView_pLeftTopCRadius, leftTopRadius);
+        rightTopRadius = typeArray.getDimension(R.styleable.PTextView_pRightTopCRadius, rightTopRadius);
+        rightBottomRadius = typeArray.getDimension(R.styleable.PTextView_pRightBottomCRadius, rightBottomRadius);
+        leftBottomRadius = typeArray.getDimension(R.styleable.PTextView_pLeftBottomCRadius, leftBottomRadius);
+        strokeWidth = typeArray.getDimension(R.styleable.PTextView_strokeWidth, strokeWidth);
+        strokeColorStateList = typeArray.getColorStateList(R.styleable.PTextView_strokeColor);
+        initView();
     }
+
+    private void initView() {
+        StrokeEntity strokeEntity = new StrokeEntity(true);
+        strokeEntity.color = strokeColorStateList;
+        strokeEntity.width = (int) strokeWidth;
+        setBackground(BgResUtil.getRecBg(colorStateList, strokeEntity,
+                leftTopRadius, rightTopRadius, rightBottomRadius, leftBottomRadius));
+    }
+
+
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
@@ -11,6 +12,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
@@ -37,12 +39,12 @@ public class BgResUtil {
      * 代码生成shape图片
      *
      * @param shape        形状 GradientDrawable.RECTANGLE（矩形）, OVAL（圆）, LINE（线）, RING（环形）
-     * @param color        颜色
+     * @param colors       颜色状态选择器
      * @param size         宽,高 传入null不设置
      * @param strokeEntity 包装了边框信息的数据实体
      * @return 返回图片对象
      */
-    public static GradientDrawable getDrawable(int shape, @ColorInt int color,
+    public static GradientDrawable getDrawable(int shape, ColorStateList colors,
                                                Point size,
                                                StrokeEntity strokeEntity) {
         GradientDrawable drawable = new GradientDrawable();
@@ -50,9 +52,21 @@ public class BgResUtil {
         if (size != null) {
             drawable.setSize(size.x, size.y);
         }
-        drawable.setColor(color);
+        if (hasNativeStateListAPI()) {
+            drawable.setColor(colors);
+        } else {
+            if (colors == null) {
+                drawable.setColor(Color.TRANSPARENT);
+            } else {
+                drawable.setColor(colors.getColorForState(drawable.getState(), Color.TRANSPARENT));
+            }
+        }
         StrokeEntity.setStroke(drawable, strokeEntity);
         return drawable;
+    }
+
+    private static boolean hasNativeStateListAPI() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
     /**
@@ -61,7 +75,7 @@ public class BgResUtil {
      * @param color        颜色
      * @param strokeEntity 边框信息
      */
-    public static GradientDrawable getRecBg(@ColorInt int color, StrokeEntity strokeEntity) {
+    public static GradientDrawable getRecBg(ColorStateList color, StrokeEntity strokeEntity) {
         return getDrawable(GradientDrawable.RECTANGLE, color, null, strokeEntity);
     }
 
@@ -72,7 +86,7 @@ public class BgResUtil {
      * @param strokeEntity 边框信息
      * @param radius       圆角数组（左上，右上，右下，左下）
      */
-    public static GradientDrawable getRecBg(@ColorInt int color, StrokeEntity strokeEntity, float... radius) {
+    public static GradientDrawable getRecBg(ColorStateList color, StrokeEntity strokeEntity, float... radius) {
         GradientDrawable drawable = getDrawable(GradientDrawable.RECTANGLE, color, null, strokeEntity);
         setCorners(drawable, radius);
         return drawable;

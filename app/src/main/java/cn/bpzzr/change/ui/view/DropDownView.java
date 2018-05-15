@@ -68,7 +68,7 @@ public class DropDownView implements View.OnClickListener {
 
     public DropDownView(Context context) {
         //加载根布局
-        mRootView = View.inflate(context, R.layout.p_popup_base_layout, null);
+        mRootView = View.inflate(context, R.layout.drop_down_layout, null);
         //为根布局设置点击事件
         mRootView.setOnClickListener(this);
         //找到对应的控件
@@ -77,8 +77,8 @@ public class DropDownView implements View.OnClickListener {
         mBtnReset = mRootView.findViewById(R.id.btn_reset);
         mBtnSure = mRootView.findViewById(R.id.btn_sure);
         //设置重置确定的点击事件
-        mBtnReset.setOnClickListener(this);
-        mBtnSure.setOnClickListener(this);
+        //mBtnReset.setOnClickListener(this);
+        //mBtnSure.setOnClickListener(this);
         //创建一个布局参数
         mLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);

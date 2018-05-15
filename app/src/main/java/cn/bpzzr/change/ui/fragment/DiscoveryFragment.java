@@ -4,26 +4,39 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import cn.bpzzr.change.R;
+import cn.bpzzr.change.bean.FilterRadioData;
+import cn.bpzzr.change.bean.TestBean;
 import cn.bpzzr.change.bean.tzq.BaseResult;
 import cn.bpzzr.change.bean.tzq.ScatteredData;
 import cn.bpzzr.change.interf.tzq.AESUtil;
 import cn.bpzzr.change.interf.tzq.TzqService;
 import cn.bpzzr.change.net.RetrofitTools;
 import cn.bpzzr.change.ui.fragment.base.BaseFragment;
+import cn.bpzzr.change.ui.page.FilterSelectOnePage;
 import cn.bpzzr.change.util.LogUtil;
+import cn.xysxtzq.myuilibrary.PPopupWindow;
+import cn.xysxtzq.myuilibrary.PTextView;
+import cn.xysxtzq.myuilibrary.adapter.Adapter2Radio;
 import cn.xysxtzq.myuilibrary.entity.StrokeEntity;
-import cn.xysxtzq.myuilibrary.util.BgResUtil;
+import cn.xysxtzq.myuilibrary.page.BasePage;
+import cn.xysxtzq.myuilibrary.page.RadioPage;
+import cn.xysxtzq.myuilibrary.util.DimensionUtil;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
@@ -32,9 +45,12 @@ import io.reactivex.disposables.Disposable;
  * 发现页
  */
 
-public class DiscoveryFragment extends BaseFragment {
+public class DiscoveryFragment extends BaseFragment implements BasePage.OnItemClickListener<TestBean> {
     @BindView(R.id.tv_discovery)
     TextView tvDiscovery;
+    @BindView(R.id.p_tv)
+    PTextView pTv;
+    PPopupWindow pPopupWindow;
 
     @Override
     public boolean isNeedLazy() {
@@ -51,84 +67,106 @@ public class DiscoveryFragment extends BaseFragment {
     public void viewHasBind() {
         StrokeEntity strokeEntity = new StrokeEntity(true);
         strokeEntity.width = 5;
-        strokeEntity.color = getResources().getColor(R.color.black_a80);
-        GradientDrawable recBg = BgResUtil
-                .getRecBg(getResources().getColor(R.color.colorPrimary), strokeEntity);
 
-        tvDiscovery.setBackground(recBg);
+        final List<TestBean> testBeans = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            TestBean testBean = new TestBean();
+            testBean.setName("单选 " + i);
+            testBean.setId("id " + i);
+            testBean.setSelected(i == 0);
+            testBeans.add(testBean);
+        }
 
+        pPopupWindow = new PPopupWindow(mActivity);
+
+        pTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pPopupWindow.setMargins(0, DimensionUtil.totalSize(mActivity).y / 3 * 2,
+                        0, 0);
+                RadioPage<TestBean> page = new RadioPage<>(mActivity,
+                        testBeans, DiscoveryFragment.this, true);
+                pPopupWindow.showPop(view, page, true);
+
+            }
+        });
 
         tvDiscovery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final TzqService tzqService = retrofitTools.getRetrofit().create(TzqService.class);
-                tzqService
-                        .getSignToken("123456")
-                        .compose(RetrofitTools.<BaseResult<ScatteredData>>setMainThread())
-                        .subscribe(new Observer<BaseResult<ScatteredData>>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-
-                            }
-
-                            @Override
-                            public void onNext(final BaseResult<ScatteredData> scatteredDataBaseResult) {
-                                ScatteredData data = scatteredDataBaseResult.getData();
-                                if (data != null) {
-                                    LogUtil.e(mFragmentTag, "token--->" + data.getSignToken());
-                                    tzqService.getLoginInformation(
-                                            data.getSignToken(),
-                                            "15222776889",
-                                            "北京大学",
-                                            "马克思主义学院",
-                                            "2",
-                                            "a123456"
-                                    ).compose(RetrofitTools.<BaseResult<String>>setMainThread())
-                                            .subscribe(new Observer<BaseResult<String>>() {
-                                                @Override
-                                                public void onSubscribe(Disposable d) {
-
-                                                }
-
-                                                @Override
-                                                public void onNext(BaseResult<String> stringBaseResultBean) {
-                                                    LogUtil.e(mFragmentTag, "loginData--->"
-                                                            + stringBaseResultBean.getData());
-                                                    String decrypt = AESUtil.decrypt("2v07e5c73myr6v4a",
-                                                            stringBaseResultBean.getData());
-                                                    LogUtil.e(mFragmentTag, "解密串--->" + decrypt);
-                                                    toOtherApp(stringBaseResultBean.getData());
-                                                }
-
-                                                @Override
-                                                public void onError(Throwable e) {
-
-                                                }
-
-                                                @Override
-                                                public void onComplete() {
-
-                                                }
-                                            })
-                                    ;
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        })
-                ;
+                //getRequest();
+                //mActivity.startActivity(new Intent(mActivity,HomeActivity.class));
 
 
             }
         });
+    }
+
+    private void getRequest() {
+        final TzqService tzqService = retrofitTools.getRetrofit().create(TzqService.class);
+        tzqService
+                .getSignToken("123456")
+                .compose(RetrofitTools.<BaseResult<ScatteredData>>setMainThread())
+                .subscribe(new Observer<BaseResult<ScatteredData>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(final BaseResult<ScatteredData> scatteredDataBaseResult) {
+                        ScatteredData data = scatteredDataBaseResult.getData();
+                        if (data != null) {
+                            LogUtil.e(mFragmentTag, "token--->" + data.getSignToken());
+                            tzqService.getLoginInformation(
+                                    data.getSignToken(),
+                                    "15222776889",
+                                    "北京大学",
+                                    "马克思主义学院",
+                                    "2",
+                                    "a123456"
+                            ).compose(RetrofitTools.<BaseResult<String>>setMainThread())
+                                    .subscribe(new Observer<BaseResult<String>>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
+
+                                        }
+
+                                        @Override
+                                        public void onNext(BaseResult<String> stringBaseResultBean) {
+                                            LogUtil.e(mFragmentTag, "loginData--->"
+                                                    + stringBaseResultBean.getData());
+                                            String decrypt = AESUtil.decrypt("2v07e5c73myr6v4a",
+                                                    stringBaseResultBean.getData());
+                                            LogUtil.e(mFragmentTag, "解密串--->" + decrypt);
+                                            toOtherApp(stringBaseResultBean.getData());
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+
+                                        }
+                                    })
+                            ;
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                })
+        ;
     }
 
     private void toOtherApp(String data) {
@@ -172,4 +210,8 @@ public class DiscoveryFragment extends BaseFragment {
     }
 
 
+    @Override
+    public void onClick(int position, TestBean data) {
+        LogUtil.e(mFragmentTag, data.getId());
+    }
 }

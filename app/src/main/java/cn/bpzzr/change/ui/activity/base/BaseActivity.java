@@ -123,7 +123,9 @@ public abstract class BaseActivity<P extends BasePresenter> extends RxActivity i
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
         if (mPresenter != null) {
             mPresenter.detachView();
         } else {

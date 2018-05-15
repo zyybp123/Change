@@ -101,5 +101,15 @@ public class DimensionUtil {
         return TypedValue.applyDimension(unit, size, r.getDisplayMetrics());
     }
 
+    /**
+     * 获取状态栏高度（单位：px）
+     *
+     * @return 状态栏高度（单位：px）
+     */
+    public static int getStatusBarHeight(Context context) {
+        Resources resources = context.getResources();
+        int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+        return resources.getDimensionPixelSize(resourceId);
+    }
 
 }

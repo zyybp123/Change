@@ -1,17 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_discovery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:text="发现"
         android:textColor="@android:color/white"
+        android:textSize="30sp" />
+
+    <cn.xysxtzq.myuilibrary.PTextView
+        android:id="@+id/p_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
         android:padding="10dp"
-        android:textSize="30sp"
+        android:text="@string/sure"
+        android:textColor="@color/colorWhite"
+        android:textSize="20sp"
+        app:pColor="@color/colorPrimary"
+        app:pLeftBottomCRadius="@dimen/dp_10"
+        app:pLeftTopCRadius="@dimen/dp_10"
+        app:pRightBottomCRadius="@dimen/dp_10"
+        app:pRightTopCRadius="@dimen/dp_10"
+        app:strokeColor="@color/color_333"
+        app:strokeWidth="1dp"
         />
 
 </LinearLayout>

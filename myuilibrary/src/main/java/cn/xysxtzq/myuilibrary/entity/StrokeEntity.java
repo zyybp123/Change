@@ -1,6 +1,9 @@
 package cn.xysxtzq.myuilibrary.entity;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.support.annotation.ColorInt;
 
 import cn.xysxtzq.myuilibrary.util.LogUtil;
@@ -21,8 +24,7 @@ public class StrokeEntity {
      * 如果形状为线，其值应该小于所应用的控件的高度
      */
     public int width;
-    @ColorInt
-    public int color;
+    public ColorStateList color;
     /**
      * 虚线的间隔
      */
@@ -48,11 +50,29 @@ public class StrokeEntity {
             LogUtil.e(TAG, "drawable or strokeEntity is null !");
             return;
         }
+        LogUtil.e(TAG, "width--->" + strokeEntity.width + ", color--->" + strokeEntity.color);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (strokeEntity.isSolidLine) {
+                drawable.setStroke(strokeEntity.width, strokeEntity.color);
+            } else {
+                drawable.setStroke(strokeEntity.width, strokeEntity.color,
+                        strokeEntity.dashWidth, strokeEntity.dashGap);
+            }
+        }else{
+            int currColor = strokeEntity.color.getColorForState(drawable.getState(), Color.TRANSPARENT);
+            if (strokeEntity.color == null){
+                setLine(drawable, strokeEntity, Color.TRANSPARENT);
+            }else{
+                setLine(drawable, strokeEntity, currColor);
+            }
+        }
+    }
+
+    private static void setLine(GradientDrawable drawable, StrokeEntity strokeEntity, int transparent) {
         if (strokeEntity.isSolidLine) {
-            LogUtil.e(TAG, "width--->" + strokeEntity.width + ", color--->" + strokeEntity.color);
-            drawable.setStroke(strokeEntity.width, strokeEntity.color);
+            drawable.setStroke(strokeEntity.width, transparent);
         } else {
-            drawable.setStroke(strokeEntity.width, strokeEntity.color,
+            drawable.setStroke(strokeEntity.width, transparent,
                     strokeEntity.dashWidth, strokeEntity.dashGap);
         }
     }
