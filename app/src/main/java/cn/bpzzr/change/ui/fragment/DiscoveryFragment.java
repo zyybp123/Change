@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.JobIntentService;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import cn.bpzzr.change.net.RetrofitTools;
 import cn.bpzzr.change.ui.fragment.base.BaseFragment;
 import cn.bpzzr.change.ui.page.FilterSelectOnePage;
 import cn.bpzzr.change.util.LogUtil;
+import cn.xysxtzq.audiolibrary.service.MyJobIntentService;
 import cn.xysxtzq.myuilibrary.PPopupWindow;
 import cn.xysxtzq.myuilibrary.PTextView;
 import cn.xysxtzq.myuilibrary.adapter.Adapter2Radio;
@@ -82,11 +84,12 @@ public class DiscoveryFragment extends BaseFragment implements BasePage.OnItemCl
         pTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pPopupWindow.setMargins(0, DimensionUtil.totalSize(mActivity).y / 3 * 2,
+                /*pPopupWindow.setMargins(0, DimensionUtil.totalSize(mActivity).y / 3 * 2,
                         0, 0);
                 RadioPage<TestBean> page = new RadioPage<>(mActivity,
                         testBeans, DiscoveryFragment.this, true);
-                pPopupWindow.showPop(view, page, true);
+                pPopupWindow.showPop(view, page, true);*/
+                MyJobIntentService.enqueueWork(mActivity, new Intent(mActivity, JobIntentService.class));
 
             }
         });

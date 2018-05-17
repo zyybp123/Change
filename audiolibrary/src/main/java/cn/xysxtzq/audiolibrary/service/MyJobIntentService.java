@@ -44,7 +44,7 @@ public class MyJobIntentService extends JobIntentService {
      * i.putExtra("times", Integer.parseInt(et_input.getText().toString()));  //should do error checking here!
      * MyJobIntentService.enqueueWork(getContext(),i);
      */
-    static void enqueueWork(Context context, Intent work) {
+    public static void enqueueWork(Context context, Intent work) {
         enqueueWork(context, MyJobIntentService.class, JOB_ID, work);
     }
 
@@ -52,15 +52,15 @@ public class MyJobIntentService extends JobIntentService {
     protected void onHandleWork(@NonNull Intent intent) {
         //此处为已经为子线程
         // 在此处直接执行所要进行的后台任务
-        int top = intent.getIntExtra("times", 5);  //default is 5.
+        int top = intent.getIntExtra("times", 500);  //default is 5.
         int num;
 
         for (int i = 0; i < top; i++) {
             num = mGenerator.nextInt(100);
             toast("Random number is " + num);
-            Log.wtf(TAG, "Random number is " + num);
+            Log.e(TAG, "Random number is " + num);
             try {
-                Thread.sleep(10000);  // 1000 is one second, ten seconds would be 10000
+                Thread.sleep(1000);  // 1000 is one second, ten seconds would be 10000
             } catch (InterruptedException e) {
                 //捕获异常
             }
@@ -70,7 +70,7 @@ public class MyJobIntentService extends JobIntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.wtf(TAG, "All work complete");
+        Log.e(TAG, "All work complete");
         toast("All work complete");
     }
 
